@@ -1,0 +1,6 @@
+{
+  "nxxm/brotli" : {
+    "s" : ["c/include", "c/common", "c/enc", "c/dec"]
+  },
+  "platform" : ["Boost::+boost", "OpenSSL::+SSL", "OpenSSL::+Crypto", "ZLIB::+zlib" ]
+}
