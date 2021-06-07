@@ -1,5 +1,5 @@
 
-# This is an #inglued <> template !
+# This is an nxxm <> template !
 #
 # The template is processed by http://mustache.github.io/, more info about
 # syntax here : http://mustache.github.io/mustache.5.html 
@@ -130,15 +130,16 @@ if (NOT NXXM_LIB_ONLY)
 
 endif()
 
+{{#insource_subdirs}}
+  add_subdirectory({{subdir}} {{bindir}})
+{{/insource_subdirs}}
+
 if (NOT NXXM_LIB_ONLY)
 {{#subdirs}}
   add_subdirectory({{subdir}})
 {{/subdirs}}
 endif()
 
-{{#insource_subdirs}}
-  add_subdirectory({{subdir}} {{bindir}})
-{{/insource_subdirs}}
 
 # Installing
 
