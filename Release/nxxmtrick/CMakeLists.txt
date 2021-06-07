@@ -1,3 +1,3 @@
-find_library(COREFOUNDATION CoreFoundation "/")
-find_library(SECURITY Security "/")
-set_property(TARGET cpprestsdk APPEND PROPERTY LINK_LIBRARIES ${COREFOUNDATION} ${SECURITY})
+find_library(COREFOUNDATION CoreFoundation "/" REQUIRED)
+find_library(SECURITY Security "/" REQUIRED)
+target_link_libraries(cpprestsdk LINK_INTERFACE_LIBRARIES ${COREFOUNDATION} ${SECURITY})
