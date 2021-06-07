@@ -190,9 +190,9 @@ install(
 # Headers:
 {{#project_srcs}}
 install(
-    DIRECTORY {{project_src}}/
+    DIRECTORY {{project_src}}w
     DESTINATION "${include_install_dir}"
-    FILES_MATCHING REGEX ".*(\.[ih]*)|(\.dat))"
+    FILES_MATCHING REGEX ".*((\.[ih]*)|(\.dat))"
     {{#exclude_dirs}} PATTERN "{{exclude_dir}}/*" EXCLUDE 
     {{/exclude_dirs}}
 )
