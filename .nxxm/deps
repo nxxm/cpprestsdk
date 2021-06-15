@@ -3,4 +3,8 @@
     "s" : ["c/include", "c/common", "c/enc", "c/dec"]
   },
   "platform" : ["Boost::+boost", "OpenSSL::+SSL", "OpenSSL::+Crypto", "ZLIB::+zlib" ]
+, "platform:vs-16-2019-win64-cxx17" : [ "Boost::system", "Boost::filesystem", "Boost::regex", "OpenSSL::+SSL", "OpenSSL::+Crypto", "ZLIB::+zlib" ]
+, "platform:windows" : [ "Boost::system", "Boost::filesystem", "Boost::regex", "ZLIB::+zlib","BoringSSL::+ssl", "BoringSSL::+crypto", "BoringSSL::+decrepit", "target::crypt32", "target::ws2_32" ]
+, "platform:windows-cxx17" : [ "Boost::system", "Boost::filesystem", "Boost::regex", "ZLIB::+zlib","BoringSSL::+ssl", "BoringSSL::+crypto", "BoringSSL::+decrepit", "target::crypt32", "target::ws2_32" ]
+
 }
