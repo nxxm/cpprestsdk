@@ -2,6 +2,6 @@
   "nxxm/brotli" : {
     "s" : ["c/include", "c/common", "c/enc", "c/dec"]
   },
-  "platform" : ["Boost::+boost", "OpenSSL::+SSL", "OpenSSL::+Crypto", "ZLIB::+zlib" ],
+  "platform" : ["Boost::+boost", "OpenSSL::+SSL", "OpenSSL::+Crypto", "target::crypt32", "ZLIB::+zlib" ],
   "platform:windows-cxx17" : ["Boost::+boost", "BoringSSL::+ssl", "BoringSSL::+crypto", "BoringSSL::+decrepit", "ZLIB::+zlib" ]
 }
