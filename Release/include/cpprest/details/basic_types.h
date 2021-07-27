@@ -32,9 +32,6 @@
 
 namespace utility
 {
-#ifdef _WIN32
-#define _UTF16_STRINGS
-#endif
 
 // We should be using a 64-bit size type for most situations that do
 // not involve specifying the size of a memory allocation or buffer.
