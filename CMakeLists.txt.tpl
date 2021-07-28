@@ -37,7 +37,7 @@ enable_testing()
 
 # Compile with shipped-with headers or without 
 option(INGLUED "Enable use of #inglued shipped with dependencies." ON)
-option(NXXM_LIB_ONLY "Only installs the lib, don't build anything else." OFF)
+option(TIPI_LIB_ONLY "Only installs the lib, don't build anything else." OFF)
 
 # Compile unit tests
 option(UNIT_TESTS "Enable Unit Testing" OFF)
@@ -99,7 +99,7 @@ target_link_libraries({{project}} {{project_lib_type}}
 
 set(include_install_dir "include")
 
-if (NOT NXXM_LIB_ONLY)
+if (NOT TIPI_LIB_ONLY)
 
 {{#executables}}
   # {{cmake_target_name}}
@@ -134,7 +134,7 @@ endif()
   add_subdirectory({{subdir}} {{bindir}})
 {{/insource_subdirs}}
 
-if (NOT NXXM_LIB_ONLY)
+if (NOT TIPI_LIB_ONLY)
 {{#subdirs}}
   add_subdirectory({{subdir}})
 {{/subdirs}}
