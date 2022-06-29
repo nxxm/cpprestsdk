@@ -44,8 +44,8 @@ SUITE(proxy_tests)
     // Can't specify a proxy with WinRT implementation.
     TEST_FIXTURE(uri_address, proxy_with_credentials, "Ignore:Android", "390")
     {
-        web::web_proxy proxy(U("http://netproxy.redmond.corp.microsoft.com"));
-        web::credentials cred(U("artur"), U("fred")); // relax, this is not my real password
+        web::web_proxy proxy(_XPLATSTR("http://netproxy.redmond.corp.microsoft.com"));
+        web::credentials cred(_XPLATSTR("artur"), _XPLATSTR("fred")); // relax, this is not my real password
         proxy.set_credentials(cred);
         websocket_client_config config;
         config.set_proxy(proxy);
@@ -54,7 +54,7 @@ SUITE(proxy_tests)
 
         try
         {
-            client.connect(U("wss://echo.websocket.org/")).wait();
+            client.connect(_XPLATSTR("wss://echo.websocket.org/")).wait();
             const auto text = std::string("hello");
             websocket_outgoing_message msg;
             msg.set_utf8_message(text);

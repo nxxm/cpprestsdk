@@ -27,7 +27,7 @@ namespace client
 class uri_address
 {
 public:
-    uri_address() : m_uri(U("ws://localhost:9980/ws")) {}
+    uri_address() : m_uri(_XPLATSTR("ws://localhost:9980/ws")) {}
     web::uri m_uri;
 };
 

@@ -302,7 +302,7 @@ SUITE(send_msg_tests)
     TEST_FIXTURE(uri_address, send_text_msges_fstream)
     {
         test_websocket_server server;
-        utility::string_t fname = U("send_multiple_text_msges_fstream.txt");
+        utility::string_t fname = _XPLATSTR("send_multiple_text_msges_fstream.txt");
         std::vector<uint8_t> body1(26);
         memcpy(&body1[0], "abcdefghijklmnopqrstuvwxyz", 26);
         fill_file(fname, body1, 2);

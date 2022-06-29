@@ -63,7 +63,7 @@ void BlackJackDealer::handle_get(http_request message)
     auto paths = http::uri::split_path(http::uri::decode(message.relative_uri().path()));
     if (paths.empty())
     {
-        message.reply(status_codes::OK, TablesAsJSON(U("Available Tables"), s_tables));
+        message.reply(status_codes::OK, TablesAsJSON(_XPLATSTR("Available Tables"), s_tables));
         return;
     }
 
@@ -131,13 +131,13 @@ void BlackJackDealer::handle_post(http_request message)
         }
         else
         {
-            message.reply(status_codes::Forbidden, U("Player name is required in query"));
+            message.reply(status_codes::Forbidden, _XPLATSTR("Player name is required in query"));
         }
     }
     else
     {
         utility::ostringstream_t os;
-        os << U("Table ") << table->Id << U(" is full");
+        os << _XPLATSTR("Table ") << table->Id << _XPLATSTR(" is full");
         message.reply(status_codes::Forbidden, os.str());
     }
 };
@@ -153,7 +153,7 @@ void BlackJackDealer::handle_delete(http_request message)
 
     if (paths.empty())
     {
-        message.reply(status_codes::Forbidden, U("TableId is required."));
+        message.reply(status_codes::Forbidden, _XPLATSTR("TableId is required."));
         return;
     }
     utility::string_t wtable_id = paths[0];
@@ -187,7 +187,7 @@ void BlackJackDealer::handle_delete(http_request message)
     }
     else
     {
-        message.reply(status_codes::Forbidden, U("Player name is required in query"));
+        message.reply(status_codes::Forbidden, _XPLATSTR("Player name is required in query"));
     }
 };
 
@@ -203,7 +203,7 @@ void BlackJackDealer::handle_put(http_request message)
     auto queryItr = query.find(REQUEST);
     if (paths.empty() || queryItr == query.end())
     {
-        message.reply(status_codes::Forbidden, U("TableId and request are required."));
+        message.reply(status_codes::Forbidden, _XPLATSTR("TableId and request are required."));
     }
     utility::string_t wtable_id = paths[0];
     utility::string_t request = queryItr->second;
@@ -244,6 +244,6 @@ void BlackJackDealer::handle_put(http_request message)
     }
     else
     {
-        message.reply(status_codes::Forbidden, U("Unrecognized request"));
+        message.reply(status_codes::Forbidden, _XPLATSTR("Unrecognized request"));
     }
 };

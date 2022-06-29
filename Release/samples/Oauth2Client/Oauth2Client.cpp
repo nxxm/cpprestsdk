@@ -68,11 +68,11 @@ static void open_browser(utility::string_t auth_uri)
     auto r = ShellExecuteA(NULL, "open", conversions::utf16_to_utf8(auth_uri).c_str(), NULL, NULL, SW_SHOWNORMAL);
 #elif defined(__APPLE__)
     // NOTE: OS X only.
-    string_t browser_cmd(U("open \"") + auth_uri + U("\""));
+    string_t browser_cmd(_XPLATSTR("open \"") + auth_uri + _XPLATSTR("\""));
     (void)system(browser_cmd.c_str());
 #else
     // NOTE: Linux/X11 only.
-    string_t browser_cmd(U("xdg-open \"") + auth_uri + U("\""));
+    string_t browser_cmd(_XPLATSTR("xdg-open \"") + auth_uri + _XPLATSTR("\""));
     (void)system(browser_cmd.c_str());
 #endif
 }
@@ -89,7 +89,7 @@ public:
         : m_listener(new http_listener(listen_uri)), m_config(config)
     {
         m_listener->support([this](http::http_request request) -> void {
-            if (request.request_uri().path() == U("/") && !request.request_uri().query().empty())
+            if (request.request_uri().path() == _XPLATSTR("/") && !request.request_uri().query().empty())
             {
                 m_resplock.lock();
 
@@ -107,13 +107,13 @@ public:
                         }
                     });
 
-                request.reply(status_codes::OK, U("Ok."));
+                request.reply(status_codes::OK, _XPLATSTR("Ok."));
 
                 m_resplock.unlock();
             }
             else
             {
-                request.reply(status_codes::NotFound, U("Not found."));
+                request.reply(status_codes::NotFound, _XPLATSTR("Not found."));
             }
         });
 
@@ -213,12 +213,12 @@ class dropbox_session_sample : public oauth2_session_sample
 {
 public:
     dropbox_session_sample()
-        : oauth2_session_sample(U("Dropbox"),
+        : oauth2_session_sample(_XPLATSTR("Dropbox"),
                                 s_dropbox_key,
                                 s_dropbox_secret,
-                                U("https://www.dropbox.com/1/oauth2/authorize"),
-                                U("https://api.dropbox.com/1/oauth2/token"),
-                                U("http://localhost:8889/"))
+                                _XPLATSTR("https://www.dropbox.com/1/oauth2/authorize"),
+                                _XPLATSTR("https://api.dropbox.com/1/oauth2/token"),
+                                _XPLATSTR("http://localhost:8889/"))
     {
         // Dropbox uses "default" OAuth 2.0 settings.
     }
@@ -226,9 +226,9 @@ public:
 protected:
     void run_internal() override
     {
-        http_client api(U("https://api.dropbox.com/1/"), m_http_config);
+        http_client api(_XPLATSTR("https://api.dropbox.com/1/"), m_http_config);
         ucout << "Requesting account information:" << std::endl;
-        ucout << "Information: " << api.request(methods::GET, U("account/info")).get().extract_json().get()
+        ucout << "Information: " << api.request(methods::GET, _XPLATSTR("account/info")).get().extract_json().get()
               << std::endl;
     }
 };
@@ -240,27 +240,27 @@ class linkedin_session_sample : public oauth2_session_sample
 {
 public:
     linkedin_session_sample()
-        : oauth2_session_sample(U("LinkedIn"),
+        : oauth2_session_sample(_XPLATSTR("LinkedIn"),
                                 s_linkedin_key,
                                 s_linkedin_secret,
-                                U("https://www.linkedin.com/uas/oauth2/authorization"),
-                                U("https://www.linkedin.com/uas/oauth2/accessToken"),
-                                U("http://localhost:8888/"))
+                                _XPLATSTR("https://www.linkedin.com/uas/oauth2/authorization"),
+                                _XPLATSTR("https://www.linkedin.com/uas/oauth2/accessToken"),
+                                _XPLATSTR("http://localhost:8888/"))
     {
         // LinkedIn doesn't use bearer auth.
         m_oauth2_config.set_bearer_auth(false);
         // Also doesn't use HTTP Basic for token endpoint authentication.
         m_oauth2_config.set_http_basic_auth(false);
         // Also doesn't use the common "access_token", but "oauth2_access_token".
-        m_oauth2_config.set_access_token_key(U("oauth2_access_token"));
+        m_oauth2_config.set_access_token_key(_XPLATSTR("oauth2_access_token"));
     }
 
 protected:
     void run_internal() override
     {
-        http_client api(U("https://api.linkedin.com/v1/people/"), m_http_config);
+        http_client api(_XPLATSTR("https://api.linkedin.com/v1/people/"), m_http_config);
         ucout << "Requesting account information:" << std::endl;
-        ucout << "Information: " << api.request(methods::GET, U("~?format=json")).get().extract_json().get()
+        ucout << "Information: " << api.request(methods::GET, _XPLATSTR("~?format=json")).get().extract_json().get()
               << std::endl;
     }
 };
@@ -272,23 +272,23 @@ class live_session_sample : public oauth2_session_sample
 {
 public:
     live_session_sample()
-        : oauth2_session_sample(U("Live"),
+        : oauth2_session_sample(_XPLATSTR("Live"),
                                 s_live_key,
                                 s_live_secret,
-                                U("https://login.live.com/oauth20_authorize.srf"),
-                                U("https://login.live.com/oauth20_token.srf"),
-                                U("http://testhost.local:8890/"))
+                                _XPLATSTR("https://login.live.com/oauth20_authorize.srf"),
+                                _XPLATSTR("https://login.live.com/oauth20_token.srf"),
+                                _XPLATSTR("http://testhost.local:8890/"))
     {
         // Scope "wl.basic" allows fetching user information.
-        m_oauth2_config.set_scope(U("wl.basic"));
+        m_oauth2_config.set_scope(_XPLATSTR("wl.basic"));
     }
 
 protected:
     void run_internal() override
     {
-        http_client api(U("https://apis.live.net/v5.0/"), m_http_config);
+        http_client api(_XPLATSTR("https://apis.live.net/v5.0/"), m_http_config);
         ucout << "Requesting account information:" << std::endl;
-        ucout << api.request(methods::GET, U("me")).get().extract_json().get() << std::endl;
+        ucout << api.request(methods::GET, _XPLATSTR("me")).get().extract_json().get() << std::endl;
     }
 };
 

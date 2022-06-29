@@ -94,13 +94,13 @@ SUITE(request_stream_tests)
         reqG.set_body(buf.create_istream());
         VERIFY_THROWS(client.request(reqG).get(), http_exception);
 
-        VERIFY_THROWS(client.request(methods::POST, U(""), buf.create_istream(), 1).get(), http_exception);
+        VERIFY_THROWS(client.request(methods::POST, _XPLATSTR(""), buf.create_istream(), 1).get(), http_exception);
     }
 #endif
 
     TEST_FIXTURE(uri_address, set_body_stream_1)
     {
-        utility::string_t fname = U("set_body_stream_1.txt");
+        utility::string_t fname = _XPLATSTR("set_body_stream_1.txt");
         fill_file(fname);
 
         test_http_server::scoped_server scoped(m_uri);
@@ -114,10 +114,10 @@ SUITE(request_stream_tests)
         msg.headers().set_content_length(26);
 #endif
         p_server->next_request().then([&](test_request* p_request) {
-            http_asserts::assert_test_request_equals(p_request, methods::POST, U("/"));
+            http_asserts::assert_test_request_equals(p_request, methods::POST, _XPLATSTR("/"));
             VERIFY_ARE_EQUAL(26u, p_request->m_body.size());
             std::string str_body(std::begin(p_request->m_body), std::end(p_request->m_body));
-            VERIFY_ARE_EQUAL(U("abcdefghijklmnopqrstuvwxyz"), ::utility::conversions::to_string_t(str_body));
+            VERIFY_ARE_EQUAL(_XPLATSTR("abcdefghijklmnopqrstuvwxyz"), ::utility::conversions::to_string_t(str_body));
             p_request->reply(200);
         });
         http_asserts::assert_response_equals(client.request(msg).get(), status_codes::OK);
@@ -126,7 +126,7 @@ SUITE(request_stream_tests)
 
     TEST_FIXTURE(uri_address, set_body_stream_2)
     {
-        utility::string_t fname = U("set_body_stream_2.txt");
+        utility::string_t fname = _XPLATSTR("set_body_stream_2.txt");
         fill_file(fname);
 
         http_client_config config;
@@ -143,10 +143,10 @@ SUITE(request_stream_tests)
         msg.headers().set_content_length(26);
 #endif
         p_server->next_request().then([&](test_request* p_request) {
-            http_asserts::assert_test_request_equals(p_request, methods::POST, U("/"));
+            http_asserts::assert_test_request_equals(p_request, methods::POST, _XPLATSTR("/"));
             VERIFY_ARE_EQUAL(26u, p_request->m_body.size());
             std::string str_body(std::begin(p_request->m_body), std::end(p_request->m_body));
-            VERIFY_ARE_EQUAL(U("abcdefghijklmnopqrstuvwxyz"), ::utility::conversions::to_string_t(str_body));
+            VERIFY_ARE_EQUAL(_XPLATSTR("abcdefghijklmnopqrstuvwxyz"), ::utility::conversions::to_string_t(str_body));
             p_request->reply(200);
         });
         http_asserts::assert_response_equals(client.request(msg).get(), status_codes::OK);
@@ -167,10 +167,10 @@ SUITE(request_stream_tests)
         http_client client(address, config);
 
         p_server->next_request().then([&](test_request* p_request) {
-            http_asserts::assert_test_request_equals(p_request, methods::POST, U("/"));
+            http_asserts::assert_test_request_equals(p_request, methods::POST, _XPLATSTR("/"));
             VERIFY_ARE_EQUAL(26u, p_request->m_body.size());
             std::string str_body(std::begin(p_request->m_body), std::end(p_request->m_body));
-            VERIFY_ARE_EQUAL(U("abcdefghijklmnopqrstuvwxyz"), ::utility::conversions::to_string_t(str_body));
+            VERIFY_ARE_EQUAL(_XPLATSTR("abcdefghijklmnopqrstuvwxyz"), ::utility::conversions::to_string_t(str_body));
             p_request->reply(200);
         });
 
@@ -179,15 +179,15 @@ SUITE(request_stream_tests)
         if (withContentLength)
         {
             http_asserts::assert_response_equals(
-                client.request(methods::POST, U(""), stream, 26, U("text/plain")).get(), status_codes::OK);
+                client.request(methods::POST, _XPLATSTR(""), stream, 26, _XPLATSTR("text/plain")).get(), status_codes::OK);
         }
         else
         {
 #if defined __cplusplus_winrt
             http_asserts::assert_response_equals(
-                client.request(methods::POST, U(""), stream, 26, U("text/plain")).get(), status_codes::OK);
+                client.request(methods::POST, _XPLATSTR(""), stream, 26, _XPLATSTR("text/plain")).get(), status_codes::OK);
 #else
-            http_asserts::assert_response_equals(client.request(methods::POST, U(""), stream, U("text/plain")).get(),
+            http_asserts::assert_response_equals(client.request(methods::POST, _XPLATSTR(""), stream, _XPLATSTR("text/plain")).get(),
                                                  status_codes::OK);
 #endif
         }
@@ -198,18 +198,18 @@ SUITE(request_stream_tests)
 #if !defined(__cplusplus_winrt)
     TEST_FIXTURE(uri_address, without_content_length_1)
     {
-        stream_request_impl(m_uri, false, 64 * 1024, U("without_content_length_1.txt"));
+        stream_request_impl(m_uri, false, 64 * 1024, _XPLATSTR("without_content_length_1.txt"));
     }
 
     TEST_FIXTURE(uri_address, without_content_length_2)
     {
-        stream_request_impl(m_uri, false, 1024, U("without_content_length_2.txt"));
+        stream_request_impl(m_uri, false, 1024, _XPLATSTR("without_content_length_2.txt"));
     }
 #endif
 
     TEST_FIXTURE(uri_address, with_content_length_1)
     {
-        stream_request_impl(m_uri, true, 64 * 1024, U("with_content_length_1.txt"));
+        stream_request_impl(m_uri, true, 64 * 1024, _XPLATSTR("with_content_length_1.txt"));
     }
 
     TEST_FIXTURE(uri_address, producer_consumer_buffer_with_content_length)
@@ -227,10 +227,10 @@ SUITE(request_stream_tests)
         msg.headers().set_content_length(26);
 
         p_server->next_request().then([&](test_request* p_request) {
-            http_asserts::assert_test_request_equals(p_request, methods::POST, U("/"));
+            http_asserts::assert_test_request_equals(p_request, methods::POST, _XPLATSTR("/"));
             VERIFY_ARE_EQUAL(26u, p_request->m_body.size());
             std::string str_body(std::begin(p_request->m_body), std::end(p_request->m_body));
-            VERIFY_ARE_EQUAL(U("abcdefghijklmnopqrstuvwxyz"), ::utility::conversions::to_string_t(str_body));
+            VERIFY_ARE_EQUAL(_XPLATSTR("abcdefghijklmnopqrstuvwxyz"), ::utility::conversions::to_string_t(str_body));
             p_request->reply(200);
         });
         http_asserts::assert_response_equals(client.request(msg).get(), status_codes::OK);
@@ -238,7 +238,7 @@ SUITE(request_stream_tests)
 
     TEST_FIXTURE(uri_address, stream_partial_from_start)
     {
-        utility::string_t fname = U("stream_partial_from_start.txt");
+        utility::string_t fname = _XPLATSTR("stream_partial_from_start.txt");
         fill_file(fname, 200);
 
         test_http_server::scoped_server scoped(m_uri);
@@ -251,7 +251,7 @@ SUITE(request_stream_tests)
         msg.headers().set_content_length(4500);
 
         p_server->next_request().then([&](test_request* p_request) {
-            http_asserts::assert_test_request_equals(p_request, methods::POST, U("/"));
+            http_asserts::assert_test_request_equals(p_request, methods::POST, _XPLATSTR("/"));
             VERIFY_ARE_EQUAL(4500u, p_request->m_body.size());
             std::string str_body(std::begin(p_request->m_body), std::end(p_request->m_body));
             p_request->reply(200);
@@ -267,7 +267,7 @@ SUITE(request_stream_tests)
 
     TEST_FIXTURE(uri_address, stream_partial_from_middle)
     {
-        utility::string_t fname = U("stream_partial_from_middle.txt");
+        utility::string_t fname = _XPLATSTR("stream_partial_from_middle.txt");
         fill_file(fname, 100);
 
         test_http_server::scoped_server scoped(m_uri);
@@ -282,7 +282,7 @@ SUITE(request_stream_tests)
         stream.seek(13, std::ios_base::cur);
 
         p_server->next_request().then([&](test_request* p_request) {
-            http_asserts::assert_test_request_equals(p_request, methods::POST, U("/"));
+            http_asserts::assert_test_request_equals(p_request, methods::POST, _XPLATSTR("/"));
             VERIFY_ARE_EQUAL(13u, p_request->m_body.size());
             std::string str_body(std::begin(p_request->m_body), std::end(p_request->m_body));
             VERIFY_ARE_EQUAL(str_body, "nopqrstuvwxyz");
@@ -341,7 +341,7 @@ SUITE(request_stream_tests)
 
         // Make request.
         streams::producer_consumer_buffer<uint8_t> buf;
-        auto responseTask = client.request(methods::PUT, U(""), buf.create_istream());
+        auto responseTask = client.request(methods::PUT, _XPLATSTR(""), buf.create_istream());
 
         // Write a bit of data then close the stream early.
         unsigned char data[5] = {'1', '2', '3', '4', '5'};
@@ -360,7 +360,7 @@ SUITE(request_stream_tests)
 
         // Make request.
         streams::producer_consumer_buffer<uint8_t> buf;
-        auto responseTask = client.request(methods::PUT, U(""), buf.create_istream());
+        auto responseTask = client.request(methods::PUT, _XPLATSTR(""), buf.create_istream());
 
         // Write a bit of data then close the stream early.
         unsigned char data[5] = {'1', '2', '3', '4', '5'};
@@ -387,7 +387,7 @@ SUITE(request_stream_tests)
 
         // Make request.
         streams::producer_consumer_buffer<uint8_t> buf;
-        auto responseTask = client.request(methods::PUT, U(""), buf.create_istream(), 10);
+        auto responseTask = client.request(methods::PUT, _XPLATSTR(""), buf.create_istream(), 10);
 
         // Write a bit of data then close the stream early.
         unsigned char data[5] = {'1', '2', '3', '4', '5'};
@@ -414,7 +414,7 @@ SUITE(request_stream_tests)
 
         // Make request.
         streams::producer_consumer_buffer<uint8_t> buf;
-        auto responseTask = client.request(methods::PUT, U(""), buf.create_istream(), 10);
+        auto responseTask = client.request(methods::PUT, _XPLATSTR(""), buf.create_istream(), 10);
 
         // Write a bit of data then close the stream early.
         unsigned char data[5] = {'1', '2', '3', '4', '5'};

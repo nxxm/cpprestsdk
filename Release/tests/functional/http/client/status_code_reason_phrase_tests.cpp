@@ -34,7 +34,7 @@ SUITE(status_code_reason_phrase_tests)
         http_client client(m_uri);
 
         // custom status code.
-        test_server_utilities::verify_request(&client, methods::GET, U("/"), scoped.server(), 666);
+        test_server_utilities::verify_request(&client, methods::GET, _XPLATSTR("/"), scoped.server(), 666);
     }
 
     TEST_FIXTURE(uri_address, reason_phrase)
@@ -43,7 +43,7 @@ SUITE(status_code_reason_phrase_tests)
         http_client client(m_uri);
 
         test_server_utilities::verify_request(
-            &client, methods::GET, U("/"), scoped.server(), status_codes::OK, U("Reasons!!"));
+            &client, methods::GET, _XPLATSTR("/"), scoped.server(), status_codes::OK, _XPLATSTR("Reasons!!"));
     }
 
 } // SUITE(status_code_reason_phrase_tests)

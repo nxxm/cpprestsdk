@@ -80,7 +80,7 @@ SUITE(connections_and_errors)
     // This test will fail with "Access denied: attempting to add Address.." exception if it is not run as admin.
     TEST(default_port_close, "Ignore", "Manual")
     {
-        uri address(U("http://localhost/portnotspecified"));
+        uri address(_XPLATSTR("http://localhost/portnotspecified"));
         http_listener listener(address);
 
         try
@@ -110,14 +110,14 @@ SUITE(connections_and_errors)
             requests.push_back(r);
             request_event.set();
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, _XPLATSTR("")));
         request_event.wait();
         requests[0].reply(status_codes::OK, "HEHEHE").wait();
         requests.clear();
         p_client->next_response()
             .then([&](test_response* p_response) {
                 http_asserts::assert_test_response_equals(
-                    p_response, status_codes::OK, U("text/plain; charset=utf-8"), U("HEHEHE"));
+                    p_response, status_codes::OK, _XPLATSTR("text/plain; charset=utf-8"), _XPLATSTR("HEHEHE"));
             })
             .wait();
 
@@ -137,7 +137,7 @@ SUITE(connections_and_errors)
             request = r;
             request_event.set();
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, _XPLATSTR("")));
         request_event.wait();
         request.reply(status_codes::OK).wait();
 
@@ -162,7 +162,7 @@ SUITE(connections_and_errors)
         test_http_client* p_client = client.client();
 
         listener.support([](http_request request) { request.reply(status_codes::OK).get(); });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, _XPLATSTR("")));
 
         // Don't wait on the task otherwise it could inline allowing other tasks to run on the scheduler.
         std::atomic_flag responseEvent = ATOMIC_FLAG_INIT;
@@ -194,7 +194,7 @@ SUITE(connections_and_errors)
             request = r;
             request_event.set();
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, _XPLATSTR("")));
         request_event.wait();
         http_response response(status_codes::OK);
         request.reply(response).wait();
@@ -218,7 +218,7 @@ SUITE(connections_and_errors)
             request.reply(status_codes::OK);
             VERIFY_THROWS(request.reply(status_codes::Accepted).get(), http_exception);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U("/path")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR("/path")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -231,7 +231,7 @@ SUITE(connections_and_errors)
     // This test case is manual becuase it requires to be run under and account without admin access.
     TEST(default_port_admin_access, "Ignore", "Manual")
     {
-        uri address(U("http://localhost/"));
+        uri address(_XPLATSTR("http://localhost/"));
         http_listener listener(address);
         VERIFY_THROWS(listener.open().wait(), http_exception);
     }
@@ -255,7 +255,7 @@ SUITE(connections_and_errors)
             listener.close();
             request.reply(status_codes::OK).wait();
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U("/path")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR("/path")));
 
         p_client->next_response()
             .then([](test_response* p_response) {
@@ -288,7 +288,7 @@ SUITE(connections_and_errors)
         });
 
         web::http::client::http_client client(u);
-        client.request(methods::GET, U("/path"))
+        client.request(methods::GET, _XPLATSTR("/path"))
             .then([](http_response response) -> pplx::task<std::vector<unsigned char>> {
                 VERIFY_ARE_EQUAL(status_codes::OK, response.status_code());
                 return response.extract_vector();
@@ -330,7 +330,7 @@ SUITE(connections_and_errors)
         });
 
         web::http::client::http_client client(u);
-        client.request(methods::GET, U("/path"))
+        client.request(methods::GET, _XPLATSTR("/path"))
             .then([](http_response response) -> pplx::task<std::vector<unsigned char>> {
                 VERIFY_ARE_EQUAL(status_codes::OK, response.status_code());
                 return response.extract_vector();
@@ -405,7 +405,7 @@ SUITE(connections_and_errors)
         // allows separation of sending headers and body.
         ::web::http::client::http_client client(m_uri);
         concurrency::streams::producer_consumer_buffer<unsigned char> body;
-        auto responseTask = client.request(methods::PUT, U(""), body.create_istream());
+        auto responseTask = client.request(methods::PUT, _XPLATSTR(""), body.create_istream());
         timedOutEvent.wait();
         body.close().wait();
         VERIFY_THROWS(responseTask.get(), http_exception);

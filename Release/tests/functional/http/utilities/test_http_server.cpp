@@ -82,14 +82,14 @@ static utility::string_t parse_verb(const HTTP_REQUEST* p_http_request)
     std::string temp;
     switch (p_http_request->Verb)
     {
-        case HttpVerbGET: method = U("GET"); break;
-        case HttpVerbPOST: method = U("POST"); break;
-        case HttpVerbPUT: method = U("PUT"); break;
-        case HttpVerbDELETE: method = U("DELETE"); break;
-        case HttpVerbHEAD: method = U("HEAD"); break;
-        case HttpVerbOPTIONS: method = U("OPTIONS"); break;
-        case HttpVerbTRACE: method = U("TRACE"); break;
-        case HttpVerbCONNECT: method = U("CONNECT"); break;
+        case HttpVerbGET: method = _XPLATSTR("GET"); break;
+        case HttpVerbPOST: method = _XPLATSTR("POST"); break;
+        case HttpVerbPUT: method = _XPLATSTR("PUT"); break;
+        case HttpVerbDELETE: method = _XPLATSTR("DELETE"); break;
+        case HttpVerbHEAD: method = _XPLATSTR("HEAD"); break;
+        case HttpVerbOPTIONS: method = _XPLATSTR("OPTIONS"); break;
+        case HttpVerbTRACE: method = _XPLATSTR("TRACE"); break;
+        case HttpVerbCONNECT: method = _XPLATSTR("CONNECT"); break;
         case HttpVerbUnknown: temp = p_http_request->pUnknownVerb; method = utility::string_t(temp.begin(), temp.end());
         default: break;
     }
@@ -102,47 +102,47 @@ static utility::string_t parse_verb(const HTTP_REQUEST* p_http_request)
 /// </summary>
 static utility::string_t HttpServerAPIRequestKnownHeaders[] =
 {
-    U("Cache-Control"),
-    U("Connection"),
-    U("Date"),
-    U("Keep-Alive"),
-    U("Pragma"),
-    U("Trailer"),
-    U("Transfer-Encoding"),
-    U("Upgrade"),
-    U("Via"),
-    U("Warning"),
-    U("Allow"),
-    U("Content-Length"),
-    U("Content-Type"),
-    U("Content-Encoding"),
-    U("Content-Language"),
-    U("Content-Location"),
-    U("Content-MD5"),
-    U("Content-Range"),
-    U("Expires"),
-    U("Last-Modified"),
-    U("Accept"),
-    U("Accept-Charset"),
-    U("Accept-Encoding"),
-    U("Accept-Language"),
-    U("Authorization"),
-    U("Cookie"),
-    U("Expect"),
-    U("From"),
-    U("Host"),
-    U("If-Match"),
-    U("If-Modified-Since"),
-    U("If-None-Match"),
-    U("If-Range"),
-    U("If-Unmodified-Since"),
-    U("Max-Forwards"),
-    U("Proxy-Authorization"),
-    U("Referer"),
-    U("Range"),
-    U("TE"),
-    U("Translate"),
-    U("User-Agent")
+    _XPLATSTR("Cache-Control"),
+    _XPLATSTR("Connection"),
+    _XPLATSTR("Date"),
+    _XPLATSTR("Keep-Alive"),
+    _XPLATSTR("Pragma"),
+    _XPLATSTR("Trailer"),
+    _XPLATSTR("Transfer-Encoding"),
+    _XPLATSTR("Upgrade"),
+    _XPLATSTR("Via"),
+    _XPLATSTR("Warning"),
+    _XPLATSTR("Allow"),
+    _XPLATSTR("Content-Length"),
+    _XPLATSTR("Content-Type"),
+    _XPLATSTR("Content-Encoding"),
+    _XPLATSTR("Content-Language"),
+    _XPLATSTR("Content-Location"),
+    _XPLATSTR("Content-MD5"),
+    _XPLATSTR("Content-Range"),
+    _XPLATSTR("Expires"),
+    _XPLATSTR("Last-Modified"),
+    _XPLATSTR("Accept"),
+    _XPLATSTR("Accept-Charset"),
+    _XPLATSTR("Accept-Encoding"),
+    _XPLATSTR("Accept-Language"),
+    _XPLATSTR("Authorization"),
+    _XPLATSTR("Cookie"),
+    _XPLATSTR("Expect"),
+    _XPLATSTR("From"),
+    _XPLATSTR("Host"),
+    _XPLATSTR("If-Match"),
+    _XPLATSTR("If-Modified-Since"),
+    _XPLATSTR("If-None-Match"),
+    _XPLATSTR("If-Range"),
+    _XPLATSTR("If-Unmodified-Since"),
+    _XPLATSTR("Max-Forwards"),
+    _XPLATSTR("Proxy-Authorization"),
+    _XPLATSTR("Referer"),
+    _XPLATSTR("Range"),
+    _XPLATSTR("TE"),
+    _XPLATSTR("Translate"),
+    _XPLATSTR("User-Agent")
 };
 
 static utility::string_t char_to_wstring(const char* src)
@@ -217,7 +217,7 @@ public:
         }
 
         // Create request queue.
-        error_code = HttpCreateRequestQueue(httpApiVersion, U("test_http_server"), NULL, NULL, &m_request_queue);
+        error_code = HttpCreateRequestQueue(httpApiVersion, _XPLATSTR("test_http_server"), NULL, NULL, &m_request_queue);
         if (error_code)
         {
             throw std::runtime_error("error code: " + std::to_string(error_code));
@@ -228,7 +228,7 @@ public:
         if (uri.is_path_empty() && host_uri[host_uri.length() - 1] != '/' && uri.query().empty() &&
             uri.fragment().empty())
         {
-            host_uri.append(U("/"));
+            host_uri.append(_XPLATSTR("/"));
         }
 
         // Add Url.
@@ -296,7 +296,7 @@ public:
 
         // Read in request body.
         ULONG content_length;
-        const bool has_content_length = p_test_request->match_header(U("Content-Length"), content_length);
+        const bool has_content_length = p_test_request->match_header(_XPLATSTR("Content-Length"), content_length);
         if (has_content_length && content_length > 0)
         {
             p_test_request->m_body.resize(content_length);
@@ -311,8 +311,8 @@ public:
         }
 
         utility::string_t transfer_encoding;
-        const bool has_transfer_encoding = p_test_request->match_header(U("Transfer-Encoding"), transfer_encoding);
-        if (has_transfer_encoding && transfer_encoding.find(U("chunked")) != std::string::npos)
+        const bool has_transfer_encoding = p_test_request->match_header(_XPLATSTR("Transfer-Encoding"), transfer_encoding);
+        if (has_transfer_encoding && transfer_encoding.find(_XPLATSTR("chunked")) != std::string::npos)
         {
             content_length = 0;
             char buf[4096];
@@ -357,7 +357,7 @@ public:
         if (m_uri.is_path_empty() && host_uri[host_uri.length() - 1] != '/' && m_uri.query().empty() &&
             m_uri.fragment().empty())
         {
-            host_uri.append(U("/"));
+            host_uri.append(_XPLATSTR("/"));
         }
 
         // Remove Url.
@@ -504,7 +504,7 @@ public:
             auto tr = std::unique_ptr<test_request>(new test_request(this->m_last_request_id++, this));
             tr->m_method = result.method();
             tr->m_path = result.request_uri().resource().to_string();
-            if (tr->m_path.empty()) tr->m_path = U("/");
+            if (tr->m_path.empty()) tr->m_path = _XPLATSTR("/");
 
             for (auto it = result.headers().begin(); it != result.headers().end(); ++it)
                 tr->m_headers[it->first] = it->second;

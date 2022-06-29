@@ -39,7 +39,7 @@ web::http::client::http_client_config client_config_for_proxy()
     {
         std::string env_http_proxy_string(env_http_proxy);
 #endif
-        if (env_http_proxy_string == U("auto"))
+        if (env_http_proxy_string == _XPLATSTR("auto"))
             client_config.set_proxy(web::web_proxy::use_auto_discovery);
         else
             client_config.set_proxy(web::web_proxy(env_http_proxy_string));
@@ -70,8 +70,8 @@ int main(int argc, char* args[])
 
             // Create an HTTP request.
             // Encode the URI query since it could contain special characters like spaces.
-            http_client client(U("http://www.bing.com/"), client_config_for_proxy());
-            return client.request(methods::GET, uri_builder(U("/search")).append_query(U("q"), searchTerm).to_string());
+            http_client client(_XPLATSTR("http://www.bing.com/"), client_config_for_proxy());
+            return client.request(methods::GET, uri_builder(_XPLATSTR("/search")).append_query(_XPLATSTR("q"), searchTerm).to_string());
         })
 
         // Write the response body into the file buffer.

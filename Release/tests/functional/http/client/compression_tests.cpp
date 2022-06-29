@@ -1049,7 +1049,7 @@ SUITE(compression_tests)
                                                 bool done;
 
                                                 http_asserts::assert_test_request_equals(
-                                                    p_request, methods::PUT, U("/"));
+                                                    p_request, methods::PUT, _XPLATSTR("/"));
 
                                                 if (transfer)
                                                 {
@@ -1153,7 +1153,7 @@ SUITE(compression_tests)
                                             std::string ext = ";x=y";
                                             std::string trailer = "a=b\r\nx=y\r\n";
 
-                                            http_asserts::assert_test_request_equals(p_request, methods::GET, U("/"));
+                                            http_asserts::assert_test_request_equals(p_request, methods::GET, _XPLATSTR("/"));
 
                                             if (transfer)
                                             {

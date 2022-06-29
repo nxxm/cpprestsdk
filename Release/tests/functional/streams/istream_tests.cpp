@@ -143,7 +143,7 @@ SUITE(istream_tests)
 
     TEST(fstream_read_1)
     {
-        utility::string_t fname = U("fstream_read_1.txt");
+        utility::string_t fname = _XPLATSTR("fstream_read_1.txt");
         fill_file(fname);
 
         streams::basic_istream<char> stream = OPEN_R<char>(fname).get().create_istream();
@@ -201,7 +201,7 @@ SUITE(istream_tests)
 
     TEST(fstream_read_2)
     {
-        utility::string_t fname = U("fstream_read_2.txt");
+        utility::string_t fname = _XPLATSTR("fstream_read_2.txt");
         fill_file(fname);
 
         streams::basic_istream<char> stream = OPEN_R<char>(fname).get().create_istream();
@@ -311,7 +311,7 @@ SUITE(istream_tests)
     {
         producer_consumer_buffer<uint8_t> trg;
 
-        utility::string_t fname = U("fstream_read_4.txt");
+        utility::string_t fname = _XPLATSTR("fstream_read_4.txt");
         fill_file(fname, 2);
 
         streams::basic_istream<char> stream = OPEN_R<char>(fname).get().create_istream();
@@ -391,7 +391,7 @@ SUITE(istream_tests)
     {
         producer_consumer_buffer<uint8_t> trg;
 
-        utility::string_t fname = U("fstream_read_5.txt");
+        utility::string_t fname = _XPLATSTR("fstream_read_5.txt");
         fill_file_with_lines(fname, "\n", 2);
 
         streams::basic_istream<char> stream = OPEN_R<char>(fname).get().create_istream();
@@ -495,7 +495,7 @@ SUITE(istream_tests)
     {
         producer_consumer_buffer<uint8_t> trg;
 
-        utility::string_t fname = U("fstream_readline_1.txt");
+        utility::string_t fname = _XPLATSTR("fstream_readline_1.txt");
         fill_file_with_lines(fname, "\n", 2);
 
         streams::basic_istream<char> stream = OPEN_R<char>(fname).get().create_istream();
@@ -519,7 +519,7 @@ SUITE(istream_tests)
     {
         producer_consumer_buffer<uint8_t> trg;
 
-        utility::string_t fname = U("fstream_readline_2.txt");
+        utility::string_t fname = _XPLATSTR("fstream_readline_2.txt");
         fill_file_with_lines(fname, "\r\n", 2);
 
         streams::basic_istream<char> stream = OPEN_R<char>(fname).get().create_istream();
@@ -662,7 +662,7 @@ SUITE(istream_tests)
         // Create a really large (100KB) stream and read into a stream buffer.
         // It should not take a long time to do this test.
 
-        utility::string_t fname = U("fstream_read_to_end_1.txt");
+        utility::string_t fname = _XPLATSTR("fstream_read_to_end_1.txt");
         fill_file(fname, 4096);
 
         streams::basic_istream<char> stream = OPEN_R<char>(fname).get().create_istream();
@@ -682,7 +682,7 @@ SUITE(istream_tests)
     TEST(fstream_read_to_end_2)
     {
         // Read a file to end with is_eof tests.
-        utility::string_t fname = U("fstream_read_to_end_2.txt");
+        utility::string_t fname = _XPLATSTR("fstream_read_to_end_2.txt");
         fill_file(fname);
 
         streams::basic_istream<char> stream = OPEN_R<char>(fname).get().create_istream();
@@ -702,7 +702,7 @@ SUITE(istream_tests)
     TEST(fstream_read_to_end_3)
     {
         // Async Read a file to end with is_eof tests.
-        utility::string_t fname = U("fstream_read_to_end_3.txt");
+        utility::string_t fname = _XPLATSTR("fstream_read_to_end_3.txt");
         fill_file(fname, 1);
 
         streams::basic_istream<char> stream = OPEN_R<char>(fname).get().create_istream();

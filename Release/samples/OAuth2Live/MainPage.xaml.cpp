@@ -157,7 +157,7 @@ void OAuth2Live::MainPage::GetInfoButtonClick(Platform::Object ^ sender,
                                               Windows::UI::Xaml::Navigation::NavigationEventArgs ^ e)
 {
     DebugArea->Text += "> Get user info\n";
-    m_live_client->request(methods::GET, U("me"))
+    m_live_client->request(methods::GET, _XPLATSTR("me"))
         .then([](http_response resp) { return resp.extract_json(); })
         .then(
             [this](web::json::value j) -> void {
@@ -171,7 +171,7 @@ void OAuth2Live::MainPage::GetContactsButtonClick(Platform::Object ^ sender,
                                                   Windows::UI::Xaml::Navigation::NavigationEventArgs ^ e)
 {
     DebugArea->Text += "> Get user contacts\n";
-    m_live_client->request(methods::GET, U("me/contacts"))
+    m_live_client->request(methods::GET, _XPLATSTR("me/contacts"))
         .then([](http_response resp) { return resp.extract_json(); })
         .then(
             [this](web::json::value j) -> void {
@@ -185,7 +185,7 @@ void OAuth2Live::MainPage::GetEventsButtonClick(Platform::Object ^ sender,
                                                 Windows::UI::Xaml::Navigation::NavigationEventArgs ^ e)
 {
     DebugArea->Text += "> Get user events\n";
-    m_live_client->request(methods::GET, U("me/events"))
+    m_live_client->request(methods::GET, _XPLATSTR("me/events"))
         .then([](http_response resp) { return resp.extract_json(); })
         .then(
             [this](web::json::value j) -> void {
@@ -200,7 +200,7 @@ void OAuth2Live::MainPage::AccessTokenTextChanged(Platform::Object ^ sender,
 {
     http_client_config http_config;
     http_config.set_oauth2(m_live_oauth2_config);
-    m_live_client.reset(new http_client(U("https://apis.live.net/v5.0/"), http_config));
+    m_live_client.reset(new http_client(_XPLATSTR("https://apis.live.net/v5.0/"), http_config));
     _UpdateButtonState();
 }
 

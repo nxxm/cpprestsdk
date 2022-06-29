@@ -121,7 +121,7 @@ void DealerTable::DoubleDown(http_request message)
 {
     if (m_currentPlayer == 0 || Players[m_currentPlayer].Hand.state != HR_Active)
     {
-        message.reply(status_codes::Forbidden, U("Not your turn"));
+        message.reply(status_codes::Forbidden, _XPLATSTR("Not your turn"));
         return;
     }
 
@@ -129,12 +129,12 @@ void DealerTable::DoubleDown(http_request message)
 
     if (current.Balance < current.Hand.bet)
     {
-        message.reply(status_codes::Forbidden, U("Not enough money"));
+        message.reply(status_codes::Forbidden, _XPLATSTR("Not enough money"));
         return;
     }
     if (current.Hand.cards.size() > 2)
     {
-        message.reply(status_codes::Forbidden, U("Too many cards"));
+        message.reply(status_codes::Forbidden, _XPLATSTR("Too many cards"));
         return;
     }
 
@@ -160,7 +160,7 @@ void DealerTable::Wait(http_request message)
     auto itr = query.find(QUERY_NAME);
     if (itr == query.end())
     {
-        message.reply(status_codes::Forbidden, U("name and amount are required in query"));
+        message.reply(status_codes::Forbidden, _XPLATSTR("name and amount are required in query"));
         return;
     }
     else
@@ -194,7 +194,7 @@ void DealerTable::Bet(http_request message)
     auto itrAmount = query.find(AMOUNT), itrName = query.find(QUERY_NAME);
     if (itrAmount == query.end() || itrName == query.end())
     {
-        message.reply(status_codes::Forbidden, U("name and amount are required in query"));
+        message.reply(status_codes::Forbidden, _XPLATSTR("name and amount are required in query"));
         return;
     }
     utility::istringstream_t ss(itrAmount->second);
@@ -239,7 +239,7 @@ void DealerTable::Insure(http_request message)
     auto itrAmount = query.find(AMOUNT), itrName = query.find(QUERY_NAME);
     if (itrAmount == query.end() || itrName == query.end())
     {
-        message.reply(status_codes::Forbidden, U("name and amount are required in query"));
+        message.reply(status_codes::Forbidden, _XPLATSTR("name and amount are required in query"));
         return;
     }
     utility::istringstream_t ss(itrAmount->second);
@@ -252,13 +252,13 @@ void DealerTable::Insure(http_request message)
         const BJHand& dealer = Players[0].Hand;
         if (Players[playerIdx].Hand.insurance > 0.0)
         {
-            message.reply(status_codes::Forbidden, U("Already insured"));
+            message.reply(status_codes::Forbidden, _XPLATSTR("Already insured"));
             return;
         }
 
         if (dealer.cards.size() < 1 || dealer.revealBoth || dealer.cards[0].value != CV_Ace)
         {
-            message.reply(status_codes::Forbidden, U("Dealer is not showing an Ace"));
+            message.reply(status_codes::Forbidden, _XPLATSTR("Dealer is not showing an Ace"));
             return;
         }
 
