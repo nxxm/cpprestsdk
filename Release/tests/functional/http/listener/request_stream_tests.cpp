@@ -57,7 +57,7 @@ SUITE(request_stream_tests)
             VERIFY_ARE_EQUAL(strbuf.collection(), send_data);
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U(""), U("text/plain"), send_data));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR(""), _XPLATSTR("text/plain"), send_data));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -77,7 +77,7 @@ SUITE(request_stream_tests)
         ::http::client::http_client client(m_uri);
         auto buf = streams::producer_consumer_buffer<uint8_t>();
         pplx::task<http_response> response =
-            client.request(methods::PUT, U("/"), buf.create_istream(), U("text/plain"));
+            client.request(methods::PUT, _XPLATSTR("/"), buf.create_istream(), _XPLATSTR("text/plain"));
 
         const size_t four_mb = 1024 * 1024 * 4;
         std::vector<uint8_t> buffer;

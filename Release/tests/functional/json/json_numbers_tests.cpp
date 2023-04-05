@@ -29,20 +29,20 @@ SUITE(json_numbers_tests)
 {
     TEST(numbers)
     {
-        json::value num = json::value::parse(U("-22"));
+        json::value num = json::value::parse(_XPLATSTR("-22"));
         VERIFY_ARE_EQUAL(-22, num.as_double());
         VERIFY_ARE_EQUAL(-22, num.as_integer());
 
-        num = json::value::parse(U("-1.45E2"));
+        num = json::value::parse(_XPLATSTR("-1.45E2"));
         VERIFY_IS_TRUE(num.is_number());
 
-        num = json::value::parse(U("-1.45E+1"));
+        num = json::value::parse(_XPLATSTR("-1.45E+1"));
         VERIFY_IS_TRUE(num.is_number());
 
-        num = json::value::parse(U("-1.45E-10"));
+        num = json::value::parse(_XPLATSTR("-1.45E-10"));
         VERIFY_IS_TRUE(num.is_number());
 
-        num = json::value::parse(U("1e01"));
+        num = json::value::parse(_XPLATSTR("1e01"));
         VERIFY_IS_TRUE(num.is_number());
     }
 
@@ -265,8 +265,8 @@ SUITE(json_numbers_tests)
         VERIFY_ARE_EQUAL(oracleStream.str(), stream.str());
 
         // signed int64 min
-        stream.str(U(""));
-        oracleStream.str(U(""));
+        stream.str(_XPLATSTR(""));
+        oracleStream.str(_XPLATSTR(""));
         oracleStream.clear();
         oracleStream << (std::numeric_limits<int64_t>::min)();
         json::value iMin((std::numeric_limits<int64_t>::min)());
@@ -275,8 +275,8 @@ SUITE(json_numbers_tests)
         VERIFY_ARE_EQUAL(oracleStream.str(), stream.str());
 
         // double max
-        stream.str(U(""));
-        oracleStream.str(U(""));
+        stream.str(_XPLATSTR(""));
+        oracleStream.str(_XPLATSTR(""));
         oracleStream.precision(std::numeric_limits<double>::digits10 + 2);
         oracleStream << (std::numeric_limits<double>::max)();
         json::value dMax((std::numeric_limits<double>::max)());
@@ -285,8 +285,8 @@ SUITE(json_numbers_tests)
         VERIFY_ARE_EQUAL(oracleStream.str(), stream.str());
 
         // double min
-        stream.str(U(""));
-        oracleStream.str(U(""));
+        stream.str(_XPLATSTR(""));
+        oracleStream.str(_XPLATSTR(""));
         oracleStream << (std::numeric_limits<double>::min)();
         json::value dMin((std::numeric_limits<double>::min)());
         VERIFY_ARE_EQUAL(oracleStream.str(), dMin.serialize());
@@ -297,14 +297,14 @@ SUITE(json_numbers_tests)
     TEST(compare_numbers)
     {
         // Make sure these are equal
-        VERIFY_ARE_EQUAL(json::value(3.14), json::value::parse(U("3.14")));
-        VERIFY_ARE_EQUAL(json::value(uint64_t(1234)), json::value::parse(U("1234")));
-        VERIFY_ARE_EQUAL(json::value(uint32_t(10)), json::value::parse(U("10")));
+        VERIFY_ARE_EQUAL(json::value(3.14), json::value::parse(_XPLATSTR("3.14")));
+        VERIFY_ARE_EQUAL(json::value(uint64_t(1234)), json::value::parse(_XPLATSTR("1234")));
+        VERIFY_ARE_EQUAL(json::value(uint32_t(10)), json::value::parse(_XPLATSTR("10")));
 
         // These two are to verify that explicitly stated signed int was stored as unsigned int as we store all
         // non-negative numbers as unsigned int
-        VERIFY_ARE_EQUAL(json::value(int32_t(10)), json::value::parse(U("10")));
-        VERIFY_ARE_EQUAL(json::value(int64_t(1234)), json::value::parse(U("1234")));
+        VERIFY_ARE_EQUAL(json::value(int32_t(10)), json::value::parse(_XPLATSTR("10")));
+        VERIFY_ARE_EQUAL(json::value(int64_t(1234)), json::value::parse(_XPLATSTR("1234")));
 
         // These numbers would be equal if converted to double first. That is how we compared them before we had int64
         // support.
@@ -312,9 +312,9 @@ SUITE(json_numbers_tests)
         VERIFY_ARE_NOT_EQUAL(json::value(uint64_t(ULLONG_MAX)), json::value(uint64_t(ULLONG_MAX - 1)));
 
         // Checking boundary condition - zero
-        VERIFY_ARE_EQUAL(json::value(int32_t(0)), json::value::parse(U("-0")));
-        VERIFY_ARE_EQUAL(json::value(int64_t(0)), json::value::parse(U("-0")));
-        VERIFY_ARE_EQUAL(json::value::parse(U("0")), json::value::parse(U("-0")));
+        VERIFY_ARE_EQUAL(json::value(int32_t(0)), json::value::parse(_XPLATSTR("-0")));
+        VERIFY_ARE_EQUAL(json::value(int64_t(0)), json::value::parse(_XPLATSTR("-0")));
+        VERIFY_ARE_EQUAL(json::value::parse(_XPLATSTR("0")), json::value::parse(_XPLATSTR("-0")));
     }
 
 } // SUITE(json_numbers_tests)

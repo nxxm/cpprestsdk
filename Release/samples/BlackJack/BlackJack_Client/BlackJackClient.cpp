@@ -118,7 +118,7 @@ void PrintTable(const http_response& response, bool& refresh)
 
     if (response.status_code() == status_codes::OK)
     {
-        if (response.headers().content_type() == U("application/json"))
+        if (response.headers().content_type() == _XPLATSTR("application/json"))
         {
             BJPutResponse answer = BJPutResponse::FromJSON(response.extract_json().get());
             json::value players = answer.Data[PLAYERS];
@@ -163,18 +163,18 @@ int wmain(int argc, wchar_t* argv[])
 int main(int argc, char* argv[])
 #endif
 {
-    utility::string_t port = U("34568");
+    utility::string_t port = _XPLATSTR("34568");
     if (argc == 2)
     {
         port = argv[1];
     }
 
-    utility::string_t address = U("http://localhost:");
+    utility::string_t address = _XPLATSTR("http://localhost:");
     address.append(port);
 
     http::uri uri = http::uri(address);
 
-    http_client bjDealer(http::uri_builder(uri).append_path(U("/blackjack/dealer")).to_uri());
+    http_client bjDealer(http::uri_builder(uri).append_path(_XPLATSTR("/blackjack/dealer")).to_uri());
 
     utility::string_t userName;
     utility::string_t table;
@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
         {
             was_refresh = false;
             utility::ostringstream_t buf;
-            buf << table << U("?request=refresh&name=") << userName;
+            buf << table << _XPLATSTR("?request=refresh&name=") << userName;
             PrintTable(CheckResponse("blackjack/dealer", bjDealer.request(methods::PUT, buf.str()).get()), was_refresh);
         }
 
@@ -206,7 +206,7 @@ int main(int argc, char* argv[])
             if (!userName.empty() && !table.empty())
             {
                 utility::ostringstream_t buf;
-                buf << table << U("?name=") << userName;
+                buf << table << _XPLATSTR("?name=") << userName;
                 CheckResponse("blackjack/dealer", bjDealer.request(methods::DEL, buf.str()).get());
             }
             break;
@@ -229,13 +229,13 @@ int main(int argc, char* argv[])
             }
 
             utility::ostringstream_t buf;
-            buf << table << U("?name=") << userName;
+            buf << table << _XPLATSTR("?name=") << userName;
             CheckResponse("blackjack/dealer", bjDealer.request(methods::POST, buf.str()).get(), was_refresh);
         }
         else if (method == "hit" || method == "stay" || method == "double")
         {
             utility::ostringstream_t buf;
-            buf << table << U("?request=") << utility::conversions::to_string_t(method) << U("&name=") << userName;
+            buf << table << _XPLATSTR("?request=") << utility::conversions::to_string_t(method) << _XPLATSTR("&name=") << userName;
             PrintTable(CheckResponse("blackjack/dealer", bjDealer.request(methods::PUT, buf.str()).get()), was_refresh);
         }
         else if (method == "bet" || method == "insure")
@@ -251,8 +251,8 @@ int main(int argc, char* argv[])
             }
 
             utility::ostringstream_t buf;
-            buf << table << U("?request=") << utility::conversions::to_string_t(method) << U("&name=") << userName
-                << U("&amount=") << bet;
+            buf << table << _XPLATSTR("?request=") << utility::conversions::to_string_t(method) << _XPLATSTR("&name=") << userName
+                << _XPLATSTR("&amount=") << bet;
             PrintTable(CheckResponse("blackjack/dealer", bjDealer.request(methods::PUT, buf.str()).get()), was_refresh);
         }
         else if (method == "newtbl")
@@ -271,7 +271,7 @@ int main(int argc, char* argv[])
             }
 
             utility::ostringstream_t buf;
-            buf << table << U("?name=") << userName;
+            buf << table << _XPLATSTR("?name=") << userName;
             CheckResponse("blackjack/dealer", bjDealer.request(methods::DEL, buf.str()).get(), was_refresh);
         }
         else if (method == "list")

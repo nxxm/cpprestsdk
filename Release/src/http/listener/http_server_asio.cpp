@@ -802,12 +802,12 @@ will_deref_and_erase_t asio_server_connection::handle_headers()
     // check if the client has requested we close the connection
     if (currentRequest.headers().match(header_names::connection, name))
     {
-        m_close = boost::iequals(name, U("close"));
+        m_close = boost::iequals(name, _XPLATSTR("close"));
     }
 
     if (currentRequest.headers().match(header_names::transfer_encoding, name))
     {
-        m_chunked = boost::ifind_first(name, U("chunked"));
+        m_chunked = boost::ifind_first(name, _XPLATSTR("chunked"));
     }
 
     currentRequest._get_impl()->_prepare_to_receive_data();
@@ -1085,7 +1085,7 @@ void asio_server_connection::serialize_headers(http_response response)
     if (!response.headers().match(header_names::content_length, m_write_size) && response.body())
     {
         m_chunked = true;
-        response.headers()[header_names::transfer_encoding] = U("chunked");
+        response.headers()[header_names::transfer_encoding] = _XPLATSTR("chunked");
     }
     if (!response.body())
     {
@@ -1095,9 +1095,9 @@ void asio_server_connection::serialize_headers(http_response response)
     for (const auto& header : response.headers())
     {
         // check if the responder has requested we close the connection
-        if (boost::iequals(header.first, U("connection")))
+        if (boost::iequals(header.first, _XPLATSTR("connection")))
         {
-            if (boost::iequals(header.second, U("close")))
+            if (boost::iequals(header.second, _XPLATSTR("close")))
             {
                 m_close = true;
             }
@@ -1256,7 +1256,7 @@ void hostport_listener::add_listener(const std::string& path, http_listener_impl
 {
     pplx::extensibility::scoped_rw_lock_t lock(m_listeners_lock);
 
-    if (m_is_https != (listener->uri().scheme() == U("https")))
+    if (m_is_https != (listener->uri().scheme() == _XPLATSTR("https")))
         throw std::invalid_argument(
             "Error: http_listener can not simultaneously listen both http and https paths of one host");
     else if (!m_listeners.insert(std::map<std::string, http_listener_impl*>::value_type(path, listener)).second)
@@ -1332,7 +1332,7 @@ pplx::task<void> http_linux_server::register_listener(http_listener_impl* listen
     auto parts = canonical_parts(listener->uri());
     auto hostport = parts.first;
     auto path = parts.second;
-    bool is_https = listener->uri().scheme() == U("https");
+    bool is_https = listener->uri().scheme() == _XPLATSTR("https");
 
     {
         pplx::extensibility::scoped_rw_lock_t lock(m_listeners_lock);

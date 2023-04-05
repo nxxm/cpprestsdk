@@ -37,15 +37,15 @@ SUITE(iterator_tests)
         validate_array_and_object_throw(json::value::null());
         validate_array_and_object_throw(json::value::number(17));
         validate_array_and_object_throw(json::value::boolean(true));
-        validate_array_and_object_throw(json::value::string(U("Hello!")));
+        validate_array_and_object_throw(json::value::string(_XPLATSTR("Hello!")));
     }
 
     TEST(objects_constructed)
     {
         json::value val1;
-        val1[U("a")] = 44;
-        val1[U("b")] = json::value(true);
-        val1[U("c")] = json::value(false);
+        val1[_XPLATSTR("a")] = 44;
+        val1[_XPLATSTR("b")] = json::value(true);
+        val1[_XPLATSTR("c")] = json::value(false);
 
         VERIFY_ARE_EQUAL(3, val1.size());
 
@@ -57,15 +57,15 @@ SUITE(iterator_tests)
             switch (count)
             {
                 case 0:
-                    VERIFY_ARE_EQUAL(U("a"), key);
+                    VERIFY_ARE_EQUAL(_XPLATSTR("a"), key);
                     VERIFY_IS_TRUE(value.is_number());
                     break;
                 case 1:
-                    VERIFY_ARE_EQUAL(U("b"), key);
+                    VERIFY_ARE_EQUAL(_XPLATSTR("b"), key);
                     VERIFY_IS_TRUE(value.is_boolean());
                     break;
                 case 2:
-                    VERIFY_ARE_EQUAL(U("c"), key);
+                    VERIFY_ARE_EQUAL(_XPLATSTR("c"), key);
                     VERIFY_IS_TRUE(value.is_boolean());
                     break;
             }
@@ -76,7 +76,7 @@ SUITE(iterator_tests)
 
     TEST(objects_parsed)
     {
-        json::value val1 = json::value::parse(U("{\"a\": 44, \"b\": true, \"c\": false}"));
+        json::value val1 = json::value::parse(_XPLATSTR("{\"a\": 44, \"b\": true, \"c\": false}"));
 
         VERIFY_ARE_EQUAL(3, val1.size());
 
@@ -89,17 +89,17 @@ SUITE(iterator_tests)
             {
                 default: VERIFY_IS_TRUE(value.is_null()); break;
                 case 0:
-                    VERIFY_ARE_EQUAL(U("a"), key);
+                    VERIFY_ARE_EQUAL(_XPLATSTR("a"), key);
                     VERIFY_IS_TRUE(value.is_number());
                     VERIFY_ARE_EQUAL(44, value.as_integer());
                     break;
                 case 1:
-                    VERIFY_ARE_EQUAL(U("b"), key);
+                    VERIFY_ARE_EQUAL(_XPLATSTR("b"), key);
                     VERIFY_IS_TRUE(value.is_boolean());
                     VERIFY_IS_TRUE(value.as_bool());
                     break;
                 case 2:
-                    VERIFY_ARE_EQUAL(U("c"), key);
+                    VERIFY_ARE_EQUAL(_XPLATSTR("c"), key);
                     VERIFY_IS_TRUE(value.is_boolean());
                     VERIFY_IS_FALSE(value.as_bool());
                     break;
@@ -111,7 +111,7 @@ SUITE(iterator_tests)
 
     TEST(objects_reverse)
     {
-        json::value val1 = json::value::parse(U("{\"a\": 44, \"b\": true, \"c\": false}"));
+        json::value val1 = json::value::parse(_XPLATSTR("{\"a\": 44, \"b\": true, \"c\": false}"));
 
         VERIFY_ARE_EQUAL(3, val1.size());
         VERIFY_ARE_EQUAL(3, val1.as_object().size());
@@ -124,17 +124,17 @@ SUITE(iterator_tests)
             switch (count)
             {
                 case 2:
-                    VERIFY_ARE_EQUAL(U("a"), key);
+                    VERIFY_ARE_EQUAL(_XPLATSTR("a"), key);
                     VERIFY_IS_TRUE(value.is_number());
                     VERIFY_ARE_EQUAL(44, value.as_integer());
                     break;
                 case 1:
-                    VERIFY_ARE_EQUAL(U("b"), key);
+                    VERIFY_ARE_EQUAL(_XPLATSTR("b"), key);
                     VERIFY_IS_TRUE(value.is_boolean());
                     VERIFY_IS_TRUE(value.as_bool());
                     break;
                 case 0:
-                    VERIFY_ARE_EQUAL(U("c"), key);
+                    VERIFY_ARE_EQUAL(_XPLATSTR("c"), key);
                     VERIFY_IS_TRUE(value.is_boolean());
                     VERIFY_IS_FALSE(value.as_bool());
                     break;
@@ -178,7 +178,7 @@ SUITE(iterator_tests)
 
     TEST(arrays_parsed)
     {
-        json::value val1 = json::value::parse(U("[44, true, false]"));
+        json::value val1 = json::value::parse(_XPLATSTR("[44, true, false]"));
 
         VERIFY_ARE_EQUAL(3, val1.size());
 
@@ -207,7 +207,7 @@ SUITE(iterator_tests)
 
     TEST(arrays_reversed)
     {
-        json::value val1 = json::value::parse(U("[44, true, false]"));
+        json::value val1 = json::value::parse(_XPLATSTR("[44, true, false]"));
 
         VERIFY_ARE_EQUAL(3, val1.size());
 
@@ -238,9 +238,9 @@ SUITE(iterator_tests)
     TEST(comparison)
     {
         json::value val1;
-        val1[U("a")] = 44;
-        val1[U("b")] = json::value(true);
-        val1[U("c")] = json::value(false);
+        val1[_XPLATSTR("a")] = 44;
+        val1[_XPLATSTR("b")] = json::value(true);
+        val1[_XPLATSTR("c")] = json::value(false);
 
         auto first = std::begin(val1.as_object());
         auto f = first;
@@ -256,7 +256,7 @@ SUITE(iterator_tests)
         {
             // for_each
             size_t count = 0;
-            json::value v_array = json::value::parse(U("[44, true, false]"));
+            json::value v_array = json::value::parse(_XPLATSTR("[44, true, false]"));
             std::for_each(std::begin(v_array.as_array()),
                           std::end(v_array.as_array()),
                           [&](json::array::iterator::value_type) { count++; });
@@ -264,7 +264,7 @@ SUITE(iterator_tests)
         }
         {
             // find_if
-            json::value v_array = json::value::parse(U("[44, true, false]"));
+            json::value v_array = json::value::parse(_XPLATSTR("[44, true, false]"));
             auto _where = std::find_if(std::begin(v_array.as_array()),
                                        std::end(v_array.as_array()),
                                        [&](json::array::iterator::value_type value) { return value.is_boolean(); });
@@ -275,7 +275,7 @@ SUITE(iterator_tests)
         }
         {
             // copy_if
-            json::value v_array = json::value::parse(U("[44, true, false]"));
+            json::value v_array = json::value::parse(_XPLATSTR("[44, true, false]"));
             std::vector<json::array::iterator::value_type> v_target(v_array.size());
             auto _where = std::copy_if(std::begin(v_array.as_array()),
                                        std::end(v_array.as_array()),
@@ -286,7 +286,7 @@ SUITE(iterator_tests)
         }
         {
             // transform
-            json::value v_array = json::value::parse(U("[44, true, false]"));
+            json::value v_array = json::value::parse(_XPLATSTR("[44, true, false]"));
             std::vector<json::value> v_target(v_array.size());
             std::transform(std::begin(v_array.as_array()),
                            std::end(v_array.as_array()),

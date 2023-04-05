@@ -90,7 +90,7 @@ const std::string CRLF("\r\n");
 std::string calc_cn_host(const web::http::uri& baseUri, const web::http::http_headers& requestHeaders)
 {
     std::string result;
-    if (baseUri.scheme() == U("https"))
+    if (baseUri.scheme() == _XPLATSTR("https"))
     {
         const utility::string_t* encResult;
         const auto hostHeader = requestHeaders.find(_XPLATSTR("Host"));
@@ -133,7 +133,7 @@ enum class httpclient_errorcode_context
 
 static std::string generate_base64_userpass(const ::web::credentials& creds)
 {
-    auto userpass = creds.username() + U(":") + *creds._internal_decrypt();
+    auto userpass = creds.username() + _XPLATSTR(":") + *creds._internal_decrypt();
     auto&& u8_userpass = utility::conversions::to_utf8string(userpass);
     std::vector<unsigned char> credentials_buffer(u8_userpass.begin(), u8_userpass.end());
     return utility::conversions::to_utf8string(utility::conversions::to_base64(credentials_buffer));
@@ -491,7 +491,7 @@ public:
         {
             // Pool was empty. Create a new connection
             conn = std::make_shared<asio_connection>(crossplat::threadpool::shared_instance().service());
-            if (base_uri().scheme() == U("https") && !this->client_config().proxy().is_specified())
+            if (base_uri().scheme() == _XPLATSTR("https") && !this->client_config().proxy().is_specified())
             {
                 conn->upgrade_to_ssl(std::move(cn_host), this->client_config().get_ssl_context_callback());
             }
@@ -746,7 +746,7 @@ public:
         if (m_http_client->client_config().proxy().is_specified())
         {
             proxy_type =
-                m_http_client->base_uri().scheme() == U("https") ? http_proxy_type::ssl_tunnel : http_proxy_type::http;
+                m_http_client->base_uri().scheme() == _XPLATSTR("https") ? http_proxy_type::ssl_tunnel : http_proxy_type::http;
             auto proxy = m_http_client->client_config().proxy();
             auto proxy_uri = proxy.address();
             proxy_port = proxy_uri.port() == -1 ? 8080 : proxy_uri.port();
@@ -771,7 +771,7 @@ public:
 
             if (encoded_resource.empty())
             {
-                encoded_resource = U("/");
+                encoded_resource = _XPLATSTR("/");
             }
 
             const auto& method = ctx->m_request.method();
@@ -831,7 +831,7 @@ public:
             // Check user specified transfer-encoding.
             std::string transferencoding;
             if (ctx->m_request.headers().match(header_names::transfer_encoding, transferencoding) &&
-                boost::icontains(transferencoding, U("chunked")))
+                boost::icontains(transferencoding, _XPLATSTR("chunked")))
             {
                 ctx->m_needChunked = true;
             }
@@ -1434,7 +1434,7 @@ private:
 
                 if (boost::iequals(name, header_names::transfer_encoding))
                 {
-                    needChunked = boost::icontains(value, U("chunked"));
+                    needChunked = boost::icontains(value, _XPLATSTR("chunked"));
                 }
 
                 if (boost::iequals(name, header_names::connection))
@@ -1444,9 +1444,9 @@ private:
                     // If the server uses HTTP/1.0, it would need to respond using
                     // 'Connection: Keep-Alive' every time.
                     if (m_response._get_impl()->http_version() != web::http::http_versions::HTTP_1_0)
-                        m_connection->set_keep_alive(!boost::iequals(value, U("close")));
+                        m_connection->set_keep_alive(!boost::iequals(value, _XPLATSTR("close")));
                     else
-                        m_connection->set_keep_alive(boost::iequals(value, U("Keep-Alive")));
+                        m_connection->set_keep_alive(boost::iequals(value, _XPLATSTR("Keep-Alive")));
                 }
 
                 m_response.headers().add(utility::conversions::to_string_t(std::move(name)),
@@ -1472,7 +1472,7 @@ private:
         // note: need to check for 'chunked' here as well, azure storage sends both
         // transfer-encoding:chunked and content-length:0 (although HTTP says not to)
         const auto status = m_response.status_code();
-        if (m_request.method() == U("HEAD") || (status >= 100 && status < 200) || status == status_codes::NoContent ||
+        if (m_request.method() == _XPLATSTR("HEAD") || (status >= 100 && status < 200) || status == status_codes::NoContent ||
             status == status_codes::NotModified || (!needChunked && m_content_length == 0))
         {
             // we can stop early - no body

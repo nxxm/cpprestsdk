@@ -190,18 +190,18 @@ utility::string_t oauth1_config::_build_normalized_parameters(web::http::uri u, 
     }
 
     // Push oauth1 parameters.
-    queries.push_back(oauth1_strings::version + U("=1.0"));
-    queries.push_back(oauth1_strings::consumer_key + U("=") + web::uri::encode_data_string(consumer_key()));
+    queries.push_back(oauth1_strings::version + _XPLATSTR("=1.0"));
+    queries.push_back(oauth1_strings::consumer_key + _XPLATSTR("=") + web::uri::encode_data_string(consumer_key()));
     if (!m_token.access_token().empty())
     {
-        queries.push_back(oauth1_strings::token + U("=") + web::uri::encode_data_string(m_token.access_token()));
+        queries.push_back(oauth1_strings::token + _XPLATSTR("=") + web::uri::encode_data_string(m_token.access_token()));
     }
-    queries.push_back(oauth1_strings::signature_method + U("=") + method());
-    queries.push_back(oauth1_strings::timestamp + U("=") + state.timestamp());
-    queries.push_back(oauth1_strings::nonce + U("=") + state.nonce());
+    queries.push_back(oauth1_strings::signature_method + _XPLATSTR("=") + method());
+    queries.push_back(oauth1_strings::timestamp + _XPLATSTR("=") + state.timestamp());
+    queries.push_back(oauth1_strings::nonce + _XPLATSTR("=") + state.nonce());
     if (!state.extra_key().empty())
     {
-        queries.push_back(state.extra_key() + U("=") + web::uri::encode_data_string(state.extra_value()));
+        queries.push_back(state.extra_key() + _XPLATSTR("=") + web::uri::encode_data_string(state.extra_value()));
     }
 
     // Sort parameters and build the string.
@@ -268,7 +268,7 @@ utility::string_t oauth1_config::_build_signature(http_request request, oauth1_s
     {
         return _build_plaintext_signature();
     }
-    throw oauth1_exception(U("invalid signature method.")); // Should never happen.
+    throw oauth1_exception(_XPLATSTR("invalid signature method.")); // Should never happen.
 }
 
 pplx::task<void> oauth1_config::_request_token(oauth1_state state, bool is_temp_token_request)
@@ -298,21 +298,21 @@ pplx::task<void> oauth1_config::_request_token(oauth1_state state, bool is_temp_
                 if (callback_confirmed_param == query.end())
                 {
                     throw oauth1_exception(
-                        U("parameter 'oauth_callback_confirmed' is missing from response: ") + body +
-                        U(". the service may be using obsoleted and insecure OAuth Core 1.0 protocol."));
+                        _XPLATSTR("parameter 'oauth_callback_confirmed' is missing from response: ") + body +
+                        _XPLATSTR(". the service may be using obsoleted and insecure OAuth Core 1.0 protocol."));
                 }
             }
 
             auto token_param = query.find(oauth1_strings::token);
             if (token_param == query.end())
             {
-                throw oauth1_exception(U("parameter 'oauth_token' missing from response: ") + body);
+                throw oauth1_exception(_XPLATSTR("parameter 'oauth_token' missing from response: ") + body);
             }
 
             auto token_secret_param = query.find(oauth1_strings::token_secret);
             if (token_secret_param == query.end())
             {
-                throw oauth1_exception(U("parameter 'oauth_token_secret' missing from response: ") + body);
+                throw oauth1_exception(_XPLATSTR("parameter 'oauth_token_secret' missing from response: ") + body);
             }
 
             // Here the token can be either temporary or access token.
@@ -403,7 +403,7 @@ pplx::task<void> oauth1_config::token_from_redirected_uri(const web::http::uri& 
     if (token_param == query.end())
     {
         return pplx::task_from_exception<void>(
-            oauth1_exception(U("parameter 'oauth_token' missing from redirected URI.")));
+            oauth1_exception(_XPLATSTR("parameter 'oauth_token' missing from redirected URI.")));
     }
     if (m_token.access_token() != token_param->second)
     {
@@ -416,7 +416,7 @@ pplx::task<void> oauth1_config::token_from_redirected_uri(const web::http::uri& 
     if (verifier_param == query.end())
     {
         return pplx::task_from_exception<void>(
-            oauth1_exception(U("parameter 'oauth_verifier' missing from redirected URI.")));
+            oauth1_exception(_XPLATSTR("parameter 'oauth_verifier' missing from redirected URI.")));
     }
 
     return token_from_verifier(verifier_param->second);

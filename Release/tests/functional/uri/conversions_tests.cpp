@@ -26,16 +26,16 @@ SUITE(conversions_tests)
 {
     TEST(to_string_conversion)
     {
-        utility::string_t encoded = uri::encode_uri(U("http://testname.com/%%?qstring"));
-        uri u1(U("http://testname.com/%25%25?qstring"));
+        utility::string_t encoded = uri::encode_uri(_XPLATSTR("http://testname.com/%%?qstring"));
+        uri u1(_XPLATSTR("http://testname.com/%25%25?qstring"));
 
         VERIFY_ARE_EQUAL(uri::decode(encoded), uri::decode(u1.to_string()));
     }
 
     TEST(to_encoded_string)
     {
-        utility::string_t encoded = uri::encode_uri(U("http://testname.com/%%?qstring"));
-        uri u(U("http://testname.com/%25%25?qstring"));
+        utility::string_t encoded = uri::encode_uri(_XPLATSTR("http://testname.com/%%?qstring"));
+        uri u(_XPLATSTR("http://testname.com/%25%25?qstring"));
 
         VERIFY_ARE_EQUAL(encoded, u.to_string());
     }
@@ -43,7 +43,7 @@ SUITE(conversions_tests)
     TEST(empty_to_string)
     {
         uri u;
-        VERIFY_ARE_EQUAL(U("/"), u.to_string());
+        VERIFY_ARE_EQUAL(_XPLATSTR("/"), u.to_string());
     }
 
 } // SUITE(conversions_tests)

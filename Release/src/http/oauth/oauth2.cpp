@@ -70,7 +70,7 @@ pplx::task<void> oauth2_config::token_from_redirected_uri(const web::http::uri& 
     auto state_param = query.find(oauth2_strings::state);
     if (state_param == query.end())
     {
-        return pplx::task_from_exception<void>(oauth2_exception(U("parameter 'state' missing from redirected URI.")));
+        return pplx::task_from_exception<void>(oauth2_exception(_XPLATSTR("parameter 'state' missing from redirected URI.")));
     }
     if (state() != state_param->second)
     {
@@ -94,7 +94,7 @@ pplx::task<void> oauth2_config::token_from_redirected_uri(const web::http::uri& 
     if (token_param == query.end())
     {
         return pplx::task_from_exception<void>(
-            oauth2_exception(U("either 'code' or 'access_token' parameter must be in the redirected URI.")));
+            oauth2_exception(_XPLATSTR("either 'code' or 'access_token' parameter must be in the redirected URI.")));
     }
 
     set_token(token_param->second);
@@ -121,10 +121,10 @@ pplx::task<void> oauth2_config::_request_token(uri_builder& request_body_ub)
     {
         // Build HTTP Basic authorization header.
         const std::string creds_utf8(
-            to_utf8string(uri::encode_data_string(client_key()) + U(":") + uri::encode_data_string(client_secret())));
+            to_utf8string(uri::encode_data_string(client_key()) + _XPLATSTR(":") + uri::encode_data_string(client_secret())));
         request.headers().add(
             header_names::authorization,
-            U("Basic ") + _to_base64(reinterpret_cast<const unsigned char*>(creds_utf8.data()), creds_utf8.size()));
+            _XPLATSTR("Basic ") + _to_base64(reinterpret_cast<const unsigned char*>(creds_utf8.data()), creds_utf8.size()));
     }
     else
     {
@@ -155,7 +155,7 @@ oauth2_token oauth2_config::_parse_token_from_json(const json::value& token_json
     }
     else
     {
-        throw oauth2_exception(U("response json contains no 'access_token': ") + token_json.serialize());
+        throw oauth2_exception(_XPLATSTR("response json contains no 'access_token': ") + token_json.serialize());
     }
 
     if (token_json.has_string_field(oauth2_strings::token_type))
@@ -171,7 +171,7 @@ oauth2_token oauth2_config::_parse_token_from_json(const json::value& token_json
     }
     if (!utility::details::str_iequal(result.token_type(), oauth2_strings::bearer))
     {
-        throw oauth2_exception(U("only 'token_type=bearer' access tokens are currently supported: ") +
+        throw oauth2_exception(_XPLATSTR("only 'token_type=bearer' access tokens are currently supported: ") +
                                token_json.serialize());
     }
 

@@ -72,7 +72,7 @@ SUITE(ostream_tests)
 {
     TEST(BasicTest1)
     {
-        auto open = OPENSTR_W<uint8_t>(U("BasicTest1.txt"));
+        auto open = OPENSTR_W<uint8_t>(_XPLATSTR("BasicTest1.txt"));
         auto basic_stream = open.get();
         VERIFY_IS_TRUE(basic_stream.can_seek());
         auto a = basic_stream.print(10);
@@ -85,7 +85,7 @@ SUITE(ostream_tests)
 
     TEST(BasicTest2)
     {
-        auto open = OPENSTR_W<uint8_t>(U("BasicTest2.txt"));
+        auto open = OPENSTR_W<uint8_t>(_XPLATSTR("BasicTest2.txt"));
 
         auto cls = open.then([](pplx::task<concurrency::streams::ostream> op) -> pplx::task<void> {
             auto basic_stream = op.get();
@@ -102,7 +102,7 @@ SUITE(ostream_tests)
 
     TEST(WriteSingleCharTest2)
     {
-        auto open = OPENSTR_W<uint8_t>(U("WriteSingleCharStrTest1.txt"));
+        auto open = OPENSTR_W<uint8_t>(_XPLATSTR("WriteSingleCharStrTest1.txt"));
         auto stream = open.get();
 
         VERIFY_IS_TRUE(open.is_done());
@@ -124,7 +124,7 @@ SUITE(ostream_tests)
 
     TEST(WriteBufferTest1)
     {
-        auto open = OPENSTR_W<uint8_t>(U("WriteBufferStrTest1.txt"));
+        auto open = OPENSTR_W<uint8_t>(_XPLATSTR("WriteBufferStrTest1.txt"));
         auto stream = open.get();
 
         VERIFY_IS_TRUE(open.is_done());
@@ -151,7 +151,7 @@ SUITE(ostream_tests)
 
     TEST(WriteBufferAndSyncTest1)
     {
-        auto open = OPENSTR_W<uint8_t>(U("WriteBufferAndSyncStrTest1.txt"));
+        auto open = OPENSTR_W<uint8_t>(_XPLATSTR("WriteBufferAndSyncStrTest1.txt"));
         auto stream = open.get();
 
         VERIFY_IS_TRUE(open.is_done());
@@ -180,7 +180,7 @@ SUITE(ostream_tests)
 
     TEST(tell_bug)
     {
-        auto count = OPENSTR_W<uint8_t>(U("tell_bug.txt"), std::ios_base::out | std::ios_base::trunc)
+        auto count = OPENSTR_W<uint8_t>(_XPLATSTR("tell_bug.txt"), std::ios_base::out | std::ios_base::trunc)
                          .then([=](concurrency::streams::ostream os) -> std::streamoff {
                              os.print("A");
                              auto val = os.tell();
@@ -239,7 +239,7 @@ SUITE(ostream_tests)
         const int number1 = 42;
         const int number2 = 123;
 
-        auto open = OPENSTR_W<uint8_t>(U("SpaceWithNumber.txt"), std::ios::trunc);
+        auto open = OPENSTR_W<uint8_t>(_XPLATSTR("SpaceWithNumber.txt"), std::ios::trunc);
         auto stream = open.get();
         VERIFY_IS_TRUE(open.is_done());
         stream.print("  \r").wait();
@@ -249,7 +249,7 @@ SUITE(ostream_tests)
         stream.print(" \f \v ").wait();
         stream.close().wait();
 
-        auto istream = OPENSTR_R<uint8_t>(U("SpaceWithNumber.txt")).get();
+        auto istream = OPENSTR_R<uint8_t>(_XPLATSTR("SpaceWithNumber.txt")).get();
         VERIFY_IS_TRUE(istream.can_seek());
         VERIFY_ARE_EQUAL(number1, istream.extract<int>().get());
         VERIFY_ARE_EQUAL(number2, istream.extract<long long>().get());
@@ -257,7 +257,7 @@ SUITE(ostream_tests)
 
     TEST(file_sequential_write)
     {
-        auto open = OPENSTR_W<uint8_t>(U("WriteFileSequential.txt"), std::ios::trunc);
+        auto open = OPENSTR_W<uint8_t>(_XPLATSTR("WriteFileSequential.txt"), std::ios::trunc);
         auto stream = open.get();
 
         VERIFY_IS_TRUE(open.is_done());
@@ -270,7 +270,7 @@ SUITE(ostream_tests)
         }
         pplx::when_all(v.begin(), v.end()).wait();
         stream.close().wait();
-        auto istream = OPENSTR_R<uint8_t>(U("WriteFileSequential.txt")).get();
+        auto istream = OPENSTR_R<uint8_t>(_XPLATSTR("WriteFileSequential.txt")).get();
         for (int i = 0; i < 100; i++)
         {
             int int_read = istream.extract<int>().get();
@@ -290,7 +290,7 @@ SUITE(ostream_tests)
 
     TEST(implied_out_mode)
     {
-        auto ostr = OPENSTR_W<char>(U("implied_out_mode.txt"), std::ios::ios_base::app).get();
+        auto ostr = OPENSTR_W<char>(_XPLATSTR("implied_out_mode.txt"), std::ios::ios_base::app).get();
 
         std::string str = "abcd";
         concurrency::streams::stringstreambuf block(str);
@@ -360,7 +360,7 @@ SUITE(ostream_tests)
 
     TEST(write_emptybuffer_to_ostream)
     {
-        auto ofs = OPENSTR_W<char>(U("file.txt")).get();
+        auto ofs = OPENSTR_W<char>(_XPLATSTR("file.txt")).get();
         auto sbuf = concurrency::streams::producer_consumer_buffer<char>();
         auto result = ofs.write(sbuf, 0);
         VERIFY_ARE_EQUAL(result.get(), 0);

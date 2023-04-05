@@ -195,7 +195,7 @@ SUITE(stdstreambuf_tests)
 
     TEST(sync_on_async_fget_1)
     {
-        utility::string_t fname = U("sync_on_async_fget_1.txt");
+        utility::string_t fname = _XPLATSTR("sync_on_async_fget_1.txt");
         fill_file(fname, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
         auto ofs = OPEN_R<char>(fname).get();
@@ -262,7 +262,7 @@ SUITE(stdstreambuf_tests)
 
     TEST(sync_on_async_fextract_1)
     {
-        utility::string_t fname = U("sync_on_async_fextract_1.txt");
+        utility::string_t fname = _XPLATSTR("sync_on_async_fextract_1.txt");
         fill_file(fname, "abcdefg 10 1 9.4711");
 
         auto ofs = OPEN_R<char>(fname).get();

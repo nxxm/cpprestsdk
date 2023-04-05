@@ -40,9 +40,9 @@ SUITE(winrt_interop_tests)
             VERIFY_ARE_EQUAL(10, pplx::create_task(dr->LoadAsync(10)).get());
 
             auto value = dr->ReadString(5);
-            VERIFY_ARE_EQUAL(utility::string_t(value->Data()), U("abcde"));
+            VERIFY_ARE_EQUAL(utility::string_t(value->Data()), _XPLATSTR("abcde"));
             value = dr->ReadString(5);
-            VERIFY_ARE_EQUAL(utility::string_t(value->Data()), U("fghij"));
+            VERIFY_ARE_EQUAL(utility::string_t(value->Data()), _XPLATSTR("fghij"));
         }
         {
             ostream.write(char(11)).wait();
@@ -88,9 +88,9 @@ SUITE(winrt_interop_tests)
             VERIFY_ARE_EQUAL(10, pplx::create_task(dr->LoadAsync(10)).get());
 
             auto value = dr->ReadString(5);
-            VERIFY_ARE_EQUAL(utility::string_t(value->Data()), U("abcde"));
+            VERIFY_ARE_EQUAL(utility::string_t(value->Data()), _XPLATSTR("abcde"));
             value = dr->ReadString(5);
-            VERIFY_ARE_EQUAL(utility::string_t(value->Data()), U("fghij"));
+            VERIFY_ARE_EQUAL(utility::string_t(value->Data()), _XPLATSTR("fghij"));
         }
         {
             ostream.write(char(11)).wait();
@@ -135,7 +135,7 @@ SUITE(winrt_interop_tests)
         auto dw = ref new Windows::Storage::Streams::DataWriter(winrt_stream::create_output_stream(buf));
         dw->ByteOrder = Windows::Storage::Streams::ByteOrder::LittleEndian;
 
-        auto value = ref new ::Platform::String(U("10 4711 -10.0 hello!"));
+        auto value = ref new ::Platform::String(_XPLATSTR("10 4711 -10.0 hello!"));
         dw->WriteString(value);
         dw->WriteByte(11); // Take care to make this a non-character!
         dw->WriteUInt16(17);
@@ -147,7 +147,7 @@ SUITE(winrt_interop_tests)
         VERIFY_ARE_EQUAL(10, istream.extract<unsigned int>().get());
         VERIFY_ARE_EQUAL(4711, istream.extract<int>().get());
         VERIFY_ARE_EQUAL(-10.0, istream.extract<double>().get());
-        VERIFY_ARE_EQUAL(utility::string_t(U("hello!")), istream.extract<utility::string_t>().get());
+        VERIFY_ARE_EQUAL(utility::string_t(_XPLATSTR("hello!")), istream.extract<utility::string_t>().get());
         VERIFY_ARE_EQUAL(11, istream.read().get());
         uint16_t int16;
         buf.getn((char*)&int16, sizeof(int16)).wait();
@@ -164,7 +164,7 @@ SUITE(winrt_interop_tests)
         auto dw = ref new Windows::Storage::Streams::DataWriter(winrt_stream::create_random_access_stream(buf));
         dw->ByteOrder = Windows::Storage::Streams::ByteOrder::LittleEndian;
 
-        auto value = ref new ::Platform::String(U("10 4711 -10.0 hello!"));
+        auto value = ref new ::Platform::String(_XPLATSTR("10 4711 -10.0 hello!"));
         dw->WriteString(value);
         dw->WriteByte(11); // Take care to make this a non-character!
         dw->WriteUInt16(17);
@@ -176,7 +176,7 @@ SUITE(winrt_interop_tests)
         VERIFY_ARE_EQUAL(10, istream.extract<unsigned int>().get());
         VERIFY_ARE_EQUAL(4711, istream.extract<int>().get());
         VERIFY_ARE_EQUAL(-10.0, istream.extract<double>().get());
-        VERIFY_ARE_EQUAL(utility::string_t(U("hello!")), istream.extract<utility::string_t>().get());
+        VERIFY_ARE_EQUAL(utility::string_t(_XPLATSTR("hello!")), istream.extract<utility::string_t>().get());
         VERIFY_ARE_EQUAL(11, istream.read().get());
         uint16_t int16;
         buf.getn((char*)&int16, sizeof(int16)).wait();
@@ -232,7 +232,7 @@ SUITE(winrt_interop_tests)
         auto dw = ref new Windows::Storage::Streams::DataWriter(ostr);
         dw->ByteOrder = Windows::Storage::Streams::ByteOrder::LittleEndian;
 
-        auto value = ref new ::Platform::String(U("10 4711 -10.0 hello!"));
+        auto value = ref new ::Platform::String(_XPLATSTR("10 4711 -10.0 hello!"));
         dw->WriteString(value);
 
         VERIFY_IS_FALSE(StoreAndFlush(dw).get());

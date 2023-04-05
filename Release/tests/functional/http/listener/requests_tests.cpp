@@ -42,15 +42,15 @@ SUITE(requests_tests)
 
         // Don't include 'CONNECT' it has a special meaning.
         utility::string_t send_methods[] = {methods::GET,
-                                            U("GET"),
+                                            _XPLATSTR("GET"),
                                             methods::DEL,
                                             methods::HEAD,
-                                            U("HeAd"),
+                                            _XPLATSTR("HeAd"),
                                             methods::POST,
                                             methods::PUT,
-                                            U("CUstomMETHOD")};
+                                            _XPLATSTR("CUstomMETHOD")};
         utility::string_t recv_methods[] = {
-            U("GET"), U("GET"), U("DELETE"), U("HEAD"), U("HEAD"), U("POST"), U("PUT"), U("CUstomMETHOD")};
+            _XPLATSTR("GET"), _XPLATSTR("GET"), _XPLATSTR("DELETE"), _XPLATSTR("HEAD"), _XPLATSTR("HEAD"), _XPLATSTR("POST"), _XPLATSTR("PUT"), _XPLATSTR("CUstomMETHOD")};
         const size_t num_methods = sizeof(send_methods) / sizeof(send_methods[0]);
 
         utility::string_t actual_method;
@@ -62,7 +62,7 @@ SUITE(requests_tests)
         for (int i = 0; i < num_methods; ++i)
         {
             pplx::extensibility::event_t ev;
-            VERIFY_ARE_EQUAL(0, p_client->request(send_methods[i], U("")));
+            VERIFY_ARE_EQUAL(0, p_client->request(send_methods[i], _XPLATSTR("")));
             p_client->next_response()
                 .then([&ev](test_response* p_response) {
                     http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -85,11 +85,11 @@ SUITE(requests_tests)
 
         // request with no body
         listener.support([](http_request request) {
-            http_asserts::assert_request_equals(request, U("GET"), U("/"));
+            http_asserts::assert_request_equals(request, _XPLATSTR("GET"), _XPLATSTR("/"));
             VERIFY_ARE_EQUAL(0, request.body().streambuf().in_avail());
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U("")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR("")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -98,11 +98,11 @@ SUITE(requests_tests)
 
         // request with body size explicitly 0
         listener.support([](http_request request) {
-            http_asserts::assert_request_equals(request, U("GET"), U("/"));
+            http_asserts::assert_request_equals(request, _XPLATSTR("GET"), _XPLATSTR("/"));
             VERIFY_ARE_EQUAL(0, request.body().streambuf().in_avail());
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U(""), ""));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR(""), ""));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -112,7 +112,7 @@ SUITE(requests_tests)
         // request with body data
         std::string data("HEHE");
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, U("GET"), U("/"));
+            http_asserts::assert_request_equals(request, _XPLATSTR("GET"), _XPLATSTR("/"));
 
             auto stream = request.body();
             VERIFY_IS_TRUE(stream.is_valid());
@@ -128,7 +128,7 @@ SUITE(requests_tests)
             VERIFY_ARE_EQUAL('E', (char)buf.sbumpc());
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U(""), data));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR(""), data));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -157,7 +157,7 @@ SUITE(requests_tests)
             VERIFY_ARE_EQUAL(send_data, recv_data);
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U(""), U("text/plain"), send_data));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR(""), _XPLATSTR("text/plain"), send_data));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -181,7 +181,7 @@ SUITE(requests_tests)
         listener.support([](http_request request) {
             auto str = request.extract_string().get();
             // intentionally break order
-            if (str == U("0")) tests::common::utilities::os_utilities::sleep(500);
+            if (str == _XPLATSTR("0")) tests::common::utilities::os_utilities::sleep(500);
             request.reply(status_codes::OK, str);
         });
 
@@ -191,7 +191,7 @@ SUITE(requests_tests)
         {
             utility::ostringstream_t ss;
             ss << i;
-            responses.push_back(client.request(web::http::methods::PUT, U(""), ss.str()));
+            responses.push_back(client.request(web::http::methods::PUT, _XPLATSTR(""), ss.str()));
         }
 
         // wait for requests.
@@ -224,15 +224,15 @@ SUITE(requests_tests)
         // Wrap in try catch to print out more information to help with a sporadic failure.
         try
         {
-            encoded_uri = uri::encode_uri(U("/path 1/path 2")); // Path component contains encoded characters
+            encoded_uri = uri::encode_uri(_XPLATSTR("/path 1/path 2")); // Path component contains encoded characters
             client.request(methods::GET, encoded_uri).wait();
             encoded_uri = uri::encode_uri(
-                U("/test?Text=J'ai besoin de trouver un personnage")); // Query string contains encoded characters
+                _XPLATSTR("/test?Text=J'ai besoin de trouver un personnage")); // Query string contains encoded characters
             client.request(methods::GET, encoded_uri).wait();
-            encoded_uri = uri::encode_uri(U("/path 1/path 2#fragment1")); // URI has path and fragment components
+            encoded_uri = uri::encode_uri(_XPLATSTR("/path 1/path 2#fragment1")); // URI has path and fragment components
             client.request(methods::GET, encoded_uri).wait();
             encoded_uri = uri::encode_uri(
-                U("/path 1/path 2?key1=val1 val2#fragment1")); // URI has path, query and fragment components
+                _XPLATSTR("/path 1/path 2?key1=val1 val2#fragment1")); // URI has path, query and fragment components
             client.request(methods::GET, encoded_uri).wait();
         }
         catch (const http_exception& e)
@@ -266,7 +266,7 @@ SUITE(requests_tests)
 
         listener.support([&](http_request request) { request.reply(status_codes::OK); });
 
-        http_asserts::assert_response_equals(client.request(methods::GET, U("")).get(), status_codes::OK);
+        http_asserts::assert_response_equals(client.request(methods::GET, _XPLATSTR("")).get(), status_codes::OK);
 
         listener.close().wait();
     }

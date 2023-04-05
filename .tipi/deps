@@ -1,58 +1,83 @@
 {
-    "s" : [
-      "Release/include/"
-      , "Release/src"
-      , "Release/src/pch"
-      , "Release/src/utilities/"
-    ],
-    "x:clang-cxx17" : [
-      "Release/src/http/client/http_client_winhttp.cpp",
-      "Release/src/http/client/http_client_winrt.cpp",
-      "Release/src/http/listener/http_server_httpsys.cpp",
-      "Release/src/pplx/pplxlinux.cpp",
-      "Release/src/pplx/pplxwin.cpp",
-      "Release/src/streams/fileio_win32.cpp",
-      "Release/src/streams/fileio_winrt.cpp",
-      "Release/src/websockets",
-      "Release/tests",
-      "Release/samples"
-    ],
-    "x:macos" : [
-      "Release/src/http/client/http_client_winhttp.cpp",
-      "Release/src/http/client/http_client_winrt.cpp",
-      "Release/src/http/listener/http_server_httpsys.cpp",
-      "Release/src/pplx/pplxlinux.cpp",
-      "Release/src/pplx/pplxwin.cpp",
-      "Release/src/streams/fileio_win32.cpp",
-      "Release/src/streams/fileio_winrt.cpp",
-      "Release/src/websockets",
-      "Release/tests",
-      "Release/samples"
-    ],
-    "x:linux": [
-      "Release/src/http/client/http_client_winhttp.cpp",
-      "Release/src/http/client/http_client_winrt.cpp",
-      "Release/src/http/listener/http_server_httpsys.cpp",
-      "Release/src/pplx/pplxapple.cpp",
-      "Release/src/pplx/pplxwin.cpp",
-      "Release/src/streams/fileio_win32.cpp",
-      "Release/src/streams/fileio_winrt.cpp",
-      "Release/src/websockets",
-      "Release/tests",
-      "Release/samples"
-    ],
-    "x:linux-cxx17": [
-      "Release/src/http/client/http_client_winhttp.cpp",
-      "Release/src/http/client/http_client_winrt.cpp",
-      "Release/src/http/listener/http_server_httpsys.cpp",
-      "Release/src/pplx/pplxapple.cpp",
-      "Release/src/pplx/pplxwin.cpp",
-      "Release/src/streams/fileio_win32.cpp",
-      "Release/src/streams/fileio_winrt.cpp",
-      "Release/src/websockets",
-      "Release/tests",
-      "Release/samples"
-    ],
+  "s": [
+    "Release/include/", 
+    "Release/src",
+    "Release/src/pch", 
+    "Release/src/utilities/"
+  ],
+  "x": [
+
+  ],
+  "x:clang-cxx17" : [
+    "Release/src/http/client/http_client_winhttp.cpp",
+    "Release/src/http/client/http_client_winrt.cpp",
+    "Release/src/http/listener/http_server_httpsys.cpp",
+    "Release/src/pplx/pplxlinux.cpp",
+    "Release/src/pplx/pplxwin.cpp",
+    "Release/src/streams/fileio_win32.cpp",
+    "Release/src/streams/fileio_winrt.cpp",
+    "Release/src/websockets",
+    "Release/libs/websocketpp",
+    "Release/tests",
+    "Release/samples",
+    "vcpkg"
+  ],
+  "x:macos" : [
+    "Release/src/http/client/http_client_winhttp.cpp",
+    "Release/src/http/client/http_client_winrt.cpp",
+    "Release/src/http/listener/http_server_httpsys.cpp",
+    "Release/src/pplx/pplxlinux.cpp",
+    "Release/src/pplx/pplxwin.cpp",
+    "Release/src/streams/fileio_win32.cpp",
+    "Release/src/streams/fileio_winrt.cpp",
+    "Release/src/websockets",
+    "Release/libs/websocketpp",
+    "Release/tests",
+    "Release/samples",
+    "vcpkg"
+  ],
+  "x:linux": [
+    "Release/src/http/client/http_client_winhttp.cpp",
+    "Release/src/http/client/http_client_winrt.cpp",
+    "Release/src/http/listener/http_server_httpsys.cpp",
+    "Release/src/pplx/pplxapple.cpp",
+    "Release/src/pplx/pplxwin.cpp",
+    "Release/src/streams/fileio_win32.cpp",
+    "Release/src/streams/fileio_winrt.cpp",
+    "Release/src/websockets",
+    "Release/libs/websocketpp",
+    "Release/tests",
+    "Release/samples",
+    "vcpkg"
+  ],
+  "x:linux-cxx17": [
+    "Release/src/http/client/http_client_winhttp.cpp",
+    "Release/src/http/client/http_client_winrt.cpp",
+    "Release/src/http/listener/http_server_httpsys.cpp",
+    "Release/src/pplx/pplxapple.cpp",
+    "Release/src/pplx/pplxwin.cpp",
+    "Release/src/streams/fileio_win32.cpp",
+    "Release/src/streams/fileio_winrt.cpp",
+    "Release/src/websockets",
+    "Release/libs/websocketpp",
+    "Release/tests",
+    "Release/samples",
+    "vcpkg"
+  ],
+  "x:gcc-7-cxx17": [
+    "Release/src/http/client/http_client_winhttp.cpp",
+    "Release/src/http/client/http_client_winrt.cpp",
+    "Release/src/http/listener/http_server_httpsys.cpp",
+    "Release/src/pplx/pplxapple.cpp",
+    "Release/src/pplx/pplxwin.cpp",
+    "Release/src/streams/fileio_win32.cpp",
+    "Release/src/streams/fileio_winrt.cpp",
+    "Release/src/websockets",
+    "Release/libs/websocketpp",
+    "Release/tests",
+    "Release/samples",
+    "vcpkg"
+  ],
   "x:vs-15-2017-win64-cxx17": [
     "Release/src/http/client/http_client_winhttp.cpp",
     "Release/src/http/client/http_client_winrt.cpp",
@@ -62,8 +87,10 @@
     "Release/src/streams/fileio_posix.cpp",
     "Release/src/streams/fileio_winrt.cpp",
     "Release/src/websockets",
+    "Release/libs/websocketpp",
     "Release/tests",
-    "Release/samples"
+    "Release/samples",
+    "vcpkg"
   ],
   "x:vs-16-2019-win64-cxx17": [
     "Release/src/http/client/http_client_winhttp.cpp",
@@ -74,8 +101,10 @@
     "Release/src/streams/fileio_posix.cpp",
     "Release/src/streams/fileio_winrt.cpp",
     "Release/src/websockets",
+    "Release/libs/websocketpp",
     "Release/tests",
-    "Release/samples"
+    "Release/samples",
+    "vcpkg"
   ],
   "x:windows-cxx17": [
     "Release/src/http/client/http_client_winhttp.cpp",
@@ -86,13 +115,15 @@
     "Release/src/streams/fileio_posix.cpp",
     "Release/src/streams/fileio_winrt.cpp",
     "Release/src/websockets",
+    "Release/libs/websocketpp",
     "Release/tests",
     "Release/samples"
   ]
 
   , "nxxm/brotli" : {
-    "s" : ["c/include", "c/common", "c/enc", "c/dec"]
-  }
+      "s" : ["c/include", "c/common", "c/enc", "c/dec"]
+    }
+
 
   , "tipi-deps/middleware_openssl" : { "@" : "v1.1.1n-tipi"
     , "u" : true
@@ -100,7 +131,8 @@
     , "targets" : ["OpenSSL::SSL", "OpenSSL::Crypto"]
     , "find_mode" : " "
   }
-  
+
+
   , "hunter-packages/zlib" : { 
     "@" : "v1.2.11-p1"
     , "u" : true
@@ -108,12 +140,12 @@
     , "targets" : ["ZLIB::zlib"]
   }
 
-  , "tipi-deps/boost" : {
-    "@" : "v1.80.0-without-submodules"
-    , "u" : true
-    , "packages" : ["boost_system"]
-    , "targets" : ["Boost::system"]
-  }
+  , "boostorg/boost" : { "@" : "boost-1.80.0",
+      "opts": "set(BOOST_INCLUDE_LIBRARIES system filesystem uuid)",
+      "packages": [ "boost_system", "boost_filesystem", "boost_uuid" ],
+      "targets": [ "Boost::system", "Boost::filesystem", "Boost::uuid" ],
+      "u": true
+  } 
 
   , "platform:vs-16-2019-win64-cxx17" : ["target::crypt32"]
   , "platform:vs-15-2017-win64-cxx17" : ["target::crypt32"]

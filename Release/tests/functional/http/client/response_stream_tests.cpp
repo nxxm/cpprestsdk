@@ -74,8 +74,8 @@ SUITE(response_stream_tests)
 
         p_server->next_request().then([&](test_request* p_request) {
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("Content-Type")] = U("text/plain");
-            p_request->reply(200, U(""), headers, "This is just a bit of a string");
+            headers[_XPLATSTR("Content-Type")] = _XPLATSTR("text/plain");
+            p_request->reply(200, _XPLATSTR(""), headers, "This is just a bit of a string");
         });
 
         streams::producer_consumer_buffer<uint8_t> rwbuf;
@@ -105,8 +105,8 @@ SUITE(response_stream_tests)
 
         p_server->next_request().then([&](test_request* p_request) {
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("Content-Type")] = U("text/plain");
-            p_request->reply(200, U(""), headers, "This is just a bit of a string");
+            headers[_XPLATSTR("Content-Type")] = _XPLATSTR("text/plain");
+            p_request->reply(200, _XPLATSTR(""), headers, "This is just a bit of a string");
         });
 
         {
@@ -138,12 +138,12 @@ SUITE(response_stream_tests)
 
         p_server->next_request().then([&](test_request* p_request) {
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("Content-Type")] = U("text/plain");
-            p_request->reply(200, U(""), headers, message);
+            headers[_XPLATSTR("Content-Type")] = _XPLATSTR("text/plain");
+            p_request->reply(200, _XPLATSTR(""), headers, message);
         });
 
         {
-            auto fstream = OPENSTR_W<uint8_t>(U("response_stream.txt")).get();
+            auto fstream = OPENSTR_W<uint8_t>(_XPLATSTR("response_stream.txt")).get();
 
             // Write the response into the file
             http_request msg(methods::GET);
@@ -159,7 +159,7 @@ SUITE(response_stream_tests)
 
             streams::rawptr_buffer<uint8_t> buffer(reinterpret_cast<uint8_t*>(chars), sizeof(chars));
 
-            streams::basic_istream<uint8_t> fistream = OPENSTR_R<uint8_t>(U("response_stream.txt")).get();
+            streams::basic_istream<uint8_t> fistream = OPENSTR_R<uint8_t>(_XPLATSTR("response_stream.txt")).get();
             VERIFY_ARE_EQUAL(message.length(), fistream.read_line(buffer).get());
             VERIFY_ARE_EQUAL(message, std::string(chars));
             fistream.close().get();
@@ -178,12 +178,12 @@ SUITE(response_stream_tests)
 
         p_server->next_request().then([&](test_request* p_request) {
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("Content-Type")] = U("text/plain");
-            p_request->reply(200, U(""), headers, "A world without string is chaos.");
+            headers[_XPLATSTR("Content-Type")] = _XPLATSTR("text/plain");
+            p_request->reply(200, _XPLATSTR(""), headers, "A world without string is chaos.");
         });
 #endif
 
-        auto fstream = OPENSTR_W<uint8_t>(U("response_stream_file_stream_close_early.txt")).get();
+        auto fstream = OPENSTR_W<uint8_t>(_XPLATSTR("response_stream_file_stream_close_early.txt")).get();
 
         http_client client(m_uri);
 
@@ -201,7 +201,7 @@ SUITE(response_stream_tests)
         // Send a 100 KB data in the response body, the server will send this in multiple chunks
         // This data will get sent with content-length
         const size_t workload_size = 100 * 1024;
-        utility::string_t fname(U("response_stream_large_file_stream.txt"));
+        utility::string_t fname(_XPLATSTR("response_stream_large_file_stream.txt"));
         std::string responseData;
         responseData.resize(workload_size, 'a');
 
@@ -212,9 +212,9 @@ SUITE(response_stream_tests)
 
         p_server->next_request().then([&](test_request* p_request) {
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("Content-Type")] = U("text/plain");
+            headers[_XPLATSTR("Content-Type")] = _XPLATSTR("text/plain");
 
-            p_request->reply(200, U(""), headers, responseData);
+            p_request->reply(200, _XPLATSTR(""), headers, responseData);
         });
 
         {
@@ -308,8 +308,8 @@ SUITE(response_stream_tests)
 
         listener.support([buf](http_request request) {
             http_response response(200);
-            response.set_body(streams::istream(buf), U("text/plain"));
-            response.headers().add(header_names::connection, U("close"));
+            response.set_body(streams::istream(buf), _XPLATSTR("text/plain"));
+            response.headers().add(header_names::connection, _XPLATSTR("close"));
             request.reply(response);
         });
 
@@ -337,8 +337,8 @@ SUITE(response_stream_tests)
         listener.support([responseData](http_request request) {
             streams::producer_consumer_buffer<uint8_t> buf;
             http_response response(200);
-            response.set_body(buf.create_istream(), U("text/plain"));
-            response.headers().add(header_names::connection, U("close"));
+            response.set_body(buf.create_istream(), _XPLATSTR("text/plain"));
+            response.headers().add(header_names::connection, _XPLATSTR("close"));
 
             request.reply(response);
 
@@ -362,7 +362,7 @@ SUITE(response_stream_tests)
     TEST_FIXTURE(uri_address, xfer_chunked_with_length)
     {
         http_client client(m_uri);
-        utility::string_t responseData(U("Hello world"));
+        utility::string_t responseData(_XPLATSTR("Hello world"));
 
         web::http::experimental::listener::http_listener listener(m_uri);
         listener.open().wait();
@@ -376,11 +376,11 @@ SUITE(response_stream_tests)
             response.headers().add(header_names::content_length, 0);
 
             // add chunked transfer encoding
-            response.headers().add(header_names::transfer_encoding, U("chunked"));
+            response.headers().add(header_names::transfer_encoding, _XPLATSTR("chunked"));
 
             // add connection=close header, connection SHOULD NOT be considered persistent' after the current
             // request/response is complete
-            response.headers().add(header_names::connection, U("close"));
+            response.headers().add(header_names::connection, _XPLATSTR("close"));
 
             // respond
             request.reply(response);
@@ -408,8 +408,8 @@ SUITE(response_stream_tests)
             streams::producer_consumer_buffer<uint8_t> buf;
 
             http_response response(200);
-            response.set_body(buf.create_istream(), U("text/plain"));
-            response.headers().add(header_names::connection, U("close"));
+            response.set_body(buf.create_istream(), _XPLATSTR("text/plain"));
+            response.headers().add(header_names::connection, _XPLATSTR("close"));
             request.reply(response);
 
             VERIFY_ARE_EQUAL(buf.putn_nocopy((const uint8_t*)responseData.data(), responseData.size()).get(),
@@ -452,8 +452,8 @@ SUITE(response_stream_tests)
             streams::producer_consumer_buffer<uint8_t> buf;
 
             http_response response(200);
-            response.set_body(buf.create_istream(), U("text/plain"));
-            response.headers().add(header_names::connection, U("close"));
+            response.set_body(buf.create_istream(), _XPLATSTR("text/plain"));
+            response.headers().add(header_names::connection, _XPLATSTR("close"));
             request.reply(response);
 
             VERIFY_ARE_EQUAL(buf.putn_nocopy((const uint8_t*)firstChunk.data(), firstChunk.size()).get(),
@@ -465,7 +465,7 @@ SUITE(response_stream_tests)
         });
 
         {
-            utility::string_t fname(U("xfer_chunked_multiple_chunks.txt"));
+            utility::string_t fname(_XPLATSTR("xfer_chunked_multiple_chunks.txt"));
             auto fstream = OPENSTR_W<uint8_t>(fname).get();
 
             http_request msg(methods::GET);

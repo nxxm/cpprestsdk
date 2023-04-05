@@ -43,11 +43,11 @@ SUITE(request_extract_tests)
         std::string data("HEHEHE");
 
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, U("PUT"), U("/"), to_string_t(data));
-            VERIFY_ARE_EQUAL(U("text/plain"), request.headers().content_type());
+            http_asserts::assert_request_equals(request, _XPLATSTR("PUT"), _XPLATSTR("/"), to_string_t(data));
+            VERIFY_ARE_EQUAL(_XPLATSTR("text/plain"), request.headers().content_type());
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, U(""), U("text/plain"), data));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, _XPLATSTR(""), _XPLATSTR("text/plain"), data));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -69,7 +69,7 @@ SUITE(request_extract_tests)
             VERIFY_ARE_EQUAL(to_string_t(data), request.extract_string(true).get());
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, U(""), U("unknown charset"), data));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, _XPLATSTR(""), _XPLATSTR("unknown charset"), data));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -88,14 +88,14 @@ SUITE(request_extract_tests)
 
         json::value j(true);
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, U("PUT"), U("/"));
-            VERIFY_ARE_EQUAL(U("application/json"), request.headers().content_type());
+            http_asserts::assert_request_equals(request, _XPLATSTR("PUT"), _XPLATSTR("/"));
+            VERIFY_ARE_EQUAL(_XPLATSTR("application/json"), request.headers().content_type());
             const json::value j_found = request.extract_json().get();
             VERIFY_ARE_EQUAL(j.serialize(), j_found.serialize());
             request.reply(status_codes::OK);
         });
         std::string data = to_utf8string(j.serialize());
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, U(""), U("application/json"), data));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, _XPLATSTR(""), _XPLATSTR("application/json"), data));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -119,7 +119,7 @@ SUITE(request_extract_tests)
             request.reply(status_codes::OK);
         });
         std::string data = to_utf8string(j.serialize());
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, U(""), U("unknown charset"), data));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, _XPLATSTR(""), _XPLATSTR("unknown charset"), data));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -138,13 +138,13 @@ SUITE(request_extract_tests)
         std::string data("");
 
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, U("PUT"), U("/"));
-            VERIFY_ARE_EQUAL(U("text/plain"), request.headers().content_type());
+            http_asserts::assert_request_equals(request, _XPLATSTR("PUT"), _XPLATSTR("/"));
+            VERIFY_ARE_EQUAL(_XPLATSTR("text/plain"), request.headers().content_type());
             std::vector<unsigned char> vec = request.extract_vector().get();
             VERIFY_ARE_EQUAL(vec.size(), 0);
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, U(""), U("text/plain"), data));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, _XPLATSTR(""), _XPLATSTR("text/plain"), data));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -163,8 +163,8 @@ SUITE(request_extract_tests)
         std::string data("HEHEHE");
 
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, U("PUT"), U("/"));
-            VERIFY_ARE_EQUAL(U("text/plain"), request.headers().content_type());
+            http_asserts::assert_request_equals(request, _XPLATSTR("PUT"), _XPLATSTR("/"));
+            VERIFY_ARE_EQUAL(_XPLATSTR("text/plain"), request.headers().content_type());
             std::vector<unsigned char> vec = request.extract_vector().get();
             VERIFY_ARE_EQUAL(vec.size(), data.size());
             VERIFY_ARE_EQUAL('H', vec[0]);
@@ -175,7 +175,7 @@ SUITE(request_extract_tests)
             VERIFY_ARE_EQUAL('E', vec[5]);
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, U(""), U("text/plain"), data));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, _XPLATSTR(""), _XPLATSTR("text/plain"), data));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);

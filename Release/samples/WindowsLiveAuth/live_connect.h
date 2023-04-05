@@ -35,27 +35,27 @@ namespace live
 /// </summary>
 namespace scopes
 {
-static const utility::string_t wl_birthday = U("wl.birthday");
-static const utility::string_t wl_basic = U("wl.basic");
-static const utility::string_t wl_calendars = U("wl.calendars");
-static const utility::string_t wl_calendars_update = U("wl.calendars_update");
-static const utility::string_t wl_contacts_birthday = U("wl.contacts_birthday");
-static const utility::string_t wl_contacts_create = U("wl.contacts_create");
-static const utility::string_t wl_contacts_calendars = U("wl.contacts_calendars");
-static const utility::string_t wl_contacts_photos = U("wl.contacts_photos");
-static const utility::string_t wl_contacts_skydrive = U("wl.contacts_skydrive");
-static const utility::string_t wl_emails = U("wl.emails");
-static const utility::string_t wl_events_create = U("wl.events_create");
-static const utility::string_t wl_messenger = U("wl.messenger");
-static const utility::string_t wl_offline_access = U("wl.offline_access");
-static const utility::string_t wl_phone_numbers = U("wl.phone_numbers");
-static const utility::string_t wl_photos = U("wl.photos");
-static const utility::string_t wl_postal_addresses = U("wl.postal_addresses");
-static const utility::string_t wl_share = U("wl.share");
-static const utility::string_t wl_signin = U("wl.signin");
-static const utility::string_t wl_skydrive = U("wl.skydrive");
-static const utility::string_t wl_skydrive_update = U("wl.skydrive_update");
-static const utility::string_t wl_work_profile = U("wl.work_profile");
+static const utility::string_t wl_birthday = _XPLATSTR("wl.birthday");
+static const utility::string_t wl_basic = _XPLATSTR("wl.basic");
+static const utility::string_t wl_calendars = _XPLATSTR("wl.calendars");
+static const utility::string_t wl_calendars_update = _XPLATSTR("wl.calendars_update");
+static const utility::string_t wl_contacts_birthday = _XPLATSTR("wl.contacts_birthday");
+static const utility::string_t wl_contacts_create = _XPLATSTR("wl.contacts_create");
+static const utility::string_t wl_contacts_calendars = _XPLATSTR("wl.contacts_calendars");
+static const utility::string_t wl_contacts_photos = _XPLATSTR("wl.contacts_photos");
+static const utility::string_t wl_contacts_skydrive = _XPLATSTR("wl.contacts_skydrive");
+static const utility::string_t wl_emails = _XPLATSTR("wl.emails");
+static const utility::string_t wl_events_create = _XPLATSTR("wl.events_create");
+static const utility::string_t wl_messenger = _XPLATSTR("wl.messenger");
+static const utility::string_t wl_offline_access = _XPLATSTR("wl.offline_access");
+static const utility::string_t wl_phone_numbers = _XPLATSTR("wl.phone_numbers");
+static const utility::string_t wl_photos = _XPLATSTR("wl.photos");
+static const utility::string_t wl_postal_addresses = _XPLATSTR("wl.postal_addresses");
+static const utility::string_t wl_share = _XPLATSTR("wl.share");
+static const utility::string_t wl_signin = _XPLATSTR("wl.signin");
+static const utility::string_t wl_skydrive = _XPLATSTR("wl.skydrive");
+static const utility::string_t wl_skydrive_update = _XPLATSTR("wl.skydrive_update");
+static const utility::string_t wl_work_profile = _XPLATSTR("wl.work_profile");
 } // namespace scopes
 
 /// <summary>
@@ -229,7 +229,7 @@ public:
     /// L"folder.MMMMMMMMMMMM").wait();</code></example>
     pplx::task<web::json::value> copy(const utility::string_t& resource, const utility::string_t& destination)
     {
-        return _make_request(U("COPY"), resource, destination).then([](web::http::http_response response) {
+        return _make_request(_XPLATSTR("COPY"), resource, destination).then([](web::http::http_response response) {
             return _json_extract(response);
         });
     }
@@ -245,7 +245,7 @@ public:
     /// L"folder.MMMMMMMMMMMM").wait();</code></example>
     pplx::task<web::json::value> move(const utility::string_t& resource, const utility::string_t& destination)
     {
-        return _make_request(U("MOVE"), resource, destination).then([](web::http::http_response response) {
+        return _make_request(_XPLATSTR("MOVE"), resource, destination).then([](web::http::http_response response) {
             return _json_extract(response);
         });
     }
@@ -263,7 +263,7 @@ public:
     {
         web::http::uri_builder bldr;
         bldr.append(file_id);
-        bldr.append_path(U("content"));
+        bldr.append_path(_XPLATSTR("content"));
 
         web::http::http_request req(web::http::methods::GET);
         req.set_request_uri(bldr.to_string());
@@ -295,7 +295,7 @@ public:
             [file_id, this](concurrency::streams::ostream stream) {
                 web::http::uri_builder bldr;
                 bldr.append(file_id);
-                bldr.append_path(U("content"));
+                bldr.append_path(_XPLATSTR("content"));
 
                 web::http::http_request req(web::http::methods::GET);
                 req.set_request_uri(bldr.to_string());
@@ -429,7 +429,7 @@ private:
         bldr.append(path);
 
         web::json::value data;
-        data[U("destination")] = web::json::value::string(destination);
+        data[_XPLATSTR("destination")] = web::json::value::string(destination);
 
         web::http::http_request req(method);
         req.set_request_uri(bldr.to_string());
@@ -439,7 +439,7 @@ private:
 
     pplx::task<web::http::http_response> _make_request(web::http::http_request req)
     {
-        if (!m_token.empty()) req.headers().add(U("Authorization"), U("Bearer ") + m_token);
+        if (!m_token.empty()) req.headers().add(_XPLATSTR("Authorization"), _XPLATSTR("Bearer ") + m_token);
         return m_client.request(req);
     }
 

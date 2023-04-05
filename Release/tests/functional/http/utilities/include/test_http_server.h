@@ -44,7 +44,7 @@ public:
 
     // APIs to send responses.
     unsigned long reply(const unsigned short status_code,
-                        const utility::string_t& reason_phrase = U(""),
+                        const utility::string_t& reason_phrase = _XPLATSTR(""),
                         const std::map<utility::string_t, utility::string_t>& headers =
                             std::map<utility::string_t, utility::string_t>(),
                         const utf8string& data = "")

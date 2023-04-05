@@ -507,12 +507,12 @@ static bool is_content_type_one_of(const utility::string_t* first,
 // Remove once VS 2013 is no longer supported.
 #if defined(_WIN32) && _MSC_VER < 1900
 // Not referring to mime_types to avoid static initialization order fiasco.
-static const utility::string_t textual_types[] = {U("message/http"),
-                                                  U("application/json"),
-                                                  U("application/xml"),
-                                                  U("application/atom+xml"),
-                                                  U("application/http"),
-                                                  U("application/x-www-form-urlencoded")};
+static const utility::string_t textual_types[] = {_XPLATSTR("message/http"),
+                                                  _XPLATSTR("application/json"),
+                                                  _XPLATSTR("application/xml"),
+                                                  _XPLATSTR("application/atom+xml"),
+                                                  _XPLATSTR("application/http"),
+                                                  _XPLATSTR("application/x-www-form-urlencoded")};
 #endif
 
 /// <summary>
@@ -539,14 +539,14 @@ static bool is_content_type_textual(const utility::string_t& content_type)
 // Remove once VS 2013 is no longer supported.
 #if defined(_WIN32) && _MSC_VER < 1900
 // Not referring to mime_types to avoid static initialization order fiasco.
-static const utility::string_t json_types[] = {U("application/json"),
-                                               U("application/x-json"),
-                                               U("text/json"),
-                                               U("text/x-json"),
-                                               U("text/javascript"),
-                                               U("text/x-javascript"),
-                                               U("application/javascript"),
-                                               U("application/x-javascript")};
+static const utility::string_t json_types[] = {_XPLATSTR("application/json"),
+                                               _XPLATSTR("application/x-json"),
+                                               _XPLATSTR("text/json"),
+                                               _XPLATSTR("text/x-json"),
+                                               _XPLATSTR("text/javascript"),
+                                               _XPLATSTR("text/x-javascript"),
+                                               _XPLATSTR("application/javascript"),
+                                               _XPLATSTR("application/x-javascript")};
 #endif
 
 /// <summary>

@@ -39,27 +39,27 @@ SUITE(request_handler_tests)
         test_http_client::scoped_client client(m_uri);
         test_http_client* p_client = client.client();
 
-        listener.support(U("CUSTOM"), [](http_request request) {
-            http_asserts::assert_request_equals(request, U("CUSTOM"), U("/"));
+        listener.support(_XPLATSTR("CUSTOM"), [](http_request request) {
+            http_asserts::assert_request_equals(request, _XPLATSTR("CUSTOM"), _XPLATSTR("/"));
             request.reply(status_codes::OK);
         });
         listener.support(methods::PUT, [](http_request request) {
-            http_asserts::assert_request_equals(request, methods::PUT, U("/"));
+            http_asserts::assert_request_equals(request, methods::PUT, _XPLATSTR("/"));
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
             })
             .wait();
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::DEL, U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::DEL, _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::MethodNotAllowed);
             })
             .wait();
-        VERIFY_ARE_EQUAL(0, p_client->request(U("CUSTOM"), U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(_XPLATSTR("CUSTOM"), _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -67,11 +67,11 @@ SUITE(request_handler_tests)
             .wait();
 
         // Add one with a different case.
-        listener.support(U("CUSToM"), [](http_request request) {
-            http_asserts::assert_request_equals(request, U("CUSToM"), U("/"));
+        listener.support(_XPLATSTR("CUSToM"), [](http_request request) {
+            http_asserts::assert_request_equals(request, _XPLATSTR("CUSToM"), _XPLATSTR("/"));
             request.reply(status_codes::Gone);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(U("CUSToM"), U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(_XPLATSTR("CUSToM"), _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::Gone);
@@ -80,16 +80,16 @@ SUITE(request_handler_tests)
 
         // Add a general handler
         listener.support([](http_request request) {
-            http_asserts::assert_request_equals(request, U("CuSToM"), U("/"));
+            http_asserts::assert_request_equals(request, _XPLATSTR("CuSToM"), _XPLATSTR("/"));
             request.reply(status_codes::Created);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(U("CUSToM"), U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(_XPLATSTR("CUSToM"), _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::Gone);
             })
             .wait();
-        VERIFY_ARE_EQUAL(0, p_client->request(U("CuSToM"), U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(_XPLATSTR("CuSToM"), _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::Created);
@@ -107,10 +107,10 @@ SUITE(request_handler_tests)
 
         // throw exception
         listener.support(methods::GET, [](http_request request) {
-            http_asserts::assert_request_equals(request, U("GET"), U("/"));
+            http_asserts::assert_request_equals(request, _XPLATSTR("GET"), _XPLATSTR("/"));
             throw std::runtime_error("");
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(U("GET"), U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(_XPLATSTR("GET"), _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::InternalError);
@@ -119,11 +119,11 @@ SUITE(request_handler_tests)
 
         // throw exception, after replying first
         listener.support(methods::PUT, [](http_request request) {
-            http_asserts::assert_request_equals(request, U("PUT"), U("/"));
+            http_asserts::assert_request_equals(request, _XPLATSTR("PUT"), _XPLATSTR("/"));
             request.reply(status_codes::OK);
             throw 55;
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(U("PUT"), U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(_XPLATSTR("PUT"), _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -141,20 +141,20 @@ SUITE(request_handler_tests)
 
         listener.support(methods::GET, [](http_request) {});
         listener.support(methods::PUT, [](http_request) {});
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::OPTIONS, U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::OPTIONS, _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
-                VERIFY_ARE_EQUAL(U("GET, PUT"), p_response->m_headers[U("Allow")]);
+                VERIFY_ARE_EQUAL(_XPLATSTR("GET, PUT"), p_response->m_headers[_XPLATSTR("Allow")]);
             })
             .wait();
 
         // try overridding the default OPTIONS handler
         listener.support(methods::OPTIONS, [](http_request request) {
-            http_asserts::assert_request_equals(request, methods::OPTIONS, U("/"));
+            http_asserts::assert_request_equals(request, methods::OPTIONS, _XPLATSTR("/"));
             request.reply(status_codes::NoContent);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::OPTIONS, U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::OPTIONS, _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::NoContent);
@@ -170,7 +170,7 @@ SUITE(request_handler_tests)
         test_http_client::scoped_client client(m_uri);
         test_http_client* p_client = client.client();
 
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::TRCE, U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::TRCE, _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -191,10 +191,10 @@ SUITE(request_handler_tests)
 
         // try overridding the default OPTIONS handler
         listener.support(methods::TRCE, [](http_request request) {
-            http_asserts::assert_request_equals(request, methods::TRCE, U("/"));
+            http_asserts::assert_request_equals(request, methods::TRCE, _XPLATSTR("/"));
             request.reply(status_codes::NoContent);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::TRCE, U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::TRCE, _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::NoContent);
@@ -216,7 +216,7 @@ SUITE(request_handler_tests)
         client::http_client client(m_uri);
         auto buf = streams::producer_consumer_buffer<uint8_t>();
         pplx::task<http_response> response =
-            client.request(methods::PUT, U("/"), buf.create_istream(), U("text/plain"));
+            client.request(methods::PUT, _XPLATSTR("/"), buf.create_istream(), _XPLATSTR("text/plain"));
 
         e.wait();
         buf.close(std::ios_base::out).wait();
@@ -226,22 +226,22 @@ SUITE(request_handler_tests)
 
     TEST_FIXTURE(uri_address, multiple_listeners)
     {
-        http_listener listener1(U("http://localhost:45678/path1"));
-        http_listener listener2(U("http://localhost:45678/path1/path2"));
-        http_listener listener3(U("http://localhost:45678/path3"));
+        http_listener listener1(_XPLATSTR("http://localhost:45678/path1"));
+        http_listener listener2(_XPLATSTR("http://localhost:45678/path1/path2"));
+        http_listener listener3(_XPLATSTR("http://localhost:45678/path3"));
         listener1.open().wait();
         listener2.open().wait();
         listener3.open().wait();
 
-        test_http_client::scoped_client client(U("http://localhost:45678"));
+        test_http_client::scoped_client client(_XPLATSTR("http://localhost:45678"));
         test_http_client* p_client = client.client();
 
         // send a request to the first listener
         listener1.support(methods::GET, [](http_request request) {
-            http_asserts::assert_request_equals(request, methods::GET, U("/"));
+            http_asserts::assert_request_equals(request, methods::GET, _XPLATSTR("/"));
             request.reply(status_codes::NoContent);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U("/path1")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR("/path1")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::NoContent);
@@ -250,10 +250,10 @@ SUITE(request_handler_tests)
 
         // send a request to the second listener
         listener2.support(methods::PUT, [](http_request request) {
-            http_asserts::assert_request_equals(request, methods::PUT, U("/path4"));
+            http_asserts::assert_request_equals(request, methods::PUT, _XPLATSTR("/path4"));
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, U("/path1/path2/path4")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, _XPLATSTR("/path1/path2/path4")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -262,10 +262,10 @@ SUITE(request_handler_tests)
 
         // send a request to the third listener
         listener3.support(methods::POST, [](http_request request) {
-            http_asserts::assert_request_equals(request, methods::POST, U("/"));
+            http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
             request.reply(status_codes::Created);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, U("/path3")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, _XPLATSTR("/path3")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::Created);
@@ -275,10 +275,10 @@ SUITE(request_handler_tests)
         // Remove the second listener and send a request again.
         listener2.close().wait();
         listener1.support(methods::GET, [](http_request request) {
-            http_asserts::assert_request_equals(request, methods::GET, U("/path2/path4"));
+            http_asserts::assert_request_equals(request, methods::GET, _XPLATSTR("/path2/path4"));
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U("/path1/path2/path4")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR("/path1/path2/path4")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -291,33 +291,33 @@ SUITE(request_handler_tests)
 
     TEST_FIXTURE(uri_address, unregister_while_processing)
     {
-        http_listener listener1(U("http://localhost:45679/path1"));
-        http_listener listener2(U("http://localhost:45679/path1/path2"));
+        http_listener listener1(_XPLATSTR("http://localhost:45679/path1"));
+        http_listener listener2(_XPLATSTR("http://localhost:45679/path1/path2"));
         listener1.open().wait();
         listener2.open().wait();
 
-        test_http_client::scoped_client client1(U("http://localhost:45679"));
+        test_http_client::scoped_client client1(_XPLATSTR("http://localhost:45679"));
         test_http_client* p_client1 = client1.client();
-        test_http_client::scoped_client client2(U("http://localhost:45679"));
+        test_http_client::scoped_client client2(_XPLATSTR("http://localhost:45679"));
         test_http_client* p_client2 = client2.client();
 
         // first listener is used to wait until a request comes into the second
         // and then will try to close the second.
         pplx::extensibility::event_t secondRequest;
         listener1.support(methods::GET, [&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::GET, U("/"));
+            http_asserts::assert_request_equals(request, methods::GET, _XPLATSTR("/"));
             secondRequest.wait();
             listener2.close().wait();
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client1->request(methods::GET, U("/path1")));
+        VERIFY_ARE_EQUAL(0, p_client1->request(methods::GET, _XPLATSTR("/path1")));
         listener2.support(methods::GET, [&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::GET, U("/"));
+            http_asserts::assert_request_equals(request, methods::GET, _XPLATSTR("/"));
             secondRequest.set();
             os_utilities::sleep(200);
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client2->request(methods::GET, U("/path1/path2/")));
+        VERIFY_ARE_EQUAL(0, p_client2->request(methods::GET, _XPLATSTR("/path1/path2/")));
         p_client1->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -344,7 +344,7 @@ SUITE(request_handler_tests)
 
         volatile unsigned long requestCount = 0;
         listener.support(methods::GET, [&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::GET, U("/path1"));
+            http_asserts::assert_request_equals(request, methods::GET, _XPLATSTR("/path1"));
             os_utilities::interlocked_increment(&requestCount);
             while (requestCount != 3)
             {
@@ -352,9 +352,9 @@ SUITE(request_handler_tests)
             }
             request.reply(status_codes::OK);
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U("/path1")));
-        VERIFY_ARE_EQUAL(0, p_client2->request(methods::GET, U("/path1")));
-        VERIFY_ARE_EQUAL(0, p_client3->request(methods::GET, U("/path1")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR("/path1")));
+        VERIFY_ARE_EQUAL(0, p_client2->request(methods::GET, _XPLATSTR("/path1")));
+        VERIFY_ARE_EQUAL(0, p_client3->request(methods::GET, _XPLATSTR("/path1")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -388,7 +388,7 @@ SUITE(request_handler_tests)
         }
 
         listener.support(methods::GET, [&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::GET, U("/"));
+            http_asserts::assert_request_equals(request, methods::GET, _XPLATSTR("/"));
             request.reply(status_codes::OK);
         });
         for (size_t j = 0; j < 10; ++j)
@@ -396,7 +396,7 @@ SUITE(request_handler_tests)
             std::vector<pplx::task<void>> requests;
             for (size_t i = 0; i < NUM_CLIENTS; ++i)
             {
-                VERIFY_ARE_EQUAL(0, clients[i]->request(methods::GET, U("/")));
+                VERIFY_ARE_EQUAL(0, clients[i]->request(methods::GET, _XPLATSTR("/")));
                 requests.push_back(clients[i]->next_response().then([&](test_response* p_response) {
                     http_asserts::assert_test_response_equals(p_response, status_codes::OK);
                 }));
@@ -425,15 +425,15 @@ SUITE(request_handler_tests)
             while (message.body().streambuf().in_avail() < nbytes)
                 ;
 
-            utility::string_t request = U("unknown");
-            auto it = message.headers().find(U("ClientID"));
+            utility::string_t request = _XPLATSTR("unknown");
+            auto it = message.headers().find(_XPLATSTR("ClientID"));
             if (it != message.headers().end())
             {
-                message.reply(status_codes::OK, U("Unknown command"));
+                message.reply(status_codes::OK, _XPLATSTR("Unknown command"));
             }
             else
             {
-                message.reply(status_codes::OK, U("ClientID missing"));
+                message.reply(status_codes::OK, _XPLATSTR("ClientID missing"));
             }
         });
 
@@ -441,15 +441,15 @@ SUITE(request_handler_tests)
         for (int i = 0; i < N; ++i)
         {
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("ClientID")] = U("123");
-            headers[U("Request")] = U("Upload");
-            headers[U("ImgNr")] = U("1");
+            headers[_XPLATSTR("ClientID")] = _XPLATSTR("123");
+            headers[_XPLATSTR("Request")] = _XPLATSTR("Upload");
+            headers[_XPLATSTR("ImgNr")] = _XPLATSTR("1");
 
             // this help recognizing the leaked memory in the CRT/VLD dump
             std::string data;
             for (int j = 0; j < nbytes; j++)
                 data.push_back('a' + (j % 26));
-            VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, U("/path1"), headers, data));
+            VERIFY_ARE_EQUAL(0, p_client->request(methods::PUT, _XPLATSTR("/path1"), headers, data));
             p_client->next_response()
                 .then([](test_response* p_response) {
                     http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -484,10 +484,10 @@ SUITE(request_handler_tests)
         VERIFY_IS_TRUE(http_version::from_string("foo") == unknown);
         VERIFY_IS_TRUE(http_version::from_string("") == unknown);
 
-        http_listener listener(U("http://localhost:45678/path1"));
+        http_listener listener(_XPLATSTR("http://localhost:45678/path1"));
         listener.open().wait();
 
-        test_http_client::scoped_client client(U("http://localhost:45678"));
+        test_http_client::scoped_client client(_XPLATSTR("http://localhost:45678"));
         test_http_client* p_client = client.client();
 
         volatile unsigned long requestCount = 0;
@@ -503,7 +503,7 @@ SUITE(request_handler_tests)
         });
 
         // Send a request to the listener
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U("/path1")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR("/path1")));
 
         p_client->next_response()
             .then([](test_response* p_response) {
@@ -517,18 +517,18 @@ SUITE(request_handler_tests)
 
     TEST_FIXTURE(uri_address, remote_address)
     {
-        http_listener listener(U("http://localhost:45678/path1"));
+        http_listener listener(_XPLATSTR("http://localhost:45678/path1"));
         listener.open().wait();
 
-        test_http_client::scoped_client client(U("http://localhost:45678"));
+        test_http_client::scoped_client client(_XPLATSTR("http://localhost:45678"));
         test_http_client* p_client = client.client();
 
         volatile unsigned long requestCount = 0;
 
         listener.support(methods::GET, [&requestCount](http_request request) {
             const string_t& remoteAddr = request.remote_address();
-            const string_t& localhost4 = string_t(U("127.0.0.1"));
-            const string_t& localhost6 = string_t(U("::1"));
+            const string_t& localhost4 = string_t(_XPLATSTR("127.0.0.1"));
+            const string_t& localhost6 = string_t(_XPLATSTR("::1"));
 
             // We can't guarantee that the host has both IPv4 and IPv6 available, so check for either IP
             VERIFY_IS_TRUE((remoteAddr == localhost4) || (remoteAddr == localhost6));
@@ -538,7 +538,7 @@ SUITE(request_handler_tests)
         });
 
         // Send a request to the listener
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U("/path1")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR("/path1")));
 
         p_client->next_response()
             .then([](test_response* p_response) {

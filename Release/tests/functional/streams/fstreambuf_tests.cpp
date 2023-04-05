@@ -122,7 +122,7 @@ SUITE(file_buffer_tests)
     TEST(OpenCloseTest1)
     {
         // Test using single-byte strings
-        auto open = OPEN_W<char>(U("OpenCloseTest1.txt"));
+        auto open = OPEN_W<char>(_XPLATSTR("OpenCloseTest1.txt"));
 
         auto stream = open.get();
 
@@ -138,7 +138,7 @@ SUITE(file_buffer_tests)
 
     TEST(OpenForReadDoesntCreateFile1)
     {
-        utility::string_t fname = U("OpenForReadDoesntCreateFile1.txt");
+        utility::string_t fname = _XPLATSTR("OpenForReadDoesntCreateFile1.txt");
 
         VERIFY_THROWS_SYSTEM_ERROR(OPEN_R<char>(fname).get(), std::errc::no_such_file_or_directory);
 
@@ -148,7 +148,7 @@ SUITE(file_buffer_tests)
 
     TEST(OpenForReadDoesntCreateFile2)
     {
-        utility::string_t fname = U("OpenForReadDoesntCreateFile2.txt");
+        utility::string_t fname = _XPLATSTR("OpenForReadDoesntCreateFile2.txt");
 
         VERIFY_THROWS_SYSTEM_ERROR(OPEN<char>(fname, std::ios_base::in | std::ios_base::binary).get(),
                                    std::errc::no_such_file_or_directory);
@@ -159,7 +159,7 @@ SUITE(file_buffer_tests)
 
     TEST(WriteSingleCharTest1)
     {
-        auto open = OPEN_W<char>(U("WriteSingleCharTest1.txt"));
+        auto open = OPEN_W<char>(_XPLATSTR("WriteSingleCharTest1.txt"));
         auto stream = open.get();
 
         VERIFY_IS_TRUE(open.is_done());
@@ -182,7 +182,7 @@ SUITE(file_buffer_tests)
 #ifdef _WIN32
     TEST(WriteSingleCharTest1w)
     {
-        auto open = OPEN_W<wchar_t>(U("WriteSingleCharTest1w.txt"));
+        auto open = OPEN_W<wchar_t>(_XPLATSTR("WriteSingleCharTest1w.txt"));
         auto stream = open.get();
 
         VERIFY_IS_TRUE(open.is_done());
@@ -206,7 +206,7 @@ SUITE(file_buffer_tests)
 
     TEST(WriteBufferTest1)
     {
-        auto open = OPEN_W<char>(U("WriteBufferTest1.txt"));
+        auto open = OPEN_W<char>(_XPLATSTR("WriteBufferTest1.txt"));
         auto stream = open.get();
 
         VERIFY_IS_TRUE(open.is_done());
@@ -230,7 +230,7 @@ SUITE(file_buffer_tests)
 #ifdef _WIN32
     TEST(WriteBufferTest1w)
     {
-        auto open = OPEN_W<wchar_t>(U("WriteBufferTest1w.txt"));
+        auto open = OPEN_W<wchar_t>(_XPLATSTR("WriteBufferTest1w.txt"));
         auto stream = open.get();
 
         VERIFY_IS_TRUE(open.is_done());
@@ -255,7 +255,7 @@ SUITE(file_buffer_tests)
 
     TEST(WriteBufferAndSyncTest1)
     {
-        auto open = OPEN_W<char>(U("WriteBufferAndSyncTest1.txt"));
+        auto open = OPEN_W<char>(_XPLATSTR("WriteBufferAndSyncTest1.txt"));
         auto stream = open.get();
 
         VERIFY_IS_TRUE(open.is_done());
@@ -284,7 +284,7 @@ SUITE(file_buffer_tests)
 
     TEST(ReadSingleChar_bumpc1)
     {
-        utility::string_t fname = U("ReadSingleChar_bumpc1.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_bumpc1.txt");
         fill_file(fname);
 
         auto stream = OPEN_R<char>(fname).get();
@@ -307,7 +307,7 @@ SUITE(file_buffer_tests)
 
     TEST(SequentialReadWrite)
     {
-        utility::string_t fname = U("SequentialReadWrite.txt");
+        utility::string_t fname = _XPLATSTR("SequentialReadWrite.txt");
 
         auto ostreamBuf = OPEN_W<char>(fname).get();
 
@@ -348,7 +348,7 @@ SUITE(file_buffer_tests)
 #ifdef _WIN32
     TEST(ReadSingleChar_bumpcw)
     {
-        utility::string_t fname = U("ReadSingleChar_bumpcw.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_bumpcw.txt");
         fill_file_w(fname);
 
         auto stream = OPEN_R<wchar_t>(fname).get();
@@ -373,7 +373,7 @@ SUITE(file_buffer_tests)
     TEST(ReadSingleChar_bumpc2)
     {
         // Test that seeking works.
-        utility::string_t fname = U("ReadSingleChar_bumpc2.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_bumpc2.txt");
         fill_file(fname);
 
         auto stream = OPEN_R<char>(fname).get();
@@ -398,7 +398,7 @@ SUITE(file_buffer_tests)
 
     TEST(filestream_length)
     {
-        utility::string_t fname = U("ReadSingleChar_bumpc3.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_bumpc3.txt");
         fill_file(fname);
 
         auto stream = OPEN_R<char>(fname, _SH_DENYRW).get();
@@ -416,7 +416,7 @@ SUITE(file_buffer_tests)
     TEST(ReadSingleChar_bumpc3)
     {
         // Test that seeking works.
-        utility::string_t fname = U("ReadSingleChar_bumpc3.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_bumpc3.txt");
         fill_file(fname);
 
         auto stream = OPEN_R<char>(fname, _SH_DENYRW).get();
@@ -447,7 +447,7 @@ SUITE(file_buffer_tests)
 
     TEST(ReadSingleChar_nextc)
     {
-        utility::string_t fname = U("ReadSingleChar_nextc.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_nextc.txt");
         fill_file(fname);
 
         auto stream = OPEN_R<char>(fname).get();
@@ -470,7 +470,7 @@ SUITE(file_buffer_tests)
 #ifdef _WIN32
     TEST(ReadSingleChar_nextcw)
     {
-        utility::string_t fname = U("ReadSingleChar_nextcw.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_nextcw.txt");
         fill_file_w(fname);
 
         auto stream = OPEN_R<wchar_t>(fname).get();
@@ -495,7 +495,7 @@ SUITE(file_buffer_tests)
     TEST(ReadSingleChar_ungetc)
     {
         // Test that seeking works.
-        utility::string_t fname = U("ReadSingleChar_ungetc.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_ungetc.txt");
         fill_file(fname);
 
         auto stream = OPEN_R<char>(fname).get();
@@ -520,7 +520,7 @@ SUITE(file_buffer_tests)
 
     TEST(ReadSingleChar_getc1)
     {
-        utility::string_t fname = U("ReadSingleChar_getc1.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_getc1.txt");
         fill_file(fname);
 
         auto stream = OPEN_R<char>(fname, _SH_DENYRW).get();
@@ -539,7 +539,7 @@ SUITE(file_buffer_tests)
 
     TEST(ReadSingleChar_getc2)
     {
-        utility::string_t fname = U("ReadSingleChar_getc2.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_getc2.txt");
         fill_file(fname);
 
         auto stream = OPEN_R<char>(fname, _SH_DENYRW).get();
@@ -561,7 +561,7 @@ SUITE(file_buffer_tests)
 #ifdef _WIN32
     TEST(ReadSingleChar_getc1w)
     {
-        utility::string_t fname = U("ReadSingleChar_getc1w.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_getc1w.txt");
         fill_file_w(fname);
 
         auto stream = OPEN_R<wchar_t>(fname, _SH_DENYRW).get();
@@ -589,7 +589,7 @@ SUITE(file_buffer_tests)
 
     TEST(ReadSingleChar_getc2w)
     {
-        utility::string_t fname = U("ReadSingleChar_getc2w.txt");
+        utility::string_t fname = _XPLATSTR("ReadSingleChar_getc2w.txt");
         fill_file_w(fname);
 
         auto stream = OPEN_R<wchar_t>(fname, _SH_DENYRW).get();
@@ -621,7 +621,7 @@ SUITE(file_buffer_tests)
     TEST(ReadBuffer1)
     {
         // Test that seeking works.
-        utility::string_t fname = U("ReadBuffer1.txt");
+        utility::string_t fname = _XPLATSTR("ReadBuffer1.txt");
         fill_file(fname);
 
         // In order to get the implementation to buffer reads, we have to open the file
@@ -673,7 +673,7 @@ SUITE(file_buffer_tests)
     TEST(ReadBuffer1w)
     {
         // Test that seeking works.
-        utility::string_t fname = U("ReadBuffer1w.txt");
+        utility::string_t fname = _XPLATSTR("ReadBuffer1w.txt");
         fill_file_w(fname);
 
         // In order to get the implementation to buffer reads, we have to open the file
@@ -724,7 +724,7 @@ SUITE(file_buffer_tests)
     TEST(ReadBuffer2)
     {
         // Test that seeking works when the file is larger than the internal buffer size.
-        utility::string_t fname = U("ReadBuffer2.txt");
+        utility::string_t fname = _XPLATSTR("ReadBuffer2.txt");
         fill_file(fname, 30);
 
         // In order to get the implementation to buffer reads, we have to open the file
@@ -776,7 +776,7 @@ SUITE(file_buffer_tests)
 
     TEST(SeekEnd1)
     {
-        utility::string_t fname = U("SeekEnd1.txt");
+        utility::string_t fname = _XPLATSTR("SeekEnd1.txt");
         fill_file(fname, 30);
 
         // In order to get the implementation to buffer reads, we have to open the file
@@ -790,7 +790,7 @@ SUITE(file_buffer_tests)
 
     TEST(IsEOFTest)
     {
-        utility::string_t fname = U("IsEOFTest.txt");
+        utility::string_t fname = _XPLATSTR("IsEOFTest.txt");
         fill_file(fname, 30);
 
         auto stream = OPEN_R<char>(fname).get();
@@ -812,12 +812,12 @@ SUITE(file_buffer_tests)
         struct MyException
         {
         };
-        auto streambuf = OPEN_W<char>(U("CloseExceptionTest.txt")).get();
+        auto streambuf = OPEN_W<char>(_XPLATSTR("CloseExceptionTest.txt")).get();
         streambuf.close(std::ios::out, std::make_exception_ptr(MyException())).wait();
         VERIFY_THROWS(streambuf.putn_nocopy("this is good", 10).get(), MyException);
         VERIFY_THROWS(streambuf.putc('c').get(), MyException);
 
-        streambuf = OPEN_R<char>(U("CloseExceptionTest.txt")).get();
+        streambuf = OPEN_R<char>(_XPLATSTR("CloseExceptionTest.txt")).get();
         streambuf.close(std::ios::in, std::make_exception_ptr(MyException())).wait();
         char buf[100];
         VERIFY_THROWS(streambuf.getn(buf, 100).get(), MyException);
@@ -828,7 +828,7 @@ SUITE(file_buffer_tests)
     {
         std::string data = "abcdefghijklmn";
         concurrency::streams::streambuf<char> file_buf =
-            OPEN<char>(U("inout_regression_test.txt"), std::ios_base::in | std::ios_base::out).get();
+            OPEN<char>(_XPLATSTR("inout_regression_test.txt"), std::ios_base::in | std::ios_base::out).get();
         file_buf.putn_nocopy(&data[0], data.size()).get();
 
         file_buf.bumpc().get(); // reads 'a'
@@ -849,7 +849,7 @@ SUITE(file_buffer_tests)
 
     TEST(seek_read_regression_test)
     {
-        utility::string_t fname = U("seek_read_regression_test.txt");
+        utility::string_t fname = _XPLATSTR("seek_read_regression_test.txt");
         fill_file(fname, 100);
 
         char readdata[256];
@@ -874,7 +874,7 @@ SUITE(file_buffer_tests)
 
     TEST(file_size)
     {
-        utility::string_t fname = U("file_size.txt");
+        utility::string_t fname = _XPLATSTR("file_size.txt");
         fill_file(fname, 100);
         auto istream = OPEN_R<char>(fname).get();
         VERIFY_IS_TRUE(istream.has_size());
@@ -884,7 +884,7 @@ SUITE(file_buffer_tests)
 #ifdef _WIN32
     TEST(file_size_w)
     {
-        utility::string_t fname = U("file_size_w.txt");
+        utility::string_t fname = _XPLATSTR("file_size_w.txt");
         fill_file_w(fname, 100);
         auto istream = OPEN_R<wchar_t>(fname).get();
         VERIFY_IS_TRUE(istream.has_size());
@@ -894,12 +894,12 @@ SUITE(file_buffer_tests)
     TEST(file_with_one_byte_size)
     {
         // Create a file with one byte.
-        concurrency::streams::streambuf<char> file_buf = OPEN<char>(U("one_byte_file.txt"), std::ios_base::out).get();
+        concurrency::streams::streambuf<char> file_buf = OPEN<char>(_XPLATSTR("one_byte_file.txt"), std::ios_base::out).get();
         file_buf.putc('a').wait();
         file_buf.close().wait();
 
         // Try to read from file with a 2 byte character.
-        concurrency::streams::basic_istream<wchar_t> inFile(OPEN<wchar_t>(U("one_byte_file.txt"), std::ios::in).get());
+        concurrency::streams::basic_istream<wchar_t> inFile(OPEN<wchar_t>(_XPLATSTR("one_byte_file.txt"), std::ios::in).get());
         concurrency::streams::container_buffer<std::wstring> buffer;
         VERIFY_ARE_EQUAL(inFile.read(buffer, 1).get(), 0);
         VERIFY_IS_TRUE(inFile.is_eof());
@@ -912,7 +912,7 @@ SUITE(file_buffer_tests)
     TEST(read_one_byte_at_4G)
     {
         // Create a file with one byte.
-        string_t filename = U("read_one_byte_at_4G.txt");
+        string_t filename = _XPLATSTR("read_one_byte_at_4G.txt");
         // create a sparse file with sparse file apis
         auto handle = CreateSparseFile(filename.c_str());
         VERIFY_ARE_NOT_EQUAL(handle, INVALID_HANDLE_VALUE);
@@ -965,7 +965,7 @@ SUITE(file_buffer_tests)
         // write using casablanca streams
         concurrency::streams::streambuf<char>::off_type pos = 4 * 1024 * 1024 * 1024ll;
 
-        string_t filename = U("write_one_byte_at_4G.txt");
+        string_t filename = _XPLATSTR("write_one_byte_at_4G.txt");
         TidyStream file_buf(filename);
         file_buf._stream.seekoff(pos, ::std::ios_base::beg, ::std::ios_base::out);
         file_buf._stream.putc('a').wait();
@@ -985,7 +985,7 @@ SUITE(file_buffer_tests)
         // write with std stream
         concurrency::streams::streambuf<char>::off_type pos = 4 * 1024 * 1024 * 1024ll;
         // Create a file with one byte.
-        string_t filename = U("read_one_byte_at_4G.txt");
+        string_t filename = _XPLATSTR("read_one_byte_at_4G.txt");
 
         std::fstream stream(get_full_name(filename), std::ios_base::out);
         stream.seekg(pos);
@@ -1005,7 +1005,7 @@ SUITE(file_buffer_tests)
     TEST(alloc_acquire_not_supported)
     {
         concurrency::streams::streambuf<char> file_buf =
-            OPEN<char>(U("alloc_not_supported.txt"), std::ios::out | std::ios::in).get();
+            OPEN<char>(_XPLATSTR("alloc_not_supported.txt"), std::ios::out | std::ios::in).get();
         VERIFY_IS_TRUE(file_buf.alloc(1) == nullptr);
         char* temp;
         size_t size;
@@ -1014,8 +1014,8 @@ SUITE(file_buffer_tests)
 
     TEST(read_alloc_acquire_not_supported)
     {
-        auto file_buf1 = OPEN<char>(U("read_acquire_not_supported1.txt"), std::ios::out | std::ios::in).get();
-        auto file_buf2 = OPEN<char>(U("read_acquire_not_supported2.txt"), std::ios::out | std::ios::in).get();
+        auto file_buf1 = OPEN<char>(_XPLATSTR("read_acquire_not_supported1.txt"), std::ios::out | std::ios::in).get();
+        auto file_buf2 = OPEN<char>(_XPLATSTR("read_acquire_not_supported2.txt"), std::ios::out | std::ios::in).get();
 
         concurrency::streams::stringstreambuf data_buf("A");
         file_buf1.create_ostream().write(data_buf, 1).wait();
@@ -1039,7 +1039,7 @@ SUITE(file_buffer_tests)
     TEST(winrt_filestream_close)
     {
         std::string str("test data");
-        auto t = OPEN_W<uint8_t>(U("file.txt")).then([this, str](concurrency::streams::ostream stream) {
+        auto t = OPEN_W<uint8_t>(_XPLATSTR("file.txt")).then([this, str](concurrency::streams::ostream stream) {
             concurrency::streams::container_buffer<std::string> rbuf(str);
             concurrency::streams::istream is(rbuf);
             size_t size = 0;

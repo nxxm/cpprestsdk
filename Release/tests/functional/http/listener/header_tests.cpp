@@ -40,12 +40,12 @@ SUITE(header_tests)
         std::map<utility::string_t, utility::string_t> headers;
 
         // single header value.
-        headers[U("Header1")] = U("Value1");
+        headers[_XPLATSTR("Header1")] = _XPLATSTR("Value1");
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, mtd, U("/"), headers);
+            http_asserts::assert_request_equals(request, mtd, _XPLATSTR("/"), headers);
             request.reply(status_codes::OK).wait();
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(mtd, U(""), headers));
+        VERIFY_ARE_EQUAL(0, p_client->request(mtd, _XPLATSTR(""), headers));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -54,12 +54,12 @@ SUITE(header_tests)
 
         // empty header value.
         headers.clear();
-        headers[U("Key1")] = U("");
+        headers[_XPLATSTR("Key1")] = _XPLATSTR("");
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, mtd, U("/"), headers);
+            http_asserts::assert_request_equals(request, mtd, _XPLATSTR("/"), headers);
             request.reply(status_codes::OK).wait();
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(mtd, U(""), headers));
+        VERIFY_ARE_EQUAL(0, p_client->request(mtd, _XPLATSTR(""), headers));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -68,24 +68,24 @@ SUITE(header_tests)
 
         // 10 headers.
         headers.clear();
-        headers[U("MyHeader")] = U("hehe;blach");
-        headers[U("Yo1")] = U("You, Too");
-        headers[U("Yo2")] = U("You2");
-        headers[U("Yo3")] = U("You3");
-        headers[U("Yo4")] = U("You4");
-        headers[U("Yo5")] = U("You5");
-        headers[U("Yo6")] = U("You6");
-        headers[U("Yo7")] = U("You7");
-        headers[U("Yo8")] = U("You8");
-        headers[U("Yo9")] = U("You9");
-        headers[U("Yo10")] = U("You10");
-        headers[U("Yo11")] = U("You11");
-        headers[U("Accept")] = U("text/plain");
+        headers[_XPLATSTR("MyHeader")] = _XPLATSTR("hehe;blach");
+        headers[_XPLATSTR("Yo1")] = _XPLATSTR("You, Too");
+        headers[_XPLATSTR("Yo2")] = _XPLATSTR("You2");
+        headers[_XPLATSTR("Yo3")] = _XPLATSTR("You3");
+        headers[_XPLATSTR("Yo4")] = _XPLATSTR("You4");
+        headers[_XPLATSTR("Yo5")] = _XPLATSTR("You5");
+        headers[_XPLATSTR("Yo6")] = _XPLATSTR("You6");
+        headers[_XPLATSTR("Yo7")] = _XPLATSTR("You7");
+        headers[_XPLATSTR("Yo8")] = _XPLATSTR("You8");
+        headers[_XPLATSTR("Yo9")] = _XPLATSTR("You9");
+        headers[_XPLATSTR("Yo10")] = _XPLATSTR("You10");
+        headers[_XPLATSTR("Yo11")] = _XPLATSTR("You11");
+        headers[_XPLATSTR("Accept")] = _XPLATSTR("text/plain");
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, mtd, U("/"), headers);
+            http_asserts::assert_request_equals(request, mtd, _XPLATSTR("/"), headers);
             request.reply(status_codes::OK).wait();
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(mtd, U(""), headers));
+        VERIFY_ARE_EQUAL(0, p_client->request(mtd, _XPLATSTR(""), headers));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -94,16 +94,16 @@ SUITE(header_tests)
 
         // several headers different casings.
         headers.clear();
-        headers[U("CUSTOMHEADER")] = U("value1");
-        headers[U("customHEADER")] = U("value2");
-        headers[U("CUSTOMheaDER")] = U("value3");
+        headers[_XPLATSTR("CUSTOMHEADER")] = _XPLATSTR("value1");
+        headers[_XPLATSTR("customHEADER")] = _XPLATSTR("value2");
+        headers[_XPLATSTR("CUSTOMheaDER")] = _XPLATSTR("value3");
         listener.support([&](http_request request) {
             std::map<utility::string_t, utility::string_t> h;
-            h[U("CUSTOMHEADER")] = U("value1, value3, value2");
-            http_asserts::assert_request_equals(request, mtd, U("/"), h);
+            h[_XPLATSTR("CUSTOMHEADER")] = _XPLATSTR("value1, value3, value2");
+            http_asserts::assert_request_equals(request, mtd, _XPLATSTR("/"), h);
             request.reply(status_codes::OK).wait();
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(mtd, U(""), headers));
+        VERIFY_ARE_EQUAL(0, p_client->request(mtd, _XPLATSTR(""), headers));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -123,12 +123,12 @@ SUITE(header_tests)
 
         // "Date" was being incorrectly mapped to "Data"
         // see https://github.com/microsoft/cpprestsdk/issues/1208
-        headers[U("Date")] = U("Mon, 29 Jul 2019 12:32:57 GMT");
+        headers[_XPLATSTR("Date")] = _XPLATSTR("Mon, 29 Jul 2019 12:32:57 GMT");
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, mtd, U("/"), headers);
+            http_asserts::assert_request_equals(request, mtd, _XPLATSTR("/"), headers);
             request.reply(status_codes::OK).wait();
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(mtd, U(""), headers));
+        VERIFY_ARE_EQUAL(0, p_client->request(mtd, _XPLATSTR(""), headers));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -148,12 +148,12 @@ SUITE(header_tests)
         {
             // header with empty value
             http_response response(status_codes::OK);
-            response.headers()[U("Key1")] = U("");
+            response.headers()[_XPLATSTR("Key1")] = _XPLATSTR("");
             listener.support([&](http_request request) {
-                http_asserts::assert_request_equals(request, methods::POST, U("/"));
+                http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
                 request.reply(response).wait();
             });
-            VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, U("")));
+            VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, _XPLATSTR("")));
             p_client->next_response()
                 .then([&](test_response* p_response) {
                     http_asserts::assert_test_response_equals(p_response, status_codes::OK, response.headers());
@@ -162,24 +162,24 @@ SUITE(header_tests)
 
             // 10 headers
             response = http_response(status_codes::Accepted);
-            response.headers()[U("MyHeader")] = U("hehe;blach");
-            response.headers()[U("Yo1")] = U("You, Too");
-            response.headers()[U("Yo2")] = U("You2");
-            response.headers()[U("Yo3")] = U("You3");
-            response.headers()[U("Yo4")] = U("You4");
-            response.headers()[U("Yo5")] = U("You5");
-            response.headers()[U("Yo6")] = U("You6");
-            response.headers()[U("Yo7")] = U("You7");
-            response.headers()[U("Yo8")] = U("You8");
-            response.headers()[U("Yo9")] = U("You9");
-            response.headers()[U("Yo10")] = U("You10");
-            response.headers()[U("Yo11")] = U("You11");
-            response.headers()[U("Accept")] = U("text/plain");
+            response.headers()[_XPLATSTR("MyHeader")] = _XPLATSTR("hehe;blach");
+            response.headers()[_XPLATSTR("Yo1")] = _XPLATSTR("You, Too");
+            response.headers()[_XPLATSTR("Yo2")] = _XPLATSTR("You2");
+            response.headers()[_XPLATSTR("Yo3")] = _XPLATSTR("You3");
+            response.headers()[_XPLATSTR("Yo4")] = _XPLATSTR("You4");
+            response.headers()[_XPLATSTR("Yo5")] = _XPLATSTR("You5");
+            response.headers()[_XPLATSTR("Yo6")] = _XPLATSTR("You6");
+            response.headers()[_XPLATSTR("Yo7")] = _XPLATSTR("You7");
+            response.headers()[_XPLATSTR("Yo8")] = _XPLATSTR("You8");
+            response.headers()[_XPLATSTR("Yo9")] = _XPLATSTR("You9");
+            response.headers()[_XPLATSTR("Yo10")] = _XPLATSTR("You10");
+            response.headers()[_XPLATSTR("Yo11")] = _XPLATSTR("You11");
+            response.headers()[_XPLATSTR("Accept")] = _XPLATSTR("text/plain");
             listener.support([&](http_request request) {
-                http_asserts::assert_request_equals(request, methods::POST, U("/"));
+                http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
                 request.reply(response).wait();
             });
-            VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, U("")));
+            VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, _XPLATSTR("")));
             p_client->next_response()
                 .then([&](test_response* p_response) {
                     http_asserts::assert_test_response_equals(p_response, status_codes::Accepted, response.headers());
@@ -188,13 +188,13 @@ SUITE(header_tests)
 
             // several headers in different casings
             response = http_response(status_codes::BadGateway);
-            response.headers().add(U("Key1"), U("value1"));
-            response.headers()[U("KEY1")] += U("value2");
+            response.headers().add(_XPLATSTR("Key1"), _XPLATSTR("value1"));
+            response.headers()[_XPLATSTR("KEY1")] += _XPLATSTR("value2");
             listener.support([&](http_request request) {
-                http_asserts::assert_request_equals(request, methods::POST, U("/"));
+                http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
                 request.reply(response).wait();
             });
-            VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, U("")));
+            VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, _XPLATSTR("")));
             p_client->next_response()
                 .then([&](test_response* p_response) {
                     http_asserts::assert_test_response_equals(p_response, status_codes::BadGateway, response.headers());
@@ -203,13 +203,13 @@ SUITE(header_tests)
 
             // duplicate headers fields
             response = http_response(status_codes::BadGateway);
-            response.headers().add(U("Key1"), U("value1"));
-            response.headers().add(U("Key1"), U("value2"));
+            response.headers().add(_XPLATSTR("Key1"), _XPLATSTR("value1"));
+            response.headers().add(_XPLATSTR("Key1"), _XPLATSTR("value2"));
             listener.support([&](http_request request) {
-                http_asserts::assert_request_equals(request, methods::POST, U("/"));
+                http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
                 request.reply(response).wait();
             });
-            VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, U("")));
+            VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, _XPLATSTR("")));
             p_client->next_response()
                 .then([&](test_response* p_response) {
                     http_asserts::assert_test_response_equals(p_response, status_codes::BadGateway, response.headers());

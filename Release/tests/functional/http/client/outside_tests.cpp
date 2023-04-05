@@ -46,7 +46,7 @@ SUITE(outside_tests)
         handle_timeout([] {
             // http://www.cnn.com redirects users from countries outside of the US to the "http://edition.cnn.com/" drop
             // location
-            http_client client(U("http://edition.cnn.com"));
+            http_client client(_XPLATSTR("http://edition.cnn.com"));
 
             // CNN's main page doesn't use chunked transfer encoding.
             http_response response = client.request(methods::GET).get();
@@ -54,7 +54,7 @@ SUITE(outside_tests)
             response.content_ready().wait();
 
             // CNN's other pages do use chunked transfer encoding.
-            response = client.request(methods::GET, U("us")).get();
+            response = client.request(methods::GET, _XPLATSTR("us")).get();
             VERIFY_ARE_EQUAL(status_codes::OK, response.status_code());
             response.content_ready().wait();
         });
@@ -70,7 +70,7 @@ SUITE(outside_tests)
         http_client_config config;
         config.set_request_compressed_response(true);
 
-        http_client client(U("https://en.wikipedia.org/wiki/HTTP_compression"), config);
+        http_client client(_XPLATSTR("https://en.wikipedia.org/wiki/HTTP_compression"), config);
         http_request httpRequest(methods::GET);
 
         http_response response = client.request(httpRequest).get();
@@ -83,13 +83,13 @@ SUITE(outside_tests)
         utility::string_t encoding;
         VERIFY_IS_TRUE(response.headers().match(web::http::header_names::content_encoding, encoding));
 
-        VERIFY_ARE_EQUAL(encoding, U("gzip"));
+        VERIFY_ARE_EQUAL(encoding, _XPLATSTR("gzip"));
     }
 
     TEST_FIXTURE(uri_address, outside_google_dot_com)
     {
         // Use code.google.com instead of www.google.com, which redirects
-        http_client client(U("http://code.google.com"));
+        http_client client(_XPLATSTR("http://code.google.com"));
         http_request request(methods::GET);
         for (int i = 0; i < 2; ++i)
         {
@@ -102,7 +102,7 @@ SUITE(outside_tests)
     {
         handle_timeout([&] {
             // Use code.google.com instead of www.google.com, which redirects
-            http_client client(U("https://code.google.com"));
+            http_client client(_XPLATSTR("https://code.google.com"));
 
             http_response response;
             for (int i = 0; i < 5; ++i)
@@ -132,7 +132,7 @@ SUITE(outside_tests)
 
         handle_timeout([&] {
             // Use code.google.com instead of www.google.com, which redirects
-            http_client client(U("https://code.google.com"));
+            http_client client(_XPLATSTR("https://code.google.com"));
 
             http_response response;
             for (int i = 0; i < 5; ++i)
@@ -152,7 +152,7 @@ SUITE(outside_tests)
     {
         handle_timeout([&] {
             // Use code.google.com instead of www.google.com, which redirects
-            http_client simpleclient(U("http://code.google.com"));
+            http_client simpleclient(_XPLATSTR("http://code.google.com"));
             utility::string_t path = m_uri.query();
             http_response response = simpleclient.request(::http::methods::GET).get();
 
@@ -173,7 +173,7 @@ SUITE(outside_tests)
     TEST_FIXTURE(uri_address, no_transfer_encoding_content_length)
     {
         handle_timeout([] {
-            http_client client(U("http://ws.audioscrobbler.com/2.0/") U(
+            http_client client(_XPLATSTR("http://ws.audioscrobbler.com/2.0/") U(
                 "?method=artist.gettoptracks&artist=cher&api_key=6fcd59047568e89b1615975081258990&format=json"));
 
             client.request(methods::GET)
@@ -218,57 +218,57 @@ SUITE(outside_tests)
     }
 #endif // !defined(__cplusplus_winrt)
 
-    TEST(server_selfsigned_cert) { test_failed_ssl_cert(U("https://self-signed.badssl.com/")); }
+    TEST(server_selfsigned_cert) { test_failed_ssl_cert(_XPLATSTR("https://self-signed.badssl.com/")); }
 
 #if !defined(__cplusplus_winrt)
-    TEST(server_selfsigned_cert_ignored) { test_ignored_ssl_cert(U("https://self-signed.badssl.com/")); }
+    TEST(server_selfsigned_cert_ignored) { test_ignored_ssl_cert(_XPLATSTR("https://self-signed.badssl.com/")); }
 #endif // !defined(__cplusplus_winrt)
 
-    TEST(server_hostname_mismatch) { test_failed_ssl_cert(U("https://wrong.host.badssl.com/")); }
+    TEST(server_hostname_mismatch) { test_failed_ssl_cert(_XPLATSTR("https://wrong.host.badssl.com/")); }
 
 #if !defined(__cplusplus_winrt) && !defined(CPPREST_FORCE_HTTP_CLIENT_WINHTTPPAL)
     TEST(server_hostname_host_override)
     {
         handle_timeout([] {
-            http_client client(U("https://wrong.host.badssl.com/"));
+            http_client client(_XPLATSTR("https://wrong.host.badssl.com/"));
             http_request req(methods::GET);
-            req.headers().add(U("Host"), U("badssl.com"));
+            req.headers().add(_XPLATSTR("Host"), _XPLATSTR("badssl.com"));
             auto response = client.request(req).get();
             VERIFY_ARE_EQUAL(status_codes::OK, response.status_code());
         });
     }
 
-    TEST(server_hostname_mismatch_ignored) { test_ignored_ssl_cert(U("https://wrong.host.badssl.com/")); }
+    TEST(server_hostname_mismatch_ignored) { test_ignored_ssl_cert(_XPLATSTR("https://wrong.host.badssl.com/")); }
 
     TEST(server_hostname_host_override_after_upgrade)
     {
-        http_client client(U("http://198.35.26.96/"));
+        http_client client(_XPLATSTR("http://198.35.26.96/"));
         http_request req(methods::GET);
-        req.headers().add(U("Host"), U("en.wikipedia.org"));
+        req.headers().add(_XPLATSTR("Host"), _XPLATSTR("en.wikipedia.org"));
         auto response = client.request(req).get();
         VERIFY_ARE_EQUAL(status_codes::OK, response.status_code());
     }
 #endif // !defined(__cplusplus_winrt) && !defined(CPPREST_FORCE_HTTP_CLIENT_WINHTTPPAL)
 
-    TEST(server_cert_expired) { test_failed_ssl_cert(U("https://expired.badssl.com/")); }
+    TEST(server_cert_expired) { test_failed_ssl_cert(_XPLATSTR("https://expired.badssl.com/")); }
 
 #if !defined(__cplusplus_winrt)
-    TEST(server_cert_expired_ignored) { test_ignored_ssl_cert(U("https://expired.badssl.com/")); }
+    TEST(server_cert_expired_ignored) { test_ignored_ssl_cert(_XPLATSTR("https://expired.badssl.com/")); }
 #endif // !defined(__cplusplus_winrt)
 
     TEST(server_cert_revoked, "Ignore:Android", "229", "Ignore:Apple", "229", "Ignore:Linux", "229")
     {
-        test_failed_ssl_cert(U("https://revoked.badssl.com/"));
+        test_failed_ssl_cert(_XPLATSTR("https://revoked.badssl.com/"));
     }
 
 #if !defined(__cplusplus_winrt)
-    TEST(server_cert_revoked_ignored) { test_ignored_ssl_cert(U("https://revoked.badssl.com/")); }
+    TEST(server_cert_revoked_ignored) { test_ignored_ssl_cert(_XPLATSTR("https://revoked.badssl.com/")); }
 #endif // !defined(__cplusplus_winrt)
 
-    TEST(server_cert_untrusted) { test_failed_ssl_cert(U("https://untrusted-root.badssl.com/")); }
+    TEST(server_cert_untrusted) { test_failed_ssl_cert(_XPLATSTR("https://untrusted-root.badssl.com/")); }
 
 #if !defined(__cplusplus_winrt)
-    TEST(server_cert_untrusted_ignored) { test_ignored_ssl_cert(U("https://untrusted-root.badssl.com/")); }
+    TEST(server_cert_untrusted_ignored) { test_ignored_ssl_cert(_XPLATSTR("https://untrusted-root.badssl.com/")); }
 #endif // !defined(__cplusplus_winrt)
 
 #if !defined(__cplusplus_winrt)
@@ -278,7 +278,7 @@ SUITE(outside_tests)
             http_client_config config;
             config.set_validate_certificates(false);
             config.set_timeout(std::chrono::seconds(1));
-            http_client client(U("https://expired.badssl.com/"), config);
+            http_client client(_XPLATSTR("https://expired.badssl.com/"), config);
 
             auto request = client.request(methods::GET).get();
             VERIFY_ARE_EQUAL(status_codes::OK, request.status_code());

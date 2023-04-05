@@ -41,21 +41,21 @@ SUITE(building_response_tests)
         test_http_client* p_client = client.client();
 
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::POST, U("/"));
+            http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
             http_response response(status_codes::OK);
-            response.set_body(U("test string"), U("text"));
+            response.set_body(_XPLATSTR("test string"), _XPLATSTR("text"));
             request.reply(response).wait();
         });
-        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, _XPLATSTR("")));
         p_client->next_response()
             .then([&](test_response* p_response) {
 #ifdef _UTF16_STRINGS
-                const ::utility::string_t expectedContentType(U("text; charset=utf-8"));
+                const ::utility::string_t expectedContentType(_XPLATSTR("text; charset=utf-8"));
 #else
-                const ::utility::string_t expectedContentType(U("text"));
+                const ::utility::string_t expectedContentType(_XPLATSTR("text"));
 #endif
                 http_asserts::assert_test_response_equals(
-                    p_response, status_codes::OK, expectedContentType, U("test string"));
+                    p_response, status_codes::OK, expectedContentType, _XPLATSTR("test string"));
             })
             .wait();
 
@@ -71,15 +71,15 @@ SUITE(building_response_tests)
 
         listener.support([&](http_request request) {
             http_response response(status_codes::OK);
-            response.set_body(U("test string"));
-            http_asserts::assert_request_equals(request, methods::POST, U("/"));
+            response.set_body(_XPLATSTR("test string"));
+            http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
             request.reply(response).wait();
         });
-        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, _XPLATSTR("")));
         p_client->next_response()
             .then([&](test_response* p_response) {
                 http_asserts::assert_test_response_equals(
-                    p_response, status_codes::OK, U("text/plain; charset=utf-8"), U("test string"));
+                    p_response, status_codes::OK, _XPLATSTR("text/plain; charset=utf-8"), _XPLATSTR("test string"));
             })
             .wait();
 
@@ -94,17 +94,17 @@ SUITE(building_response_tests)
         test_http_client* p_client = client.client();
 
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::POST, U("/"));
+            http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
             http_response response(status_codes::OK);
-            utility::string_t data(U("test data"));
+            utility::string_t data(_XPLATSTR("test data"));
             response.set_body(std::move(data));
             request.reply(response).wait();
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, _XPLATSTR("")));
         p_client->next_response()
             .then([&](test_response* p_response) {
                 http_asserts::assert_test_response_equals(
-                    p_response, status_codes::OK, U("text/plain; charset=utf-8"), U("test data"));
+                    p_response, status_codes::OK, _XPLATSTR("text/plain; charset=utf-8"), _XPLATSTR("test data"));
             })
             .wait();
 
@@ -127,7 +127,7 @@ SUITE(building_response_tests)
         test_http_client* p_client = client.client();
 
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::POST, U("/"));
+            http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
             http_response response(status_codes::OK);
             std::vector<unsigned char> v_body;
             v_body.push_back('A');
@@ -136,11 +136,11 @@ SUITE(building_response_tests)
             response.set_body(std::move(v_body));
             request.reply(response).wait();
         });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::POST, _XPLATSTR("")));
         p_client->next_response()
             .then([&](test_response* p_response) {
                 http_asserts::assert_test_response_equals(
-                    p_response, status_codes::OK, U("application/octet-stream"), U("ABC"));
+                    p_response, status_codes::OK, _XPLATSTR("application/octet-stream"), _XPLATSTR("ABC"));
             })
             .wait();
 

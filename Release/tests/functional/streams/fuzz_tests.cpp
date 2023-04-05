@@ -70,7 +70,7 @@ SUITE(streams_fuzz_tests)
             num_lines++;
         }
         ifs.close().get();
-        std::wcout << U("Number of lines read:") << num_lines;
+        std::wcout << _XPLATSTR("Number of lines read:") << num_lines;
     }
 
     template<class T>
