@@ -452,6 +452,8 @@ size_t _write_file_async(_In_ streams::details::_file_info_impl* fInfo,
 #endif // _WIN32_WINNT >= _WIN32_WINNT_VISTA
 }
 
+const size_t MINUS_ONE_AS_UNSIGNED_SIZE_T = static_cast<size_t>(-1);
+
 /// <summary>
 /// Initiate an asynchronous (overlapped) read from the file stream.
 /// </summary>
@@ -462,7 +464,7 @@ size_t _write_file_async(_In_ streams::details::_file_info_impl* fInfo,
 /// <param name="offset">The offset in the file to read from</param>
 /// <returns>0 if the read request is still outstanding, -1 if the request failed, otherwise the size of the data read
 /// into the buffer</returns>
-ssize_t _read_file_async(_In_ streams::details::_file_info_impl* fInfo,
+size_t _read_file_async(_In_ streams::details::_file_info_impl* fInfo,
                         _In_ streams::details::_filestream_callback* callback,
                         _Out_writes_(count) void* ptr,
                         _In_ size_t count,
@@ -497,7 +499,7 @@ ssize_t _read_file_async(_In_ streams::details::_file_info_impl* fInfo,
     // overlapped structures.
     CancelThreadpoolIo(static_cast<PTP_IO>(fInfo->m_io_context));
 
-    size_t result = static_cast<size_t>(-1);
+    size_t result = MINUS_ONE_AS_UNSIGNED_SIZE_T;
 
     if (wrResult)
     {
@@ -559,7 +561,7 @@ ssize_t _read_file_async(_In_ streams::details::_file_info_impl* fInfo,
     //    The threadpool will not start the workerthread.
     callback->on_error(std::make_exception_ptr(utility::details::create_system_error(error)));
 
-    return static_cast<size_t>(-1);
+    return MINUS_ONE_AS_UNSIGNED_SIZE_T;
 #endif // _WIN32_WINNT >= _WIN32_WINNT_VISTA
 }
 
@@ -619,7 +621,7 @@ size_t _fill_buffer_fsb(_In_ _file_info_impl* fInfo,
                 // pending
                 return read;
 
-            case (-1):
+            case MINUS_ONE_AS_UNSIGNED_SIZE_T:
                 // error
                 delete cb;
                 return read;
@@ -671,7 +673,7 @@ size_t _fill_buffer_fsb(_In_ _file_info_impl* fInfo,
                 // pending
                 return read;
 
-            case (-1):
+            case MINUS_ONE_AS_UNSIGNED_SIZE_T:
                 // error
                 delete cb;
                 return read;
@@ -722,7 +724,7 @@ size_t _fill_buffer_fsb(_In_ _file_info_impl* fInfo,
                 // pending
                 return read;
 
-            case (-1):
+            case MINUS_ONE_AS_UNSIGNED_SIZE_T:
                 // error
                 delete cb;
                 return read;
