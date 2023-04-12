@@ -19,6 +19,8 @@
 
 #include "cpprest/details/fileio.h"
 
+#include <share.h>
+
 using namespace web;
 using namespace utility;
 using namespace concurrency;
@@ -146,6 +148,7 @@ void _get_create_flags(
         dwCreationDisposition = OPEN_ALWAYS;
     }
 
+    
     // C++ specifies what permissions to deny, Windows which permissions to give,
     dwShareMode = 0x3;
     switch (prot)
@@ -459,7 +462,7 @@ size_t _write_file_async(_In_ streams::details::_file_info_impl* fInfo,
 /// <param name="offset">The offset in the file to read from</param>
 /// <returns>0 if the read request is still outstanding, -1 if the request failed, otherwise the size of the data read
 /// into the buffer</returns>
-size_t _read_file_async(_In_ streams::details::_file_info_impl* fInfo,
+ssize_t _read_file_async(_In_ streams::details::_file_info_impl* fInfo,
                         _In_ streams::details::_filestream_callback* callback,
                         _Out_writes_(count) void* ptr,
                         _In_ size_t count,

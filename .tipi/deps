@@ -106,7 +106,7 @@
     "Release/samples",
     "vcpkg"
   ],
-  "x:windows-cxx17": [
+  "x:windows": [
     "Release/src/http/client/http_client_winhttp.cpp",
     "Release/src/http/client/http_client_winrt.cpp",
     "Release/src/http/listener/http_server_httpsys.cpp",
@@ -117,7 +117,8 @@
     "Release/src/websockets",
     "Release/libs/websocketpp",
     "Release/tests",
-    "Release/samples"
+    "Release/samples",
+    "vcpkg"
   ]
 
   , "nxxm/brotli" : {
@@ -125,13 +126,12 @@
     }
 
 
-  , "tipi-deps/middleware_openssl" : { "@" : "v1.1.1n-tipi"
-    , "u" : true
-    , "packages" : ["OpenSSL"]
-    , "targets" : ["OpenSSL::SSL", "OpenSSL::Crypto"]
-    , "find_mode" : " "
+  , "nxxm/boringssl" : { "@" : ":64b173d5c7acb7e8e270997418685d9a00f0537b",
+      "u": true
+      , "packages" : ["OpenSSL"]
+      , "targets" : ["OpenSSL::SSL", "OpenSSL::Crypto"]
+      , "find_mode" : "MODULE"
   }
-
 
   , "hunter-packages/zlib" : { 
     "@" : "v1.2.11-p1"

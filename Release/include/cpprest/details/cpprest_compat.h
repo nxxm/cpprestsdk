@@ -14,12 +14,18 @@
 
 #pragma once
 
-#if defined(_WIN32)
+#if !defined(_MSC_VER)
+#include <assert.h>
+#define _ASSERTE(x) assert(x)
+#endif
+
+#if defined(_WIN32) && defined(_MSC_VER)
+
 
 #if _MSC_VER >= 1900
 #define CPPREST_NOEXCEPT noexcept
 #define CPPREST_CONSTEXPR constexpr
-#else
+#elif defined(_MSC_VER)
 #define CPPREST_NOEXCEPT
 #define CPPREST_CONSTEXPR const
 #endif // _MSC_VER >= 1900
@@ -27,6 +33,18 @@
 #include <sal.h>
 
 #else // ^^^ _WIN32 ^^^ // vvv !_WIN32 vvv
+
+#if defined(_WIN32) && defined(__clang__) // Clang on windows
+    #define CPPREST_NOEXCEPT throw()
+    #define CPPREST_CONSTEXPR constexpr
+
+    // see: http://gcc.gnu.org/onlinedocs/gcc/Return-Address.html
+    // this is critical to inline
+    __attribute__((always_inline)) inline void* _ReturnAddress() { return __builtin_return_address(0); }
+#else 
+    #define CPPREST_NOEXCEPT noexcept
+    #define CPPREST_CONSTEXPR constexpr
+#endif
 
 #define __declspec(x) __attribute__((x))
 #define dllimport
@@ -36,11 +54,8 @@
     {                                                                                                                  \
         if (!(x)) __builtin_unreachable();                                                                             \
     } while (false)
-#define CPPREST_NOEXCEPT noexcept
-#define CPPREST_CONSTEXPR constexpr
 
-#include <assert.h>
-#define _ASSERTE(x) assert(x)
+
 
 // No SAL on non Windows platforms
 #include "cpprest/details/nosal.h"
