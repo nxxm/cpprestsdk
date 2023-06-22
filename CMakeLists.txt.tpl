@@ -23,6 +23,7 @@
 
 cmake_minimum_required(VERSION 3.17.0)
 
+{{#PLATFORM_DEPS_REQUIRED}}
 ##### PLATFORM deps #####
 set(HUNTER_ROOT "{{HUNTER_ROOT}}")
 include(HunterGate)
@@ -31,6 +32,7 @@ HunterGate(
     SHA1 "unused" 
 )
 ##### PLATFORM deps #####
+{{/PLATFORM_DEPS_REQUIRED}}
 
 project({{org}}_{{project}} VERSION "0.0.1")
 enable_testing()

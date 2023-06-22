@@ -39,7 +39,7 @@ pplx::task<void> next_reply_assert(
     const method& method,
     const utility::string_t& path,
     status_code code = status_codes::OK,
-    const utility::string_t& location = U(""))
+    const utility::string_t& location = _XPLATSTR(""))
 {
     return p_server->next_request().then([=](test_request* p_request) {
         http_asserts::assert_test_request_equals(p_request, method, path);
@@ -62,7 +62,7 @@ pplx::task<void> next_reply_assert(
     test_http_server* p_server,
     const utility::string_t& path,
     status_code code = status_codes::OK,
-    const utility::string_t& location = U(""))
+    const utility::string_t& location = _XPLATSTR(""))
 {
     return next_reply_assert(p_server, methods::GET, path, code, location);
 }
@@ -75,10 +75,10 @@ SUITE(redirect_tests)
         auto p_server = scoped.server();
 
         std::vector<pplx::task<void>> replies;
-        replies.push_back(next_reply_assert(p_server, U("/"), status_codes::MovedPermanently, U("/moved-here")));
-        replies.push_back(next_reply_assert(p_server, U("/moved-here"), status_codes::TemporaryRedirect, U("/moved-there")));
-        replies.push_back(next_reply_assert(p_server, U("/moved-there"), status_codes::Found, U("/found-elsewhere")));
-        replies.push_back(next_reply_assert(p_server, U("/found-elsewhere")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/"), status_codes::MovedPermanently, _XPLATSTR("/moved-here")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/moved-here"), status_codes::TemporaryRedirect, _XPLATSTR("/moved-there")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/moved-there"), status_codes::Found, _XPLATSTR("/found-elsewhere")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/found-elsewhere")));
 
         http_client_config config;
         http_client client(m_uri, config);
@@ -98,14 +98,14 @@ SUITE(redirect_tests)
         auto p_server = scoped.server();
 
         std::vector<pplx::task<void>> replies;
-        replies.push_back(next_reply_assert(p_server, methods::POST, U("/"), status_codes::SeeOther, U("/see-here")));
-        replies.push_back(next_reply_assert(p_server, methods::GET, U("/see-here")));
+        replies.push_back(next_reply_assert(p_server, methods::POST, _XPLATSTR("/"), status_codes::SeeOther, _XPLATSTR("/see-here")));
+        replies.push_back(next_reply_assert(p_server, methods::GET, _XPLATSTR("/see-here")));
 
         http_client_config config;
         http_client client(m_uri, config);
 
         VERIFY_NO_THROWS(
-            http_asserts::assert_response_equals(client.request(methods::POST, U(""), U("body")).get(), status_codes::OK);
+            http_asserts::assert_response_equals(client.request(methods::POST, _XPLATSTR(""), _XPLATSTR("body")).get(), status_codes::OK);
         );
         p_server->close();
         for (auto& reply : replies)
@@ -120,9 +120,9 @@ SUITE(redirect_tests)
         auto p_server = scoped.server();
 
         std::vector<pplx::task<void>> replies;
-        replies.push_back(next_reply_assert(p_server, U("/"), status_codes::MovedPermanently, U("/moved-here")));
-        replies.push_back(next_reply_assert(p_server, U("/moved-here"), status_codes::TemporaryRedirect, U("/moved-there")));
-        replies.push_back(next_reply_assert(p_server, U("/moved-there"), status_codes::Found, U("/found-elsewhere")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/"), status_codes::MovedPermanently, _XPLATSTR("/moved-here")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/moved-here"), status_codes::TemporaryRedirect, _XPLATSTR("/moved-there")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/moved-there"), status_codes::Found, _XPLATSTR("/found-elsewhere")));
 
         http_client_config config;
         config.set_max_redirects(2);
@@ -144,7 +144,7 @@ SUITE(redirect_tests)
         auto p_server = scoped.server();
 
         std::vector<pplx::task<void>> replies;
-        replies.push_back(next_reply_assert(p_server, U("/"), status_codes::MovedPermanently, U("/moved-here")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/"), status_codes::MovedPermanently, _XPLATSTR("/moved-here")));
 
         http_client_config config;
         config.set_max_redirects(0);
@@ -164,7 +164,7 @@ SUITE(redirect_tests)
     {
         handle_timeout([] {
             http_client_config config;
-            http_client client(U("https://http.badssl.com/"), config);
+            http_client client(_XPLATSTR("https://http.badssl.com/"), config);
             VERIFY_NO_THROWS(
                 http_asserts::assert_response_equals(client.request(methods::GET).get(), status_codes::MovedPermanently)
             );
@@ -176,7 +176,7 @@ SUITE(redirect_tests)
         handle_timeout([] {
             http_client_config config;
             config.set_https_to_http_redirects(true);
-            http_client client(U("https://http.badssl.com/"), config);
+            http_client client(_XPLATSTR("https://http.badssl.com/"), config);
             VERIFY_NO_THROWS(
                 http_asserts::assert_response_equals(client.request(methods::GET).get(), status_codes::OK)
             );
@@ -195,8 +195,8 @@ SUITE(redirect_tests)
         auto p_server = scoped.server();
 
         std::vector<pplx::task<void>> replies;
-        replies.push_back(next_reply_assert(p_server, U("/"), status_codes::PermanentRedirect, U("/moved-here")));
-        replies.push_back(next_reply_assert(p_server, U("/moved-here")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/"), status_codes::PermanentRedirect, _XPLATSTR("/moved-here")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/moved-here")));
 
         http_client_config config;
         http_client client(m_uri, config);
@@ -217,7 +217,7 @@ SUITE(redirect_tests)
         auto p_server = scoped.server();
 
         std::vector<pplx::task<void>> replies;
-        replies.push_back(next_reply_assert(p_server, U("/"), status_codes::MovedPermanently));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/"), status_codes::MovedPermanently));
 
         http_client_config config;
         http_client client(m_uri, config);
@@ -246,10 +246,10 @@ SUITE(redirect_tests)
         auto p_server = scoped.server();
 
         std::vector<pplx::task<void>> replies;
-        replies.push_back(next_reply_assert(p_server, U("/"), status_codes::TemporaryRedirect, U("/briefly-here")));
-        replies.push_back(next_reply_assert(p_server, U("/briefly-here"), status_codes::MovedPermanently, U("/")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/"), status_codes::TemporaryRedirect, _XPLATSTR("/briefly-here")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/briefly-here"), status_codes::MovedPermanently, _XPLATSTR("/")));
 #if USING_WINHTTP
-        replies.push_back(next_reply_assert(p_server, U("/"), status_codes::NotFound));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/"), status_codes::NotFound));
 #endif
 
         http_client_config config;
@@ -278,9 +278,9 @@ SUITE(redirect_tests)
         auto p_server = scoped.server();
 
         std::vector<pplx::task<void>> replies;
-        replies.push_back(next_reply_assert(p_server, methods::POST, U("/"), status_codes::TemporaryRedirect, U("/retry-here")));
+        replies.push_back(next_reply_assert(p_server, methods::POST, _XPLATSTR("/"), status_codes::TemporaryRedirect, _XPLATSTR("/retry-here")));
 #if USING_WINHTTP
-        replies.push_back(next_reply_assert(p_server, methods::POST, U("/retry-here")));
+        replies.push_back(next_reply_assert(p_server, methods::POST, _XPLATSTR("/retry-here")));
 #endif
 
         http_client_config config;
@@ -289,11 +289,11 @@ SUITE(redirect_tests)
         // implementation-specific behaviour
 #if USING_WINHTTP
         VERIFY_NO_THROWS(
-            http_asserts::assert_response_equals(client.request(methods::POST, U(""), U("body")).get(), status_codes::OK)
+            http_asserts::assert_response_equals(client.request(methods::POST, _XPLATSTR(""), _XPLATSTR("body")).get(), status_codes::OK)
         );
 #else // ^^^ USING_WINHTTP / !USING_WINHTTP vvv
         VERIFY_NO_THROWS(
-            http_asserts::assert_response_equals(client.request(methods::POST, U(""), U("body")).get(), status_codes::TemporaryRedirect)
+            http_asserts::assert_response_equals(client.request(methods::POST, _XPLATSTR(""), _XPLATSTR("body")).get(), status_codes::TemporaryRedirect)
         );
 #endif // USING_WINHTTP
         p_server->close();
@@ -309,9 +309,9 @@ SUITE(redirect_tests)
         auto p_server = scoped.server();
 
         std::vector<pplx::task<void>> replies;
-        replies.push_back(next_reply_assert(p_server, U("/"), status_codes::MultipleChoices, U("/prefer-here")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/"), status_codes::MultipleChoices, _XPLATSTR("/prefer-here")));
 #if USING_WINHTTP
-        replies.push_back(next_reply_assert(p_server, U("/prefer-here")));
+        replies.push_back(next_reply_assert(p_server, _XPLATSTR("/prefer-here")));
 #endif
 
         http_client_config config;

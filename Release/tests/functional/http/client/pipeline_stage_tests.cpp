@@ -51,7 +51,7 @@ SUITE(pipeline_stage_tests)
 
         // Don't include 'CONNECT' it has a special meaning.
         utility::string_t send_methods[] = {methods::GET,
-                                            U("GET"),
+                                            _XPLATSTR("GET"),
                                             methods::DEL,
                                             methods::HEAD,
 #ifdef _WIN32 // this is never passed to the listener
@@ -60,24 +60,24 @@ SUITE(pipeline_stage_tests)
                                             methods::POST,
                                             methods::PUT,
                                             methods::PATCH,
-                                            U("CUstomMETHOD")};
-        utility::string_t recv_methods[] = {U("GET"),
-                                            U("GET"),
-                                            U("DELETE"),
-                                            U("HEAD"),
+                                            _XPLATSTR("CUstomMETHOD")};
+        utility::string_t recv_methods[] = {_XPLATSTR("GET"),
+                                            _XPLATSTR("GET"),
+                                            _XPLATSTR("DELETE"),
+                                            _XPLATSTR("HEAD"),
 #ifdef _WIN32
-                                            U("OPTIONS"),
+                                            _XPLATSTR("OPTIONS"),
 #endif
-                                            U("POST"),
-                                            U("PUT"),
-                                            U("PATCH"),
-                                            U("CUstomMETHOD")};
+                                            _XPLATSTR("POST"),
+                                            _XPLATSTR("PUT"),
+                                            _XPLATSTR("PATCH"),
+                                            _XPLATSTR("CUstomMETHOD")};
         const size_t num_methods = sizeof(send_methods) / sizeof(send_methods[0]);
 
         for (int i = 0; i < num_methods; ++i)
         {
             p_server->next_request().then([i, &recv_methods](test_request* p_request) {
-                http_asserts::assert_test_request_equals(p_request, recv_methods[i], U("/"));
+                http_asserts::assert_test_request_equals(p_request, recv_methods[i], _XPLATSTR("/"));
                 VERIFY_ARE_EQUAL(0u, p_request->reply(200));
             });
             http_asserts::assert_response_equals(client.request(send_methods[i]).get(), status_codes::OK);
@@ -102,14 +102,14 @@ SUITE(pipeline_stage_tests)
 
         // Don't include 'CONNECT' it has a special meaning.
         utility::string_t send_methods[] = {methods::GET,
-                                            U("GET"),
+                                            _XPLATSTR("GET"),
                                             methods::DEL,
                                             methods::HEAD,
                                             methods::OPTIONS,
                                             methods::POST,
                                             methods::PUT,
                                             methods::PATCH,
-                                            U("CUstomMETHOD")};
+                                            _XPLATSTR("CUstomMETHOD")};
         const size_t num_methods = sizeof(send_methods) / sizeof(send_methods[0]);
 
         for (int i = 0; i < num_methods; ++i)
@@ -143,14 +143,14 @@ SUITE(pipeline_stage_tests)
 
         // Don't include 'CONNECT' it has a special meaning.
         utility::string_t send_methods[] = {methods::GET,
-                                            U("GET"),
+                                            _XPLATSTR("GET"),
                                             methods::DEL,
                                             methods::HEAD,
                                             methods::OPTIONS,
                                             methods::POST,
                                             methods::PUT,
                                             methods::PATCH,
-                                            U("CUstomMETHOD")};
+                                            _XPLATSTR("CUstomMETHOD")};
         const size_t num_methods = sizeof(send_methods) / sizeof(send_methods[0]);
 
         for (int i = 0; i < num_methods; ++i)
@@ -184,14 +184,14 @@ SUITE(pipeline_stage_tests)
 
         // Don't include 'CONNECT' it has a special meaning.
         utility::string_t send_methods[] = {methods::GET,
-                                            U("GET"),
+                                            _XPLATSTR("GET"),
                                             methods::DEL,
                                             methods::HEAD,
                                             methods::OPTIONS,
                                             methods::POST,
                                             methods::PUT,
                                             methods::PATCH,
-                                            U("CUstomMETHOD")};
+                                            _XPLATSTR("CUstomMETHOD")};
         const size_t num_methods = sizeof(send_methods) / sizeof(send_methods[0]);
 
         for (int i = 0; i < num_methods; ++i)
@@ -212,15 +212,15 @@ SUITE(pipeline_stage_tests)
 
         virtual pplx::task<http_response> propagate(http_request request)
         {
-            request.headers().set_content_type(U("modified content type"));
+            request.headers().set_content_type(_XPLATSTR("modified content type"));
 
             auto currentStage = this->shared_from_this();
             return next_stage()->propagate(request).then([currentStage](http_response response) -> http_response {
                 int prevCount = 0;
-                response.headers().match(U("My Header"), prevCount);
+                response.headers().match(_XPLATSTR("My Header"), prevCount);
                 utility::stringstream_t data;
                 data << prevCount + ++std::dynamic_pointer_cast<modify_count_responses_stage>(currentStage)->m_Count;
-                response.headers().add(U("My Header"), data.str());
+                response.headers().add(_XPLATSTR("My Header"), data.str());
                 return response;
             });
         }
@@ -235,7 +235,7 @@ SUITE(pipeline_stage_tests)
         http_client client(m_uri);
 
         scoped.server()->next_request().then([](test_request* request) {
-            http_asserts::assert_test_request_equals(request, methods::GET, U("/"), U("modified content type"));
+            http_asserts::assert_test_request_equals(request, methods::GET, _XPLATSTR("/"), _XPLATSTR("modified content type"));
             request->reply(status_codes::OK);
         });
 
@@ -249,7 +249,7 @@ SUITE(pipeline_stage_tests)
 
         http_response response = client.request(methods::GET).get();
         VERIFY_ARE_EQUAL(status_codes::OK, response.status_code());
-        VERIFY_ARE_EQUAL(U("1, 2"), response.headers()[U("My Header")]);
+        VERIFY_ARE_EQUAL(_XPLATSTR("1, 2"), response.headers()[_XPLATSTR("My Header")]);
     }
 
 } // SUITE(pipeline_stage_tests)

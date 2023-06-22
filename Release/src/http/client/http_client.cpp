@@ -146,20 +146,20 @@ utility::string_t request_context::get_compression_header() const
         if (!m_request.decompress_factories().empty() || web::http::compression::builtin::supported())
         {
             // Accept-Encoding -- request Content-Encoding from the server
-            headers.append(header_names::accept_encoding + U(": "));
+            headers.append(header_names::accept_encoding + _XPLATSTR(": "));
             headers.append(compression::details::build_supported_header(
                 compression::details::header_types::accept_encoding, m_request.decompress_factories()));
-            headers.append(U("\r\n"));
+            headers.append(_XPLATSTR("\r\n"));
         }
     }
     else if (!m_request.decompress_factories().empty())
     {
         // TE -- request Transfer-Encoding from the server
-        headers.append(header_names::connection + U(": TE\r\n") + // Required by Section 4.3 of RFC-7230
-                       header_names::te + U(": "));
+        headers.append(header_names::connection + _XPLATSTR(": TE\r\n") + // Required by Section 4.3 of RFC-7230
+                       header_names::te + _XPLATSTR(": "));
         headers.append(compression::details::build_supported_header(compression::details::header_types::te,
                                                                     m_request.decompress_factories()));
-        headers.append(U("\r\n"));
+        headers.append(_XPLATSTR("\r\n"));
     }
 
     return headers;

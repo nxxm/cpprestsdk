@@ -47,7 +47,7 @@ SUITE(response_stream_tests)
 
     TEST_FIXTURE(uri_address, set_body_stream_small)
     {
-        utility::string_t fname = U("set_response_stream_small.txt");
+        utility::string_t fname = _XPLATSTR("set_response_stream_small.txt");
         fill_file(fname);
 
         http_listener listener(m_uri);
@@ -64,18 +64,18 @@ SUITE(response_stream_tests)
         auto length = stream.seek(0, std::ios_base::end);
         stream.seek(0);
 
-        response.headers().set_content_type(U("text/plain; charset=utf-8"));
+        response.headers().set_content_type(_XPLATSTR("text/plain; charset=utf-8"));
         response.headers().set_content_length((size_t)length);
 
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::POST, U("/"));
+            http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
             request.reply(response).wait();
         });
-        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, _XPLATSTR("")));
         p_client->next_response()
             .then([&](test_response* p_response) {
                 http_asserts::assert_test_response_equals(
-                    p_response, status_codes::OK, U("text/plain; charset=utf-8"), U("abcdefghijklmnopqrstuvwxyz"));
+                    p_response, status_codes::OK, _XPLATSTR("text/plain; charset=utf-8"), _XPLATSTR("abcdefghijklmnopqrstuvwxyz"));
             })
             .wait();
 
@@ -84,7 +84,7 @@ SUITE(response_stream_tests)
 
     TEST_FIXTURE(uri_address, set_body_stream_large)
     {
-        utility::string_t fname = U("set_response_stream_large.txt");
+        utility::string_t fname = _XPLATSTR("set_response_stream_large.txt");
         fill_file(fname, 200);
 
         http_listener listener(m_uri);
@@ -101,14 +101,14 @@ SUITE(response_stream_tests)
         auto length = stream.seek(0, std::ios_base::end);
         stream.seek(0);
 
-        response.headers().set_content_type(U("text/plain; charset=utf-8"));
+        response.headers().set_content_type(_XPLATSTR("text/plain; charset=utf-8"));
         response.headers().set_content_length((size_t)length);
 
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::POST, U("/"));
+            http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
             request.reply(response).wait();
         });
-        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, _XPLATSTR("")));
         p_client->next_response()
             .then([&](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -121,7 +121,7 @@ SUITE(response_stream_tests)
 
     TEST_FIXTURE(uri_address, set_body_stream_partial)
     {
-        utility::string_t fname = U("set_response_stream_partial.txt");
+        utility::string_t fname = _XPLATSTR("set_response_stream_partial.txt");
         fill_file(fname, 200);
 
         http_listener listener(m_uri);
@@ -135,16 +135,16 @@ SUITE(response_stream_tests)
         auto stream = streams::file_stream<uint8_t>::open_istream(fname).get();
         response.set_body(stream);
 
-        response.headers().set_content_type(U("text/plain; charset=utf-8"));
+        response.headers().set_content_type(_XPLATSTR("text/plain; charset=utf-8"));
         response.headers().set_content_length(4500);
 
         // We shouldn't be sending more than the content-length.
 
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::POST, U("/"));
+            http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
             request.reply(response).wait();
         });
-        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, _XPLATSTR("")));
         p_client->next_response()
             .then([&](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -161,7 +161,7 @@ SUITE(response_stream_tests)
 
     TEST_FIXTURE(uri_address, set_body_filestream_chunked)
     {
-        utility::string_t fname = U("set_response_stream_chunked.txt");
+        utility::string_t fname = _XPLATSTR("set_response_stream_chunked.txt");
         fill_file(fname, 200);
 
         http_listener listener(m_uri);
@@ -178,14 +178,14 @@ SUITE(response_stream_tests)
         auto length = stream.seek(0, std::ios_base::end);
         stream.seek(0);
 
-        response.headers().set_content_type(U("text/plain; charset=utf-8"));
+        response.headers().set_content_type(_XPLATSTR("text/plain; charset=utf-8"));
         // Not setting the content length forces "transfer-encoding: chunked"
 
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::POST, U("/"));
+            http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
             request.reply(response).wait();
         });
-        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, _XPLATSTR("")));
         p_client->next_response()
             .then([&](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -209,11 +209,11 @@ SUITE(response_stream_tests)
         std::string text1 = "This is a test";
         size_t length = text1.size();
 
-        response.headers().set_content_type(U("text/plain; charset=utf-8"));
+        response.headers().set_content_type(_XPLATSTR("text/plain; charset=utf-8"));
         // Not setting the content length forces "transfer-encoding: chunked"
 
         listener.support([&](http_request request) {
-            http_asserts::assert_request_equals(request, methods::POST, U("/"));
+            http_asserts::assert_request_equals(request, methods::POST, _XPLATSTR("/"));
 
             streams::producer_consumer_buffer<char> rwbuf;
 
@@ -233,7 +233,7 @@ SUITE(response_stream_tests)
             rep.wait();
         });
 
-        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, U("")));
+        VERIFY_ARE_EQUAL(0u, p_client->request(methods::POST, _XPLATSTR("")));
         p_client->next_response()
             .then([&](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -257,7 +257,7 @@ SUITE(response_stream_tests)
             // Ensure that it is transfer-encoded
             auto collection = buf.collection();
             streams::container_buffer<std::vector<uint8_t>> buf2(std::move(collection), std::ios_base::in);
-            request.reply(200, streams::istream(buf2), U("text/plain"));
+            request.reply(200, streams::istream(buf2), _XPLATSTR("text/plain"));
             buf.close(std::ios_base::out);
         });
 
@@ -273,7 +273,7 @@ SUITE(response_stream_tests)
 
             // Now verify that we've got the right data
             auto s = resp.extract_string().get();
-            VERIFY_ARE_EQUAL(s.c_str(), U("abc"));
+            VERIFY_ARE_EQUAL(s.c_str(), _XPLATSTR("abc"));
         }
         listener.close().wait();
     }
@@ -293,7 +293,7 @@ SUITE(response_stream_tests)
 
         listener.support([&buf](http_request request) {
             // Ensure that it is transfer-encoded
-            request.reply(200, streams::istream(buf), 4096, U("text/plain"));
+            request.reply(200, streams::istream(buf), 4096, _XPLATSTR("text/plain"));
         });
 
         {

@@ -65,11 +65,11 @@ static void open_browser(utility::string_t auth_uri)
     auto r = ShellExecuteA(NULL, "open", conversions::utf16_to_utf8(auth_uri).c_str(), NULL, NULL, SW_SHOWNORMAL);
 #elif defined(__APPLE__)
     // NOTE: OS X only.
-    string_t browser_cmd(U("open \"") + auth_uri + U("\""));
+    string_t browser_cmd(_XPLATSTR("open \"") + auth_uri + _XPLATSTR("\""));
     (void)system(browser_cmd.c_str());
 #else
     // NOTE: Linux/X11 only.
-    string_t browser_cmd(U("xdg-open \"") + auth_uri + U("\""));
+    string_t browser_cmd(_XPLATSTR("xdg-open \"") + auth_uri + _XPLATSTR("\""));
     (void)system(browser_cmd.c_str());
 #endif
 }
@@ -86,7 +86,7 @@ public:
         : m_listener(new http_listener(listen_uri)), m_config(config)
     {
         m_listener->support([this](http::http_request request) -> void {
-            if (request.request_uri().path() == U("/") && request.request_uri().query() != U(""))
+            if (request.request_uri().path() == _XPLATSTR("/") && request.request_uri().query() != _XPLATSTR(""))
             {
                 m_resplock.lock();
 
@@ -104,13 +104,13 @@ public:
                         }
                     });
 
-                request.reply(status_codes::OK, U("Ok."));
+                request.reply(status_codes::OK, _XPLATSTR("Ok."));
 
                 m_resplock.unlock();
             }
             else
             {
-                request.reply(status_codes::NotFound, U("Not found."));
+                request.reply(status_codes::NotFound, _XPLATSTR("Not found."));
             }
         });
 
@@ -233,22 +233,22 @@ class linkedin_session_sample : public oauth1_session_sample
 {
 public:
     linkedin_session_sample()
-        : oauth1_session_sample(U("LinkedIn"),
+        : oauth1_session_sample(_XPLATSTR("LinkedIn"),
                                 s_linkedin_key,
                                 s_linkedin_secret,
-                                U("https://api.linkedin.com/uas/oauth/requestToken"),
-                                U("https://www.linkedin.com/uas/oauth/authenticate"),
-                                U("https://api.linkedin.com/uas/oauth/accessToken"),
-                                U("http://localhost:8888/"))
+                                _XPLATSTR("https://api.linkedin.com/uas/oauth/requestToken"),
+                                _XPLATSTR("https://www.linkedin.com/uas/oauth/authenticate"),
+                                _XPLATSTR("https://api.linkedin.com/uas/oauth/accessToken"),
+                                _XPLATSTR("http://localhost:8888/"))
     {
     }
 
 protected:
     void run_internal() override
     {
-        http_client api(U("https://api.linkedin.com/v1/people/"), m_http_config);
+        http_client api(_XPLATSTR("https://api.linkedin.com/v1/people/"), m_http_config);
         ucout << "Requesting user information:" << std::endl;
-        ucout << "Information: " << api.request(methods::GET, U("~?format=json")).get().extract_json().get()
+        ucout << "Information: " << api.request(methods::GET, _XPLATSTR("~?format=json")).get().extract_json().get()
               << std::endl;
     }
 };
@@ -260,22 +260,22 @@ class twitter_session_sample : public oauth1_session_sample
 {
 public:
     twitter_session_sample()
-        : oauth1_session_sample(U("Twitter"),
+        : oauth1_session_sample(_XPLATSTR("Twitter"),
                                 s_twitter_key,
                                 s_twitter_secret,
-                                U("https://api.twitter.com/oauth/request_token"),
-                                U("https://api.twitter.com/oauth/authorize"),
-                                U("https://api.twitter.com/oauth/access_token"),
-                                U("http://testhost.local:8890/"))
+                                _XPLATSTR("https://api.twitter.com/oauth/request_token"),
+                                _XPLATSTR("https://api.twitter.com/oauth/authorize"),
+                                _XPLATSTR("https://api.twitter.com/oauth/access_token"),
+                                _XPLATSTR("http://testhost.local:8890/"))
     {
     }
 
 protected:
     void run_internal() override
     {
-        http_client api(U("https://api.twitter.com/1.1/"), m_http_config);
+        http_client api(_XPLATSTR("https://api.twitter.com/1.1/"), m_http_config);
         ucout << "Requesting account information:" << std::endl;
-        ucout << api.request(methods::GET, U("account/settings.json")).get().extract_json().get() << std::endl;
+        ucout << api.request(methods::GET, _XPLATSTR("account/settings.json")).get().extract_json().get() << std::endl;
     }
 };
 

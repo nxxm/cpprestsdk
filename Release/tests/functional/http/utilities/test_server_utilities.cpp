@@ -79,7 +79,7 @@ void test_server_utilities::verify_request(::http::client::http_client* p_client
 {
     p_server->next_request().then([&](test_request* p_request) {
         http_asserts::assert_test_request_equals(p_request, method, path);
-        VERIFY_ARE_EQUAL(0, p_request->reply(code, U(""), response_headers));
+        VERIFY_ARE_EQUAL(0, p_request->reply(code, _XPLATSTR(""), response_headers));
     });
     http_asserts::assert_response_equals(p_client->request(method, path).get(), code, response_headers);
 }

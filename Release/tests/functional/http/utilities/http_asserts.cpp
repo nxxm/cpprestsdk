@@ -25,9 +25,9 @@ namespace utilities
 utility::string_t percent_encode_pound(utility::string_t str)
 {
     size_t index;
-    while ((index = str.find_first_of(U("#"))) != str.npos)
+    while ((index = str.find_first_of(_XPLATSTR("#"))) != str.npos)
     {
-        str.insert(index, U("%23"));
+        str.insert(index, _XPLATSTR("%23"));
         str.erase(index + 3, 1);
     }
     return str;
@@ -48,9 +48,9 @@ void http_asserts::assert_request_equals(::http::http_request request,
                                          const utility::string_t& relative_path)
 {
     VERIFY_ARE_EQUAL(mtd, request.method());
-    if (relative_path == U(""))
+    if (relative_path == _XPLATSTR(""))
     {
-        VERIFY_ARE_EQUAL(U("/"), request.relative_uri().to_string());
+        VERIFY_ARE_EQUAL(_XPLATSTR("/"), request.relative_uri().to_string());
     }
     else
     {
@@ -120,7 +120,7 @@ void http_asserts::assert_test_request_equals(const test_request* const p_reques
     VERIFY_ARE_EQUAL(path, p_request->m_path);
 
     // verify that content-type key exists in the header and the value matches the one provided
-    auto iter = p_request->m_headers.find(U("Content-Type"));
+    auto iter = p_request->m_headers.find(_XPLATSTR("Content-Type"));
     if (content_type.empty())
     {
         VERIFY_ARE_EQUAL(iter, p_request->m_headers.end());
@@ -152,7 +152,7 @@ static std::map<utility::string_t, utility::string_t> parse_headers(utility::ist
     utility::string_t header_line;
     while (getline(ss, header_line).good())
     {
-        const size_t colon_index = header_line.find(U(":"));
+        const size_t colon_index = header_line.find(_XPLATSTR(":"));
         const utility::string_t header_name = header_line.substr(0, colon_index);
         utility::string_t header_value = header_line.substr(colon_index + 1);
         tests::functional::http::utilities::trim_whitespace(header_value);
@@ -267,7 +267,7 @@ void http_asserts::assert_test_response_equals(test_response* p_response,
 {
     VERIFY_ARE_EQUAL(code, p_response->m_status_code);
     utility::string_t found_content;
-    p_response->match_header(U("Content-Type"), found_content);
+    p_response->match_header(_XPLATSTR("Content-Type"), found_content);
     VERIFY_ARE_EQUAL(content_type, found_content);
 }
 
@@ -278,14 +278,14 @@ void http_asserts::assert_test_response_equals(test_response* p_response,
 {
     VERIFY_ARE_EQUAL(code, p_response->m_status_code);
     utility::string_t found_content;
-    p_response->match_header(U("Content-Type"), found_content);
+    p_response->match_header(_XPLATSTR("Content-Type"), found_content);
     VERIFY_ARE_EQUAL(found_content.find(content_type), 0);
 
     // Beware: what kind of string this is? <-- stringhack until we tighten up wide/narrow string business
     utility::string_t extracted_body;
     if (p_response->m_data.size() == 0)
     {
-        extracted_body = U("");
+        extracted_body = _XPLATSTR("");
     }
     else
     {

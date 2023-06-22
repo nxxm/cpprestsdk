@@ -53,7 +53,7 @@ SUITE(close_tests)
 
         client.connect(m_uri).wait();
 
-        client.close(websocket_close_status::going_away, U("Client disconnecting")).wait();
+        client.close(websocket_close_status::going_away, _XPLATSTR("Client disconnecting")).wait();
     }
 
     // Server sends a close frame (server initiated close)
@@ -79,7 +79,7 @@ SUITE(close_tests)
     TEST_FIXTURE(uri_address, close_callback_client_websocket, "Ignore", "319")
     {
         test_websocket_server server;
-        const utility::string_t close_reason = U("Too large");
+        const utility::string_t close_reason = _XPLATSTR("Too large");
 
         // verify it is ok not to set close handler
         websocket_callback_client client;
@@ -106,7 +106,7 @@ SUITE(close_tests)
     // Test close websocket connection: client sends a close with reason and server responds with close frame
     TEST_FIXTURE(uri_address, close_callback_client_with_reason, "Ignore", "319")
     {
-        const utility::string_t close_reason = U("Client disconnecting");
+        const utility::string_t close_reason = _XPLATSTR("Client disconnecting");
         test_websocket_server server;
 
         websocket_callback_client client;
@@ -138,7 +138,7 @@ SUITE(close_tests)
                                                          const utility::string_t& reason,
                                                          const std::error_code& code) {
             VERIFY_ARE_EQUAL(status, websocket_close_status::going_away);
-            VERIFY_ARE_EQUAL(reason, U(""));
+            VERIFY_ARE_EQUAL(reason, _XPLATSTR(""));
             VERIFY_ARE_EQUAL(code.value(), 0);
 
             hitCount++;

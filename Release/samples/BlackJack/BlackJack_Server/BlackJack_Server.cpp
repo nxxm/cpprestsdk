@@ -41,13 +41,13 @@ void on_initialize(const string_t& address)
     // Build our listener's URI from the configured address and the hard-coded path "blackjack/dealer"
 
     uri_builder uri(address);
-    uri.append_path(U("blackjack/dealer"));
+    uri.append_path(_XPLATSTR("blackjack/dealer"));
 
     auto addr = uri.to_uri().to_string();
     g_httpDealer = std::unique_ptr<BlackJackDealer>(new BlackJackDealer(addr));
     g_httpDealer->open().wait();
 
-    ucout << utility::string_t(U("Listening for requests at: ")) << addr << std::endl;
+    ucout << utility::string_t(_XPLATSTR("Listening for requests at: ")) << addr << std::endl;
 
     return;
 }
@@ -69,13 +69,13 @@ int wmain(int argc, wchar_t* argv[])
 int main(int argc, char* argv[])
 #endif
 {
-    utility::string_t port = U("34568");
+    utility::string_t port = _XPLATSTR("34568");
     if (argc == 2)
     {
         port = argv[1];
     }
 
-    utility::string_t address = U("http://localhost:");
+    utility::string_t address = _XPLATSTR("http://localhost:");
     address.append(port);
 
     on_initialize(address);

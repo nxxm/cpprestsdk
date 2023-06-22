@@ -1451,7 +1451,7 @@ private:
                 {
                     // The stream ended earlier than we detected it should
                     http_exception ex(
-                        U("Unexpected end of request body stream encountered before expected length met."));
+                        _XPLATSTR("Unexpected end of request body stream encountered before expected length met."));
                     p_request_context->report_exception(ex);
                     return;
                 }
@@ -1543,7 +1543,7 @@ private:
                     {
                         // The stream ended earlier than we detected it should
                         return pplx::task_from_exception<size_t>(http_exception(
-                            U("Unexpected end of request body stream encountered before expected length met.")));
+                            _XPLATSTR("Unexpected end of request body stream encountered before expected length met.")));
                     }
 
                     // We think we're done; inform the compression library so it can finalize and/or give us any pending
@@ -1748,7 +1748,7 @@ private:
                     if (read == 0)
                     {
                         p_request_context->report_exception(http_exception(
-                            U("Unexpected end of request body stream encountered before Content-Length met.")));
+                            _XPLATSTR("Unexpected end of request body stream encountered before Content-Length met.")));
                         return;
                     }
 

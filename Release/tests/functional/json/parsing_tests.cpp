@@ -211,31 +211,31 @@ SUITE(parsing_tests)
     TEST(stringstream_t)
     {
         utility::stringstream_t ss0;
-        ss0 << U("null");
+        ss0 << _XPLATSTR("null");
         json::value v0 = json::value::parse(ss0);
 
         utility::stringstream_t ss1;
-        ss1 << U("17");
+        ss1 << _XPLATSTR("17");
         json::value v1 = json::value::parse(ss1);
 
         utility::stringstream_t ss2;
-        ss2 << U("3.1415");
+        ss2 << _XPLATSTR("3.1415");
         json::value v2 = json::value::parse(ss2);
 
         utility::stringstream_t ss3;
-        ss3 << U("true");
+        ss3 << _XPLATSTR("true");
         json::value v3 = json::value::parse(ss3);
 
         utility::stringstream_t ss4;
-        ss4 << U("\"Hello!\"");
+        ss4 << _XPLATSTR("\"Hello!\"");
         json::value v4 = json::value::parse(ss4);
 
         utility::stringstream_t ss8;
-        ss8 << U("{ \"a\" : 10 }");
+        ss8 << _XPLATSTR("{ \"a\" : 10 }");
         json::value v8 = json::value::parse(ss8);
 
         utility::stringstream_t ss9;
-        ss9 << U("[1,2,3,true]");
+        ss9 << _XPLATSTR("[1,2,3,true]");
         json::value v9 = json::value::parse(ss9);
 
         VERIFY_ARE_EQUAL(v1.type(), json::value::Number);
@@ -246,7 +246,7 @@ SUITE(parsing_tests)
         VERIFY_ARE_EQUAL(v9.type(), json::value::Array);
     }
 
-    TEST(whitespace_failure) { VERIFY_PARSING_THROW(json::value::parse(U("  "))); }
+    TEST(whitespace_failure) { VERIFY_PARSING_THROW(json::value::parse(_XPLATSTR("  "))); }
 
     static const std::array<char, 4> whitespace_chars = {{0x20, 0x09, 0x0A, 0x0D}};
 
@@ -261,20 +261,20 @@ SUITE(parsing_tests)
         {
             utility::string_t input;
             input.append(2, ch);
-            input.append(U("["));
+            input.append(_XPLATSTR("["));
             input.append(2, ch);
-            input.append(U("1"));
+            input.append(_XPLATSTR("1"));
             input.append(1, ch);
-            input.append(U(","));
+            input.append(_XPLATSTR(","));
             input.append(4, ch);
-            input.append(U("2"));
+            input.append(_XPLATSTR("2"));
             input.append(1, ch);
-            input.append(U("]"));
+            input.append(_XPLATSTR("]"));
             input.append(2, ch);
             json::value val = json::value::parse(input);
             VERIFY_IS_TRUE(val.is_array());
-            VERIFY_ARE_EQUAL(U("1"), val[0].serialize());
-            VERIFY_ARE_EQUAL(U("2"), val[1].serialize());
+            VERIFY_ARE_EQUAL(_XPLATSTR("1"), val[0].serialize());
+            VERIFY_ARE_EQUAL(_XPLATSTR("2"), val[1].serialize());
         }
     }
 
@@ -285,79 +285,79 @@ SUITE(parsing_tests)
         {
             utility::string_t input;
             input.append(2, ch);
-            input.append(U("{"));
+            input.append(_XPLATSTR("{"));
             input.append(2, ch);
-            input.append(U("\"1\""));
+            input.append(_XPLATSTR("\"1\""));
             input.append(1, ch);
-            input.append(U(":"));
+            input.append(_XPLATSTR(":"));
             input.append(4, ch);
-            input.append(U("2"));
+            input.append(_XPLATSTR("2"));
             input.append(1, ch);
-            input.append(U("}"));
+            input.append(_XPLATSTR("}"));
             input.append(2, ch);
             json::value val = json::value::parse(input);
             VERIFY_IS_TRUE(val.is_object());
-            VERIFY_ARE_EQUAL(U("2"), val[U("1")].serialize());
+            VERIFY_ARE_EQUAL(_XPLATSTR("2"), val[_XPLATSTR("1")].serialize());
         }
     }
 
     TEST(string_t)
     {
-        json::value str = json::value::parse(U("\"\\\"\""));
-        VERIFY_ARE_EQUAL(U("\""), str.as_string());
+        json::value str = json::value::parse(_XPLATSTR("\"\\\"\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("\""), str.as_string());
 
-        str = json::value::parse(U("\"\""));
-        VERIFY_ARE_EQUAL(U(""), str.as_string());
+        str = json::value::parse(_XPLATSTR("\"\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR(""), str.as_string());
 
-        str = json::value::parse(U("\"\\\"ds\""));
-        VERIFY_ARE_EQUAL(U("\"ds"), str.as_string());
+        str = json::value::parse(_XPLATSTR("\"\\\"ds\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("\"ds"), str.as_string());
 
-        str = json::value::parse(U("\"\\\"\\\"\""));
-        VERIFY_ARE_EQUAL(U("\"\""), str.as_string());
+        str = json::value::parse(_XPLATSTR("\"\\\"\\\"\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("\"\""), str.as_string());
 
         // two character escapes
-        str = json::value::parse(U("\"\\\\\""));
-        VERIFY_ARE_EQUAL(U("\\"), str.as_string());
+        str = json::value::parse(_XPLATSTR("\"\\\\\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("\\"), str.as_string());
 
-        str = json::value::parse(U("\"\\/\""));
-        VERIFY_ARE_EQUAL(U("/"), str.as_string());
+        str = json::value::parse(_XPLATSTR("\"\\/\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("/"), str.as_string());
 
-        str = json::value::parse(U("\"\\b\""));
-        VERIFY_ARE_EQUAL(U("\b"), str.as_string());
+        str = json::value::parse(_XPLATSTR("\"\\b\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("\b"), str.as_string());
 
-        str = json::value::parse(U("\"\\f\""));
-        VERIFY_ARE_EQUAL(U("\f"), str.as_string());
+        str = json::value::parse(_XPLATSTR("\"\\f\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("\f"), str.as_string());
 
-        str = json::value::parse(U("\"\\n\""));
-        VERIFY_ARE_EQUAL(U("\n"), str.as_string());
+        str = json::value::parse(_XPLATSTR("\"\\n\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("\n"), str.as_string());
 
-        str = json::value::parse(U("\"\\r\""));
-        VERIFY_ARE_EQUAL(U("\r"), str.as_string());
+        str = json::value::parse(_XPLATSTR("\"\\r\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("\r"), str.as_string());
 
-        str = json::value::parse(U("\"\\t\""));
-        VERIFY_ARE_EQUAL(U("\t"), str.as_string());
+        str = json::value::parse(_XPLATSTR("\"\\t\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("\t"), str.as_string());
     }
 
     TEST(escaped_unicode_string)
     {
-        auto str = json::value::parse(U("\"\\u0041\""));
-        VERIFY_ARE_EQUAL(U("A"), str.as_string());
+        auto str = json::value::parse(_XPLATSTR("\"\\u0041\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("A"), str.as_string());
 
-        str = json::value::parse(U("\"\\u004B\""));
-        VERIFY_ARE_EQUAL(U("K"), str.as_string());
+        str = json::value::parse(_XPLATSTR("\"\\u004B\""));
+        VERIFY_ARE_EQUAL(_XPLATSTR("K"), str.as_string());
 
-        str = json::value::parse(U("\"\\u20AC\""));
+        str = json::value::parse(_XPLATSTR("\"\\u20AC\""));
         // Euro sign as a hexadecimal UTF-8
         const auto euro = to_string_t("\xE2\x82\xAC");
         VERIFY_ARE_EQUAL(euro, str.as_string());
 
         // UTF-16 character with surrogate pair
-        str = json::value::parse(U("\"\\ud83d\\ude00\""));
+        str = json::value::parse(_XPLATSTR("\"\\ud83d\\ude00\""));
         // Grinning Face emoji as a hexadecimal UTF-8
         const auto emoji = to_string_t("\xF0\x9F\x98\x80");
         VERIFY_ARE_EQUAL(emoji, str.as_string());
 
-        VERIFY_PARSING_THROW(json::value::parse(U("\"\\u0klB\"")));
+        VERIFY_PARSING_THROW(json::value::parse(_XPLATSTR("\"\\u0klB\"")));
     }
 
     TEST(escaping_control_characters)
@@ -373,36 +373,36 @@ SUITE(parsing_tests)
         for (int i : chars)
         {
             utility::stringstream_t ss;
-            ss << U("\"\\u") << std::uppercase << std::setfill(U('0')) << std::setw(4) << std::hex << i << U("\"");
+            ss << _XPLATSTR("\"\\u") << std::uppercase << std::setfill(U('0')) << std::setw(4) << std::hex << i << _XPLATSTR("\"");
             const auto& str = ss.str();
             auto expectedStr = str;
             if (i == 0x08)
             {
-                expectedStr = U("\"\\b\"");
+                expectedStr = _XPLATSTR("\"\\b\"");
             }
             else if (i == 0x09)
             {
-                expectedStr = U("\"\\t\"");
+                expectedStr = _XPLATSTR("\"\\t\"");
             }
             else if (i == 0x0A)
             {
-                expectedStr = U("\"\\n\"");
+                expectedStr = _XPLATSTR("\"\\n\"");
             }
             else if (i == 0x0C)
             {
-                expectedStr = U("\"\\f\"");
+                expectedStr = _XPLATSTR("\"\\f\"");
             }
             else if (i == 0x0D)
             {
-                expectedStr = U("\"\\r\"");
+                expectedStr = _XPLATSTR("\"\\r\"");
             }
             else if (i == 0x5C)
             {
-                expectedStr = U("\"\\\\\"");
+                expectedStr = _XPLATSTR("\"\\\\\"");
             }
             else if (i == 0x22)
             {
-                expectedStr = U("\"\\\"\"");
+                expectedStr = _XPLATSTR("\"\\\"\"");
             }
 
             // Try constructing a json string value directly.
@@ -425,50 +425,50 @@ SUITE(parsing_tests)
     TEST(comments_string)
     {
         // Nothing but a comment
-        VERIFY_PARSING_THROW(json::value::parse(U(" /* There's nothing but a comment here */  ")));
-        VERIFY_PARSING_THROW(json::value::parse(U(" // There's nothing but a comment here\n")));
+        VERIFY_PARSING_THROW(json::value::parse(_XPLATSTR(" /* There's nothing but a comment here */  ")));
+        VERIFY_PARSING_THROW(json::value::parse(_XPLATSTR(" // There's nothing but a comment here\n")));
 
         // Some invalid comments
-        VERIFY_PARSING_THROW(json::value::parse(U(" -22 /*/")));
-        VERIFY_PARSING_THROW(json::value::parse(U(" -22 /* /* nested */ */")));
+        VERIFY_PARSING_THROW(json::value::parse(_XPLATSTR(" -22 /*/")));
+        VERIFY_PARSING_THROW(json::value::parse(_XPLATSTR(" -22 /* /* nested */ */")));
 
         // Correctly placed comments
-        json::value num1 = json::value::parse(U("-22 // This is a trailing comment\n"));
+        json::value num1 = json::value::parse(_XPLATSTR("-22 // This is a trailing comment\n"));
         VERIFY_ARE_EQUAL(-22, num1.as_double());
-        num1 = json::value::parse(U(" -22 /* This is a trailing comment with a // nested\n comment */"));
+        num1 = json::value::parse(_XPLATSTR(" -22 /* This is a trailing comment with a // nested\n comment */"));
         VERIFY_ARE_EQUAL(-22, num1.as_double());
-        json::value num2 = json::value::parse(U("// This is a leading comment\n -22"));
+        json::value num2 = json::value::parse(_XPLATSTR("// This is a leading comment\n -22"));
         VERIFY_ARE_EQUAL(-22, num2.as_double());
-        json::value num3 = json::value::parse(U("-22 /* This is a trailing comment */"));
+        json::value num3 = json::value::parse(_XPLATSTR("-22 /* This is a trailing comment */"));
         VERIFY_ARE_EQUAL(-22, num3.as_double());
-        json::value num4 = json::value::parse(U("/* This is a leading comment */ -22"));
+        json::value num4 = json::value::parse(_XPLATSTR("/* This is a leading comment */ -22"));
         VERIFY_ARE_EQUAL(-22, num4.as_double());
-        json::value num5 = json::value::parse(U("-22 /***/"));
+        json::value num5 = json::value::parse(_XPLATSTR("-22 /***/"));
         VERIFY_ARE_EQUAL(-22, num5.as_double());
 
-        json::value obj1 = json::value::parse(U("{// A comment in the middle of an empty object\n}"));
+        json::value obj1 = json::value::parse(_XPLATSTR("{// A comment in the middle of an empty object\n}"));
         VERIFY_IS_TRUE(obj1.is_object());
         VERIFY_ARE_EQUAL(0u, obj1.size());
-        json::value obj2 = json::value::parse(U("{/* A comment in the middle of an empty object */}"));
+        json::value obj2 = json::value::parse(_XPLATSTR("{/* A comment in the middle of an empty object */}"));
         VERIFY_IS_TRUE(obj2.is_object());
         VERIFY_ARE_EQUAL(0u, obj2.size());
-        json::value obj3 = json::value::parse(U("{ \"test\" : // A comment in the middle of a non-empty object\n 2}"));
+        json::value obj3 = json::value::parse(_XPLATSTR("{ \"test\" : // A comment in the middle of a non-empty object\n 2}"));
         VERIFY_IS_TRUE(obj3.is_object());
         VERIFY_ARE_EQUAL(1u, obj3.size());
-        json::value obj4 = json::value::parse(U("{ \"test\" : /* A comment in the middle of a non-empty object */ 2}"));
+        json::value obj4 = json::value::parse(_XPLATSTR("{ \"test\" : /* A comment in the middle of a non-empty object */ 2}"));
         VERIFY_IS_TRUE(obj4.is_object());
         VERIFY_ARE_EQUAL(1u, obj4.size());
 
-        json::value arr1 = json::value::parse(U("[// A comment in the middle of an empty array\n]"));
+        json::value arr1 = json::value::parse(_XPLATSTR("[// A comment in the middle of an empty array\n]"));
         VERIFY_IS_TRUE(arr1.is_array());
         VERIFY_ARE_EQUAL(0u, arr1.size());
-        json::value arr2 = json::value::parse(U("[/* A comment in the middle of an empty array */]"));
+        json::value arr2 = json::value::parse(_XPLATSTR("[/* A comment in the middle of an empty array */]"));
         VERIFY_IS_TRUE(arr2.is_array());
         VERIFY_ARE_EQUAL(0u, arr2.size());
-        json::value arr3 = json::value::parse(U("[ 1, // A comment in the middle of a non-array\n 2]"));
+        json::value arr3 = json::value::parse(_XPLATSTR("[ 1, // A comment in the middle of a non-array\n 2]"));
         VERIFY_IS_TRUE(arr3.is_array());
         VERIFY_ARE_EQUAL(2u, arr3.size());
-        json::value arr4 = json::value::parse(U("[ 1, /* A comment in the middle of a non-empty array */ 2]"));
+        json::value arr4 = json::value::parse(_XPLATSTR("[ 1, /* A comment in the middle of a non-empty array */ 2]"));
         VERIFY_IS_TRUE(arr4.is_array());
         VERIFY_ARE_EQUAL(2u, arr4.size());
     }
@@ -478,89 +478,89 @@ SUITE(parsing_tests)
         // Nothing but a comment
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U(" /* There's nothing but a comment here */ ");
+            stream << _XPLATSTR(" /* There's nothing but a comment here */ ");
             VERIFY_PARSING_THROW(json::value::parse(stream));
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U(" // There's nothing but a comment here\n ");
+            stream << _XPLATSTR(" // There's nothing but a comment here\n ");
             VERIFY_PARSING_THROW(json::value::parse(stream));
         }
 
         // Some invalid comments
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U(" -22 /*/");
+            stream << _XPLATSTR(" -22 /*/");
             VERIFY_PARSING_THROW(json::value::parse(stream));
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U(" -22 /* /* nested */ */");
+            stream << _XPLATSTR(" -22 /* /* nested */ */");
             VERIFY_PARSING_THROW(json::value::parse(stream));
         }
 
         // Correctly placed comments
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("-22 // This is a trailing comment\n");
+            stream << _XPLATSTR("-22 // This is a trailing comment\n");
             json::value num1 = json::value::parse(stream);
             VERIFY_ARE_EQUAL(-22, num1.as_double());
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U(" -22 /* This is a trailing comment with a // nested\n comment */");
+            stream << _XPLATSTR(" -22 /* This is a trailing comment with a // nested\n comment */");
             json::value num1 = json::value::parse(stream);
             VERIFY_ARE_EQUAL(-22, num1.as_double());
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("// This is a leading comment\n -22");
+            stream << _XPLATSTR("// This is a leading comment\n -22");
             json::value num2 = json::value::parse(stream);
             VERIFY_ARE_EQUAL(-22, num2.as_double());
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("-22 /* This is a trailing comment */");
+            stream << _XPLATSTR("-22 /* This is a trailing comment */");
             json::value num3 = json::value::parse(stream);
             VERIFY_ARE_EQUAL(-22, num3.as_double());
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("/* This is a leading comment */ -22");
+            stream << _XPLATSTR("/* This is a leading comment */ -22");
             json::value num4 = json::value::parse(stream);
             VERIFY_ARE_EQUAL(-22, num4.as_double());
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("-22 /***/");
+            stream << _XPLATSTR("-22 /***/");
             json::value num4 = json::value::parse(stream);
             VERIFY_ARE_EQUAL(-22, num4.as_double());
         }
 
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("{// A comment in the middle of an empty object\n}");
+            stream << _XPLATSTR("{// A comment in the middle of an empty object\n}");
             json::value obj1 = json::value::parse(stream);
             VERIFY_IS_TRUE(obj1.is_object());
             VERIFY_ARE_EQUAL(0u, obj1.size());
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("{/* A comment in the middle of an empty object */}");
+            stream << _XPLATSTR("{/* A comment in the middle of an empty object */}");
             json::value obj2 = json::value::parse(stream);
             VERIFY_IS_TRUE(obj2.is_object());
             VERIFY_ARE_EQUAL(0u, obj2.size());
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("{ \"test1\" : // A comment in the middle of a non-empty object\n 2}");
+            stream << _XPLATSTR("{ \"test1\" : // A comment in the middle of a non-empty object\n 2}");
             json::value obj3 = json::value::parse(stream);
             VERIFY_IS_TRUE(obj3.is_object());
             VERIFY_ARE_EQUAL(1u, obj3.size());
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("{ \"test1\" : /* A comment in the middle of a non-empty object */ 2}");
+            stream << _XPLATSTR("{ \"test1\" : /* A comment in the middle of a non-empty object */ 2}");
             json::value obj4 = json::value::parse(stream);
             VERIFY_IS_TRUE(obj4.is_object());
             VERIFY_ARE_EQUAL(1u, obj4.size());
@@ -568,28 +568,28 @@ SUITE(parsing_tests)
 
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("[// A comment in the middle of an empty array\n]");
+            stream << _XPLATSTR("[// A comment in the middle of an empty array\n]");
             json::value arr1 = json::value::parse(stream);
             VERIFY_IS_TRUE(arr1.is_array());
             VERIFY_ARE_EQUAL(0u, arr1.size());
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("[/* A comment in the middle of an empty array */]");
+            stream << _XPLATSTR("[/* A comment in the middle of an empty array */]");
             json::value arr2 = json::value::parse(stream);
             VERIFY_IS_TRUE(arr2.is_array());
             VERIFY_ARE_EQUAL(0u, arr2.size());
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("[ 1, // A comment in the middle of a non-array\n 2]");
+            stream << _XPLATSTR("[ 1, // A comment in the middle of a non-array\n 2]");
             json::value arr3 = json::value::parse(stream);
             VERIFY_IS_TRUE(arr3.is_array());
             VERIFY_ARE_EQUAL(2u, arr3.size());
         }
         {
             std::basic_stringstream<utility::char_t> stream;
-            stream << U("[ 1, /* A comment in the middle of a non-empty array */ 2]");
+            stream << _XPLATSTR("[ 1, /* A comment in the middle of a non-empty array */ 2]");
             json::value arr4 = json::value::parse(stream);
             VERIFY_IS_TRUE(arr4.is_array());
             VERIFY_ARE_EQUAL(2u, arr4.size());
@@ -598,31 +598,31 @@ SUITE(parsing_tests)
 
     TEST(empty_object_array)
     {
-        json::value obj = json::value::parse(U("{}"));
+        json::value obj = json::value::parse(_XPLATSTR("{}"));
         VERIFY_IS_TRUE(obj.is_object());
         VERIFY_ARE_EQUAL(0u, obj.size());
 
-        json::value arr = json::value::parse(U("[]"));
+        json::value arr = json::value::parse(_XPLATSTR("[]"));
         VERIFY_IS_TRUE(arr.is_array());
         VERIFY_ARE_EQUAL(0u, arr.size());
     }
 
     TEST(bug_object_field_key_no_value)
     {
-        VERIFY_PARSING_THROW(json::value::parse(U("{\"meow\"}")));
-        VERIFY_PARSING_THROW(json::value::parse(U("{\"meow\": 42, \"purr\": 57, \"hiss\"}")));
+        VERIFY_PARSING_THROW(json::value::parse(_XPLATSTR("{\"meow\"}")));
+        VERIFY_PARSING_THROW(json::value::parse(_XPLATSTR("{\"meow\": 42, \"purr\": 57, \"hiss\"}")));
     }
 
     TEST(bug_416116)
     {
-        json::value data2 = json::value::parse(U("\"δοκιμή\""));
+        json::value data2 = json::value::parse(_XPLATSTR("\"δοκιμή\""));
         auto s = data2.serialize();
 
 #if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable : 4566)
 #endif
-        VERIFY_ARE_EQUAL(s, U("\"δοκιμή\""));
+        VERIFY_ARE_EQUAL(s, _XPLATSTR("\"δοκιμή\""));
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -638,7 +638,7 @@ SUITE(parsing_tests)
         VERIFY_ARE_EQUAL(v, vv);
 
         auto s2 = v.serialize();
-        VERIFY_ARE_EQUAL(s2, U("[\"test1\",true]"));
+        VERIFY_ARE_EQUAL(s2, _XPLATSTR("[\"test1\",true]"));
 
         std::stringstream os;
         vv.serialize(os);
@@ -655,7 +655,7 @@ SUITE(parsing_tests)
         VERIFY_ARE_EQUAL(v, vv);
 
         auto s2 = v.serialize();
-        VERIFY_ARE_EQUAL(s2, U("{\"test1\":true}"));
+        VERIFY_ARE_EQUAL(s2, _XPLATSTR("{\"test1\":true}"));
 
         std::stringstream os;
         vv.serialize(os);
@@ -664,7 +664,7 @@ SUITE(parsing_tests)
 
     TEST(Japanese)
     {
-        utility::string_t ws = U("\"こんにちは\"");
+        utility::string_t ws = _XPLATSTR("\"こんにちは\"");
         std::string s = to_utf8string(ws);
         json::value v = json::value::parse(s);
 
@@ -683,7 +683,7 @@ SUITE(parsing_tests)
 
     TEST(Russian)
     {
-        utility::string_t ws = U("{\"results\":[{\"id\":272655310,\"name\":\"Андрей Ив´анов\"}]}");
+        utility::string_t ws = _XPLATSTR("{\"results\":[{\"id\":272655310,\"name\":\"Андрей Ив´анов\"}]}");
         json::value v1 = json::value::parse(ws);
         auto s2 = v1.serialize();
 
@@ -704,12 +704,12 @@ SUITE(parsing_tests)
         utility::string_t strval;
         for (size_t i = 0; i < depth; ++i)
         {
-            strval += U("{ \"a\" : 10, \"b\" : ");
+            strval += _XPLATSTR("{ \"a\" : 10, \"b\" : ");
         }
-        strval += U("20");
+        strval += _XPLATSTR("20");
         for (size_t i = 0; i < depth; ++i)
         {
-            strval += U("}");
+            strval += _XPLATSTR("}");
         }
         return strval;
     }
@@ -742,14 +742,14 @@ SUITE(parsing_tests)
     TEST(unsorted_object_parsing)
     {
         utility::stringstream_t ss;
-        ss << U("{\"z\":2, \"a\":1}");
+        ss << _XPLATSTR("{\"z\":2, \"a\":1}");
         json::value v = json::value::parse(ss);
         auto& obj = v.as_object();
 
-        VERIFY_ARE_NOT_EQUAL(obj.find(U("a")), obj.end());
-        VERIFY_ARE_NOT_EQUAL(obj.find(U("z")), obj.end());
-        VERIFY_ARE_EQUAL(obj[U("a")], 1);
-        VERIFY_ARE_EQUAL(obj[U("z")], 2);
+        VERIFY_ARE_NOT_EQUAL(obj.find(_XPLATSTR("a")), obj.end());
+        VERIFY_ARE_NOT_EQUAL(obj.find(_XPLATSTR("z")), obj.end());
+        VERIFY_ARE_EQUAL(obj[_XPLATSTR("a")], 1);
+        VERIFY_ARE_EQUAL(obj[_XPLATSTR("z")], 2);
         VERIFY_ARE_EQUAL(obj.size(), 2);
 
         VERIFY_IS_TRUE(::std::is_sorted(obj.begin(), obj.end(), compare_pairs));
@@ -758,7 +758,7 @@ SUITE(parsing_tests)
     TEST(keep_order_while_parsing)
     {
         utility::stringstream_t ss;
-        ss << U("{\"k\":3, \"j\":2, \"i\":1}");
+        ss << _XPLATSTR("{\"k\":3, \"j\":2, \"i\":1}");
 
         json::keep_object_element_order(true);
         struct restore
@@ -771,23 +771,23 @@ SUITE(parsing_tests)
 
         // Make sure collection stays unsorted:
         auto b = obj.begin();
-        VERIFY_ARE_EQUAL(b[0].first, U("k"));
-        VERIFY_ARE_EQUAL(b[1].first, U("j"));
-        VERIFY_ARE_EQUAL(b[2].first, U("i"));
+        VERIFY_ARE_EQUAL(b[0].first, _XPLATSTR("k"));
+        VERIFY_ARE_EQUAL(b[1].first, _XPLATSTR("j"));
+        VERIFY_ARE_EQUAL(b[2].first, _XPLATSTR("i"));
 
         // Make sure lookup still works:
-        auto val_i = obj[U("i")];
+        auto val_i = obj[_XPLATSTR("i")];
         VERIFY_ARE_EQUAL(val_i.as_integer(), 1);
 
-        auto val_j = obj[U("j")];
+        auto val_j = obj[_XPLATSTR("j")];
         VERIFY_ARE_EQUAL(val_j.as_integer(), 2);
 
         // Make sure 'a' goes to the back of the collection, and
         // can be looked up
-        obj[U("a")] = 4;
+        obj[_XPLATSTR("a")] = 4;
         b = obj.begin();
-        VERIFY_ARE_EQUAL(b[3].first, U("a"));
-        VERIFY_ARE_EQUAL(obj[U("a")].as_integer(), 4);
+        VERIFY_ARE_EQUAL(b[3].first, _XPLATSTR("a"));
+        VERIFY_ARE_EQUAL(obj[_XPLATSTR("a")].as_integer(), 4);
     }
 
     TEST(non_default_locale, "Ignore:Android", "Locale unsupported on Android")
@@ -803,7 +803,7 @@ SUITE(parsing_tests)
         if (setlocale(LC_ALL, changedLocale.c_str()) != nullptr)
         {
             // string serialize
-            utility::string_t str(U("[true,false,-1.55,5,null,{\"abc\":5555}]"));
+            utility::string_t str(_XPLATSTR("[true,false,-1.55,5,null,{\"abc\":5555}]"));
             json::value v = json::value::parse(str);
             VERIFY_ARE_EQUAL(changedLocale, setlocale(LC_ALL, nullptr));
             VERIFY_ARE_EQUAL(str, v.serialize());
@@ -842,9 +842,9 @@ SUITE(parsing_tests)
     TEST(parse_overload_success)
     {
         std::error_code err;
-        utility::string_t valueStr(U("\"JSONString\""));
-        utility::string_t arrStr(U("[true,false,-1.55,5,null,{\"abc\":5555}]"));
-        utility::string_t objStr(U("{\"k\":3, \"j\":2, \"i\":1}"));
+        utility::string_t valueStr(_XPLATSTR("\"JSONString\""));
+        utility::string_t arrStr(_XPLATSTR("[true,false,-1.55,5,null,{\"abc\":5555}]"));
+        utility::string_t objStr(_XPLATSTR("{\"k\":3, \"j\":2, \"i\":1}"));
 
         error_code_helper(valueStr);
         error_code_helper(arrStr);
@@ -882,8 +882,8 @@ SUITE(parsing_tests)
     TEST(parse_overload_failed)
     {
         std::error_code err, streamErr, iStreamErr;
-        utility::string_t str(U("JSONString"));
-        utility::string_t arrStr(U("[true, false"));
+        utility::string_t str(_XPLATSTR("JSONString"));
+        utility::string_t arrStr(_XPLATSTR("[true, false"));
         json::value parsedObject = json::value::parse(str, err);
 
         VERIFY_IS_TRUE(err.value() > 0);
@@ -912,20 +912,20 @@ SUITE(parsing_tests)
         int count = 0;
         auto& obj = v.as_object();
 
-        VERIFY_ARE_NOT_EQUAL(obj.find(U("pageInfo")), obj.end());
-        VERIFY_ARE_NOT_EQUAL(obj.find(U("items")), obj.end());
+        VERIFY_ARE_NOT_EQUAL(obj.find(_XPLATSTR("pageInfo")), obj.end());
+        VERIFY_ARE_NOT_EQUAL(obj.find(_XPLATSTR("items")), obj.end());
 
-        auto& items = obj[U("items")];
+        auto& items = obj[_XPLATSTR("items")];
 
         for (auto iter = items.as_array().cbegin(); iter != items.as_array().cend(); ++iter)
         {
             const auto& item = *iter;
-            auto iSnippet = item.as_object().find(U("snippet"));
+            auto iSnippet = item.as_object().find(_XPLATSTR("snippet"));
             if (iSnippet == item.as_object().end())
             {
                 throw std::runtime_error("snippet key not found");
             }
-            auto iTitle = iSnippet->second.as_object().find(U("title"));
+            auto iTitle = iSnippet->second.as_object().find(_XPLATSTR("title"));
             if (iTitle == iSnippet->second.as_object().end())
             {
                 throw std::runtime_error("title key not found");

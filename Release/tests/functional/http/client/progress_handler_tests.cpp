@@ -51,9 +51,9 @@ SUITE(progress_handler_tests)
 
         test_http_server::scoped_server scoped(m_uri);
         scoped.server()->next_request().then([&](test_request* p_request) {
-            http_asserts::assert_test_request_equals(p_request, mtd, U("/"));
+            http_asserts::assert_test_request_equals(p_request, mtd, _XPLATSTR("/"));
             std::map<utility::string_t, utility::string_t> headers;
-            p_request->reply(200, utility::string_t(U("OK")), headers);
+            p_request->reply(200, utility::string_t(_XPLATSTR("OK")), headers);
         });
 
         auto response = client.request(msg).get();
@@ -75,11 +75,11 @@ SUITE(progress_handler_tests)
         http_client client(m_uri, config);
         const method mtd = methods::POST;
         utility::string_t data;
-        utility::string_t content_type = U("text/plain; charset=utf-8");
+        utility::string_t content_type = _XPLATSTR("text/plain; charset=utf-8");
 
         const size_t repeats = 5500;
         for (size_t i = 0; i < repeats; ++i)
-            data.append(U("abcdefghihklmnopqrstuvwxyz"));
+            data.append(_XPLATSTR("abcdefghihklmnopqrstuvwxyz"));
 
         utility::size64_t upsize = 4711u, downsize = 4711u;
         int calls = 0;
@@ -97,9 +97,9 @@ SUITE(progress_handler_tests)
 
         test_http_server::scoped_server scoped(m_uri);
         scoped.server()->next_request().then([&](test_request* p_request) {
-            http_asserts::assert_test_request_equals(p_request, mtd, U("/"), content_type, data);
+            http_asserts::assert_test_request_equals(p_request, mtd, _XPLATSTR("/"), content_type, data);
             std::map<utility::string_t, utility::string_t> headers;
-            p_request->reply(200, utility::string_t(U("OK")), headers);
+            p_request->reply(200, utility::string_t(_XPLATSTR("OK")), headers);
         });
 
         auto response = client.request(msg).get();
@@ -139,14 +139,14 @@ SUITE(progress_handler_tests)
 
         test_http_server::scoped_server scoped(m_uri);
         scoped.server()->next_request().then([&](test_request* p_request) {
-            http_asserts::assert_test_request_equals(p_request, mtd, U("/"));
+            http_asserts::assert_test_request_equals(p_request, mtd, _XPLATSTR("/"));
             std::string resp_data;
             for (size_t i = 0; i < repeats; ++i)
                 resp_data.append("abcdefghihklmnopqrstuvwxyz");
 
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("Content-Type")] = U("text/plain");
-            p_request->reply(200, utility::string_t(U("OK")), headers, resp_data);
+            headers[_XPLATSTR("Content-Type")] = _XPLATSTR("text/plain");
+            p_request->reply(200, utility::string_t(_XPLATSTR("OK")), headers, resp_data);
         });
 
         auto response = client.request(msg).get();
@@ -170,11 +170,11 @@ SUITE(progress_handler_tests)
         http_client client(m_uri, config);
         const method mtd = methods::POST;
         utility::string_t data;
-        utility::string_t content_type = U("text/plain; charset=utf-8");
+        utility::string_t content_type = _XPLATSTR("text/plain; charset=utf-8");
 
         const size_t repeats = 5500;
         for (size_t i = 0; i < repeats; ++i)
-            data.append(U("abcdefghihklmnopqrstuvwxyz"));
+            data.append(_XPLATSTR("abcdefghihklmnopqrstuvwxyz"));
 
         utility::size64_t upsize = 4711u, downsize = 4711u;
         int calls = 0;
@@ -192,14 +192,14 @@ SUITE(progress_handler_tests)
 
         test_http_server::scoped_server scoped(m_uri);
         scoped.server()->next_request().then([&](test_request* p_request) {
-            http_asserts::assert_test_request_equals(p_request, mtd, U("/"), content_type, data);
+            http_asserts::assert_test_request_equals(p_request, mtd, _XPLATSTR("/"), content_type, data);
             std::string resp_data;
             for (size_t i = 0; i < repeats * 2; ++i)
                 resp_data.append("abcdefghihklmnopqrstuvwxyz");
 
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("Content-Type")] = U("text/plain");
-            p_request->reply(200, utility::string_t(U("OK")), headers, resp_data);
+            headers[_XPLATSTR("Content-Type")] = _XPLATSTR("text/plain");
+            p_request->reply(200, utility::string_t(_XPLATSTR("OK")), headers, resp_data);
         });
 
         auto response = client.request(msg).get();
@@ -217,15 +217,15 @@ SUITE(progress_handler_tests)
 
     TEST_FIXTURE(uri_address, set_progress_handler_open_failure)
     {
-        http_client client(U("http://localhost323:-1"));
+        http_client client(_XPLATSTR("http://localhost323:-1"));
 
         const method mtd = methods::POST;
         utility::string_t data;
-        utility::string_t content_type = U("text/plain; charset=utf-8");
+        utility::string_t content_type = _XPLATSTR("text/plain; charset=utf-8");
 
         const size_t repeats = 5500;
         for (size_t i = 0; i < repeats; ++i)
-            data.append(U("abcdefghihklmnopqrstuvwxyz"));
+            data.append(_XPLATSTR("abcdefghihklmnopqrstuvwxyz"));
 
         utility::size64_t upsize = 4711u, downsize = 4711u;
         int calls = 0;
@@ -260,11 +260,11 @@ SUITE(progress_handler_tests)
 
         const method mtd = methods::POST;
         utility::string_t data;
-        utility::string_t content_type = U("text/plain; charset=utf-8");
+        utility::string_t content_type = _XPLATSTR("text/plain; charset=utf-8");
 
         const size_t repeats = 5500;
         for (size_t i = 0; i < repeats; ++i)
-            data.append(U("abcdefghihklmnopqrstuvwxyz"));
+            data.append(_XPLATSTR("abcdefghihklmnopqrstuvwxyz"));
 
         utility::size64_t upsize = 4711u, downsize = 4711u;
         int calls = 0;
@@ -305,7 +305,7 @@ SUITE(progress_handler_tests)
         http_request msg(methods::GET);
 
         auto t = scoped.server()->next_request().then(
-            [&](test_request* p_request) { p_request->reply(200, utility::string_t(U("OK"))); });
+            [&](test_request* p_request) { p_request->reply(200, utility::string_t(_XPLATSTR("OK"))); });
 
         msg.set_progress_handler([](message_direction::direction, utility::size64_t) {
             // First all is for data upload completion
@@ -324,7 +324,7 @@ SUITE(progress_handler_tests)
         http_request msg(methods::GET);
 
         scoped.server()->next_request().then(
-            [&](test_request* p_request) { p_request->reply(200, utility::string_t(U("OK"))); });
+            [&](test_request* p_request) { p_request->reply(200, utility::string_t(_XPLATSTR("OK"))); });
 
         int numCalls = 0;
         msg.set_progress_handler([&](message_direction::direction, utility::size64_t) {
@@ -342,7 +342,7 @@ SUITE(progress_handler_tests)
     {
         http_client client(m_uri);
         http_request msg(methods::PUT);
-        msg.set_body(U("A"));
+        msg.set_body(_XPLATSTR("A"));
 
         msg.set_progress_handler(
             [&](message_direction::direction, utility::size64_t) { throw std::invalid_argument("fake error"); });
@@ -371,8 +371,8 @@ SUITE(progress_handler_tests)
         auto t = scoped.server()->next_request().then([&](test_request* p_request) {
             std::string resp_data("abc");
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("Content-Type")] = U("text/plain");
-            p_request->reply(200, utility::string_t(U("OK")), headers, resp_data);
+            headers[_XPLATSTR("Content-Type")] = _XPLATSTR("text/plain");
+            p_request->reply(200, utility::string_t(_XPLATSTR("OK")), headers, resp_data);
         });
 
         int numCalls = 0;

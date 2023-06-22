@@ -158,7 +158,7 @@ SUITE(error_tests)
         websocket_client client;
         auto t = client.receive();
 
-        VERIFY_THROWS(client.connect(U("ws://localhost:9981/ws")).get(), websocket_exception);
+        VERIFY_THROWS(client.connect(_XPLATSTR("ws://localhost:9981/ws")).get(), websocket_exception);
         VERIFY_THROWS(t.get(), websocket_exception);
     }
 

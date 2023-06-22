@@ -64,7 +64,7 @@ SUITE(authentication_tests)
         {
             test_http_server::scoped_server scoped(m_uri);
             http_client_config client_config;
-            web::credentials cred(U("some_user"), U("some_password")); // WinHTTP requires non-empty password
+            web::credentials cred(_XPLATSTR("some_user"), _XPLATSTR("some_password")); // WinHTTP requires non-empty password
             client_config.set_credentials(cred);
             http_client client(m_uri, client_config);
             const method mtd = methods::POST;
@@ -72,17 +72,17 @@ SUITE(authentication_tests)
             http_request msg(mtd);
 
             t = scoped.server()->next_request().then([&](test_request* p_request) {
-                http_asserts::assert_test_request_equals(p_request, mtd, U("/"));
+                http_asserts::assert_test_request_equals(p_request, mtd, _XPLATSTR("/"));
 
                 // Auth header
                 std::map<utility::string_t, utility::string_t> headers;
-                headers[U("WWW-Authenticate")] = U("Basic realm = \"WallyWorld\"");
+                headers[_XPLATSTR("WWW-Authenticate")] = _XPLATSTR("Basic realm = \"WallyWorld\"");
 
                 // unauthorized
-                p_request->reply(status_codes::Unauthorized, U("Authentication Failed"), headers);
+                p_request->reply(status_codes::Unauthorized, _XPLATSTR("Authentication Failed"), headers);
             });
             t2 = scoped.server()->next_request().then([&](test_request* p_request) {
-                http_asserts::assert_test_request_equals(p_request, methods::POST, U("/"));
+                http_asserts::assert_test_request_equals(p_request, methods::POST, _XPLATSTR("/"));
                 p_request->reply(200);
             });
 
@@ -121,29 +121,29 @@ SUITE(authentication_tests)
         {
             test_http_server::scoped_server scoped(m_uri);
             http_client_config client_config;
-            web::credentials cred(U("some_user"), U("some_password")); // WinHTTP requires non-empty password
+            web::credentials cred(_XPLATSTR("some_user"), _XPLATSTR("some_password")); // WinHTTP requires non-empty password
             client_config.set_credentials(cred);
             http_client client(m_uri, client_config);
             const method mtd = methods::POST;
-            utility::string_t contents(U("Hello World"));
+            utility::string_t contents(_XPLATSTR("Hello World"));
 
             http_request msg(mtd);
             msg.set_body(contents);
 
             t = scoped.server()->next_request().then([&](test_request* p_request) {
-                http_asserts::assert_test_request_equals(p_request, mtd, U("/"));
+                http_asserts::assert_test_request_equals(p_request, mtd, _XPLATSTR("/"));
 
                 // Auth header
                 std::map<utility::string_t, utility::string_t> headers;
-                headers[U("WWW-Authenticate")] = U("Basic realm = \"WallyWorld\"");
+                headers[_XPLATSTR("WWW-Authenticate")] = _XPLATSTR("Basic realm = \"WallyWorld\"");
 
                 // unauthorized
-                p_request->reply(status_codes::Unauthorized, U("Authentication Failed"), headers);
+                p_request->reply(status_codes::Unauthorized, _XPLATSTR("Authentication Failed"), headers);
             });
 
             t2 = scoped.server()->next_request().then([&](test_request* p_request) {
                 http_asserts::assert_test_request_equals(
-                    p_request, methods::POST, U("/"), U("text/plain; charset=utf-8"), contents);
+                    p_request, methods::POST, _XPLATSTR("/"), _XPLATSTR("text/plain; charset=utf-8"), contents);
 
                 p_request->reply(200);
             });
@@ -171,7 +171,7 @@ SUITE(authentication_tests)
 
     TEST_FIXTURE(uri_address, proxy_auth_noseek, "Ignore:Linux", "88", "Ignore:Apple", "88")
     {
-        web::http::uri uri(U("http://localhost:34567/"));
+        web::http::uri uri(_XPLATSTR("http://localhost:34567/"));
         test_http_server::scoped_server scoped(uri);
         http_client client(
             uri); // In this test, the request cannot be resent, so the username and password are not required
@@ -185,14 +185,14 @@ SUITE(authentication_tests)
         msg.set_body(buf.create_istream(), 1);
 
         scoped.server()->next_request().then([&](test_request* p_request) {
-            http_asserts::assert_test_request_equals(p_request, mtd, U("/"));
+            http_asserts::assert_test_request_equals(p_request, mtd, _XPLATSTR("/"));
 
             // Auth header
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("WWW-Authenticate")] = U("Basic realm = \"WallyWorld\"");
+            headers[_XPLATSTR("WWW-Authenticate")] = _XPLATSTR("Basic realm = \"WallyWorld\"");
 
             // unauthorized
-            p_request->reply(status_codes::Unauthorized, U("Authentication Failed"), headers);
+            p_request->reply(status_codes::Unauthorized, _XPLATSTR("Authentication Failed"), headers);
         });
 
         http_asserts::assert_response_equals(client.request(msg).get(), status_codes::Unauthorized);
@@ -206,7 +206,7 @@ SUITE(authentication_tests)
         {
             test_http_server::scoped_server scoped(m_uri);
             http_client_config client_config;
-            web::credentials cred(U("some_user"), U("some_password")); // WinHTTP requires non-empty password
+            web::credentials cred(_XPLATSTR("some_user"), _XPLATSTR("some_password")); // WinHTTP requires non-empty password
             client_config.set_credentials(cred);
             http_client client(m_uri, client_config);
             const method mtd = methods::POST;
@@ -218,9 +218,9 @@ SUITE(authentication_tests)
             msg.set_body(streams::container_stream<std::vector<uint8_t>>::open_istream(std::move(msg_body)));
 
             auto replyFunc = [&](test_request* p_request) {
-                utility::string_t contents(U("a"));
+                utility::string_t contents(_XPLATSTR("a"));
                 http_asserts::assert_test_request_equals(
-                    p_request, methods::POST, U("/"), U("application/octet-stream"), contents);
+                    p_request, methods::POST, _XPLATSTR("/"), _XPLATSTR("application/octet-stream"), contents);
 
                 p_request->reply(200);
             };
@@ -228,14 +228,14 @@ SUITE(authentication_tests)
             t = scoped.server()
                     ->next_request()
                     .then([&](test_request* p_request) {
-                        http_asserts::assert_test_request_equals(p_request, mtd, U("/"));
+                        http_asserts::assert_test_request_equals(p_request, mtd, _XPLATSTR("/"));
 
                         // Auth header
                         std::map<utility::string_t, utility::string_t> headers;
-                        headers[U("WWW-Authenticate")] = U("Basic realm = \"WallyWorld\"");
+                        headers[_XPLATSTR("WWW-Authenticate")] = _XPLATSTR("Basic realm = \"WallyWorld\"");
 
                         // unauthorized
-                        p_request->reply(status_codes::Unauthorized, U("Authentication Failed"), headers);
+                        p_request->reply(status_codes::Unauthorized, _XPLATSTR("Authentication Failed"), headers);
                     })
                     .then([&scoped, replyFunc]() {
                         // Client resent the request
@@ -255,19 +255,19 @@ SUITE(authentication_tests)
 
         auto t = scoped.server()->next_request().then([&](test_request* p_request) {
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("h1")] = U("data1");
+            headers[_XPLATSTR("h1")] = _XPLATSTR("data1");
             // Auth header
-            headers[U("WWW-Authenticate")] = U("Basic realm = \"myRealm\"");
+            headers[_XPLATSTR("WWW-Authenticate")] = _XPLATSTR("Basic realm = \"myRealm\"");
             // unauthorized
-            p_request->reply(status_codes::Unauthorized, U("Authentication Failed"), headers, "a");
+            p_request->reply(status_codes::Unauthorized, _XPLATSTR("Authentication Failed"), headers, "a");
         });
 
         http_response response = client.request(methods::GET).get();
         auto str_body = response.extract_vector().get();
-        auto h1 = response.headers()[U("h1")];
+        auto h1 = response.headers()[_XPLATSTR("h1")];
         VERIFY_ARE_EQUAL(status_codes::Unauthorized, response.status_code());
         VERIFY_ARE_EQUAL(str_body[0], 'a');
-        VERIFY_ARE_EQUAL(h1, U("data1"));
+        VERIFY_ARE_EQUAL(h1, _XPLATSTR("data1"));
         t.get();
     }
 #endif
@@ -279,31 +279,31 @@ SUITE(authentication_tests)
     {
         pplx::task<void> t;
         {
-            web::http::uri uri(U("http://localhost:34569/"));
+            web::http::uri uri(_XPLATSTR("http://localhost:34569/"));
             test_http_server::scoped_server scoped(uri);
             http_client_config client_config;
-            web::credentials cred(U("some_user"), U("some_password"));
+            web::credentials cred(_XPLATSTR("some_user"), _XPLATSTR("some_password"));
             client_config.set_credentials(cred);
             http_client client(uri, client_config);
 
             auto replyFunc = [&](test_request* p_request) {
                 std::map<utility::string_t, utility::string_t> headers;
                 // Auth header
-                headers[U("WWW-Authenticate")] = U("Basic realm = \"WallyWorld\"");
-                headers[U("h1")] = U("data2");
+                headers[_XPLATSTR("WWW-Authenticate")] = _XPLATSTR("Basic realm = \"WallyWorld\"");
+                headers[_XPLATSTR("h1")] = _XPLATSTR("data2");
                 // still unauthorized after the user has resent the request with the credentials
-                p_request->reply(status_codes::Unauthorized, U("Authentication Failed"), headers, "def");
+                p_request->reply(status_codes::Unauthorized, _XPLATSTR("Authentication Failed"), headers, "def");
             };
 
             t = scoped.server()
                     ->next_request()
                     .then([&](test_request* p_request) {
                         std::map<utility::string_t, utility::string_t> headers;
-                        headers[U("h1")] = U("data1");
+                        headers[_XPLATSTR("h1")] = _XPLATSTR("data1");
                         // Auth header
-                        headers[U("WWW-Authenticate")] = U("Basic realm = \"myRealm\"");
+                        headers[_XPLATSTR("WWW-Authenticate")] = _XPLATSTR("Basic realm = \"myRealm\"");
                         // unauthorized
-                        p_request->reply(status_codes::Unauthorized, U("Authentication Failed"), headers, "abc");
+                        p_request->reply(status_codes::Unauthorized, _XPLATSTR("Authentication Failed"), headers, "abc");
                     })
                     .then([&scoped, &replyFunc]() {
                         // Client resent the request
@@ -319,12 +319,12 @@ SUITE(authentication_tests)
 
             http_response response = client.request(methods::GET).get();
             auto str_body = response.extract_vector().get();
-            auto h1 = response.headers()[U("h1")];
+            auto h1 = response.headers()[_XPLATSTR("h1")];
             VERIFY_ARE_EQUAL(status_codes::Unauthorized, response.status_code());
             VERIFY_ARE_EQUAL(str_body[0], 'd');
             VERIFY_ARE_EQUAL(str_body[1], 'e');
             VERIFY_ARE_EQUAL(str_body[2], 'f');
-            VERIFY_ARE_EQUAL(h1, U("data2"));
+            VERIFY_ARE_EQUAL(h1, _XPLATSTR("data2"));
         }
         t.get();
     }
@@ -405,8 +405,8 @@ SUITE(authentication_tests)
         config.set_credentials(web::credentials(m_username, m_password));
         http_client client(m_uri, config);
         http_request req(methods::GET);
-        req.headers().add(U("UserName"), m_username);
-        req.headers().add(U("Password"), m_password);
+        req.headers().add(_XPLATSTR("UserName"), m_username);
+        req.headers().add(_XPLATSTR("Password"), m_password);
         http_response response = client.request(req).get();
         VERIFY_ARE_EQUAL(status_codes::OK, response.status_code());
     }
@@ -431,8 +431,8 @@ SUITE(authentication_tests)
         config.set_credentials(web::credentials(m_username, m_password));
         http_client client(m_uri, config);
         http_request req(methods::GET);
-        req.headers().add(U("UserName"), m_username);
-        req.headers().add(U("Password"), m_password);
+        req.headers().add(_XPLATSTR("UserName"), m_username);
+        req.headers().add(_XPLATSTR("Password"), m_password);
         http_response response = client.request(req).get();
         VERIFY_ARE_EQUAL(status_codes::OK, response.status_code());
     }
@@ -523,7 +523,7 @@ SUITE(authentication_tests)
         VERIFY_IS_FALSE(config.buffer_request());
         config.set_buffer_request(true);
         VERIFY_IS_TRUE(config.buffer_request());
-        config.set_credentials(web::credentials(U("USERNAME"), U("PASSWORD")));
+        config.set_credentials(web::credentials(_XPLATSTR("USERNAME"), _XPLATSTR("PASSWORD")));
 
         http_client client(m_uri, config);
 
@@ -532,15 +532,15 @@ SUITE(authentication_tests)
 
         t = scoped.server()->next_request().then([&](test_request* p_request) {
             http_asserts::assert_test_request_equals(
-                p_request, methods::POST, U("/"), U("application/octet-stream"), U("aaaa"));
+                p_request, methods::POST, _XPLATSTR("/"), _XPLATSTR("application/octet-stream"), _XPLATSTR("aaaa"));
             std::map<utility::string_t, utility::string_t> headers;
-            headers[U("WWW-Authenticate")] = U("Basic realm = \"WallyWorld\"");
+            headers[_XPLATSTR("WWW-Authenticate")] = _XPLATSTR("Basic realm = \"WallyWorld\"");
 
-            p_request->reply(status_codes::Unauthorized, U("Authentication Failed"), headers);
+            p_request->reply(status_codes::Unauthorized, _XPLATSTR("Authentication Failed"), headers);
         });
         t2 = scoped.server()->next_request().then([&](test_request* p_request) {
             http_asserts::assert_test_request_equals(
-                p_request, methods::POST, U("/"), U("application/octet-stream"), U("aaaa"));
+                p_request, methods::POST, _XPLATSTR("/"), _XPLATSTR("application/octet-stream"), _XPLATSTR("aaaa"));
             p_request->reply(200);
         });
 
@@ -568,11 +568,11 @@ SUITE(authentication_tests)
             test_http_server::scoped_server scoped(m_uri);
             t = scoped.server()->next_request().then([&](test_request* p_request) {
                 http_asserts::assert_test_request_equals(
-                    p_request, methods::POST, U("/"), U("application/octet-stream"), U("aaaa"));
+                    p_request, methods::POST, _XPLATSTR("/"), _XPLATSTR("application/octet-stream"), _XPLATSTR("aaaa"));
                 std::map<utility::string_t, utility::string_t> headers;
-                headers[U("WWW-Authenticate")] = U("Basic realm = \"WallyWorld\"");
+                headers[_XPLATSTR("WWW-Authenticate")] = _XPLATSTR("Basic realm = \"WallyWorld\"");
 
-                p_request->reply(status_codes::Unauthorized, U("Authentication Failed"), headers);
+                p_request->reply(status_codes::Unauthorized, _XPLATSTR("Authentication Failed"), headers);
             });
 
             http_asserts::assert_response_equals(client.request(msg).get(), status_codes::Unauthorized);
@@ -590,7 +590,7 @@ SUITE(authentication_tests)
 
         http_client_config config;
         config.set_buffer_request(true);
-        config.set_credentials(web::credentials(U("USERNAME"), U("PASSWORD")));
+        config.set_credentials(web::credentials(_XPLATSTR("USERNAME"), _XPLATSTR("PASSWORD")));
 
         http_client client(m_uri, config);
         pplx::task<void> t;
@@ -599,22 +599,22 @@ SUITE(authentication_tests)
 
             auto replyFunc = [&](test_request* p_request) {
                 http_asserts::assert_test_request_equals(
-                    p_request, methods::POST, U("/"), U("application/octet-stream"), U("a"));
+                    p_request, methods::POST, _XPLATSTR("/"), _XPLATSTR("application/octet-stream"), _XPLATSTR("a"));
                 std::map<utility::string_t, utility::string_t> headers;
-                headers[U("WWW-Authenticate")] = U("Basic realm = \"WallyWorld2\"");
+                headers[_XPLATSTR("WWW-Authenticate")] = _XPLATSTR("Basic realm = \"WallyWorld2\"");
 
-                p_request->reply(status_codes::Unauthorized, U("Authentication Failed"), headers);
+                p_request->reply(status_codes::Unauthorized, _XPLATSTR("Authentication Failed"), headers);
             };
 
             t = scoped.server()
                     ->next_request()
                     .then([&](test_request* p_request) {
                         http_asserts::assert_test_request_equals(
-                            p_request, methods::POST, U("/"), U("application/octet-stream"), U("a"));
+                            p_request, methods::POST, _XPLATSTR("/"), _XPLATSTR("application/octet-stream"), _XPLATSTR("a"));
                         std::map<utility::string_t, utility::string_t> headers;
-                        headers[U("WWW-Authenticate")] = U("Basic realm = \"WallyWorld\"");
+                        headers[_XPLATSTR("WWW-Authenticate")] = _XPLATSTR("Basic realm = \"WallyWorld\"");
 
-                        p_request->reply(status_codes::Unauthorized, U("Authentication Failed"), headers);
+                        p_request->reply(status_codes::Unauthorized, _XPLATSTR("Authentication Failed"), headers);
                     })
                     .then([&scoped, replyFunc]() { return scoped.server()->next_request().then(replyFunc); });
 
@@ -640,10 +640,10 @@ SUITE(authentication_tests)
     {
         handle_timeout([] {
             http_client_config config;
-            web::credentials cred(U("user"), U("schmuser"));
+            web::credentials cred(_XPLATSTR("user"), _XPLATSTR("schmuser"));
             config.set_credentials(cred);
-            http_client client(U("https://apis.live.net"), config);
-            http_response response = client.request(methods::GET, U("V5.0/me/skydrive/files")).get();
+            http_client client(_XPLATSTR("https://apis.live.net"), config);
+            http_response response = client.request(methods::GET, _XPLATSTR("V5.0/me/skydrive/files")).get();
             VERIFY_ARE_EQUAL(status_codes::Unauthorized, response.status_code());
             auto v = response.extract_vector().get();
             std::string s(v.begin(), v.end());
@@ -669,7 +669,7 @@ SUITE(authentication_tests)
         http_client_config client_config;
         web::credentials cred(U(user), U(password));
         client_config.set_credentials(cred);
-        http_client client(U("http://httpbin.org/basic-auth/user1/user1"), client_config);
+        http_client client(_XPLATSTR("http://httpbin.org/basic-auth/user1/user1"), client_config);
 
         http_response response = client.request(methods::GET).get();
         VERIFY_ARE_EQUAL(return_code, response.status_code());
@@ -706,8 +706,8 @@ SUITE(authentication_tests)
                 VERIFY_ARE_EQUAL(false, tcpLayer.is_open());
             });
 
-            http_client client(U("https://apis.live.net"), config);
-            http_response response = client.request(methods::GET, U("V5.0/me/skydrive/files")).get();
+            http_client client(_XPLATSTR("https://apis.live.net"), config);
+            http_response response = client.request(methods::GET, _XPLATSTR("V5.0/me/skydrive/files")).get();
             VERIFY_ARE_EQUAL(status_codes::Unauthorized, response.status_code());
             auto v = response.extract_vector().get();
             // The resulting data must be non-empty (an error about missing access token)

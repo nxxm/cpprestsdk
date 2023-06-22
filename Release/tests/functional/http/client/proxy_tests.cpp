@@ -28,7 +28,7 @@ namespace http
 namespace client
 {
 // In order to run this test, replace this proxy uri with one that you have access to.
-static const auto proxy_uri = U("http://netproxy.redmond.corp.microsoft.com");
+static const auto proxy_uri = _XPLATSTR("http://netproxy.redmond.corp.microsoft.com");
 
 SUITE(proxy_tests)
 {
@@ -85,7 +85,7 @@ SUITE(proxy_tests)
         http_client_config hconfig;
         VERIFY_IS_TRUE(hconfig.proxy().is_default());
 
-        uri u = U("http://x");
+        uri u = _XPLATSTR("http://x");
 
         hconfig.set_proxy(web_proxy(u));
         VERIFY_ARE_EQUAL(u, hconfig.proxy().address());
@@ -98,14 +98,14 @@ SUITE(proxy_tests)
         test_http_server::scoped_server scoped(m_uri);
         auto t = scoped.server()->next_request().then([&](test_request* p_request) {
             http_asserts::assert_test_request_equals(
-                p_request, methods::PUT, U("/"), U("text/plain"), U("this is a test"));
+                p_request, methods::PUT, _XPLATSTR("/"), _XPLATSTR("text/plain"), _XPLATSTR("this is a test"));
             p_request->reply(status_codes::OK);
         });
         http_client_config config;
         config.set_proxy(web_proxy::use_auto_discovery);
 
         http_client client(m_uri, config);
-        http_asserts::assert_response_equals(client.request(methods::PUT, U("/"), U("this is a test")).get(),
+        http_asserts::assert_response_equals(client.request(methods::PUT, _XPLATSTR("/"), _XPLATSTR("this is a test")).get(),
                                              status_codes::OK);
 
         t.get();
@@ -116,7 +116,7 @@ SUITE(proxy_tests)
         test_http_server::scoped_server scoped(m_uri);
         auto t = scoped.server()->next_request().then([&](test_request* p_request) {
             http_asserts::assert_test_request_equals(
-                p_request, methods::PUT, U("/"), U("text/plain"), U("sample data"));
+                p_request, methods::PUT, _XPLATSTR("/"), _XPLATSTR("text/plain"), _XPLATSTR("sample data"));
             p_request->reply(status_codes::OK);
         });
 
@@ -124,7 +124,7 @@ SUITE(proxy_tests)
         config.set_proxy(web_proxy::disabled);
 
         http_client client(m_uri, config);
-        http_asserts::assert_response_equals(client.request(methods::PUT, U("/"), U("sample data")).get(),
+        http_asserts::assert_response_equals(client.request(methods::PUT, _XPLATSTR("/"), _XPLATSTR("sample data")).get(),
                                              status_codes::OK);
 
         t.get();
@@ -139,7 +139,7 @@ SUITE(proxy_tests)
         config.set_proxy(web_proxy::use_auto_discovery);
         http_client client(m_uri, config);
 
-        VERIFY_THROWS(client.request(methods::GET, U("/")).get(), http_exception);
+        VERIFY_THROWS(client.request(methods::GET, _XPLATSTR("/")).get(), http_exception);
     }
 #endif
 
@@ -159,7 +159,7 @@ SUITE(proxy_tests)
                  "Manual")
     {
         web_proxy proxy(proxy_uri);
-        web::credentials cred(U("artur"), U("fred")); // relax, this is not my real password
+        web::credentials cred(_XPLATSTR("artur"), _XPLATSTR("fred")); // relax, this is not my real password
         proxy.set_credentials(cred);
 
         http_client_config config;
@@ -167,7 +167,7 @@ SUITE(proxy_tests)
 
         // Access to this server will succeed because the first request will not be challenged and hence
         // my bogus credentials will not be supplied.
-        http_client client(U("http://www.microsoft.com"), config);
+        http_client client(_XPLATSTR("http://www.microsoft.com"), config);
 
         try
         {
@@ -193,7 +193,7 @@ SUITE(proxy_tests)
         http_client_config config;
         config.set_proxy(web_proxy(proxy_uri));
 
-        http_client client(U("http://httpbin.org"), config);
+        http_client client(_XPLATSTR("http://httpbin.org"), config);
 
         http_response response = client.request(methods::GET).get();
         VERIFY_ARE_EQUAL(status_codes::OK, response.status_code());
@@ -205,7 +205,7 @@ SUITE(proxy_tests)
         http_client_config config;
         config.set_proxy(web_proxy(proxy_uri));
 
-        http_client client(U("https://httpbin.org"), config);
+        http_client client(_XPLATSTR("https://httpbin.org"), config);
 
         http_response response = client.request(methods::GET).get();
         VERIFY_ARE_EQUAL(status_codes::OK, response.status_code());

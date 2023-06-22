@@ -33,7 +33,7 @@ static void check_listener_uri(const http::uri& address)
     // We only need to check certain things specific to HTTP.
 
     // HTTP Server API includes SSL support
-    if (address.scheme() != U("http") && address.scheme() != U("https"))
+    if (address.scheme() != _XPLATSTR("http") && address.scheme() != _XPLATSTR("https"))
     {
         throw std::invalid_argument("URI scheme must be 'http' or 'https'");
     }
@@ -127,7 +127,7 @@ void details::http_listener_impl::handle_request(http_request msg)
         // Method is not supported.
         // Send back a list of supported methods to the client.
         http_response response(status_codes::MethodNotAllowed);
-        response.headers().add(U("Allow"), get_supported_methods());
+        response.headers().add(_XPLATSTR("Allow"), get_supported_methods());
         msg.reply(response);
     }
 }
@@ -140,7 +140,7 @@ utility::string_t details::http_listener_impl::get_supported_methods() const
     {
         if (!first)
         {
-            allowed += U(", ");
+            allowed += _XPLATSTR(", ");
         }
         else
         {
@@ -154,13 +154,13 @@ utility::string_t details::http_listener_impl::get_supported_methods() const
 void details::http_listener_impl::handle_trace(http_request message)
 {
     utility::string_t data = message.to_string();
-    message.reply(status_codes::OK, data, U("message/http"));
+    message.reply(status_codes::OK, data, _XPLATSTR("message/http"));
 }
 
 void details::http_listener_impl::handle_options(http_request message)
 {
     http_response response(status_codes::OK);
-    response.headers().add(U("Allow"), get_supported_methods());
+    response.headers().add(_XPLATSTR("Allow"), get_supported_methods());
     message.reply(response);
 }
 

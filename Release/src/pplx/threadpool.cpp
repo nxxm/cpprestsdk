@@ -4,7 +4,7 @@
  **/
 #include "stdafx.h"
 
-#if !defined(CPPREST_EXCLUDE_WEBSOCKETS) || !defined(_WIN32)
+#if !defined(CPPREST_EXCLUDE_WEBSOCKETS) || (!defined(_WIN32) && !defined(_MSC_VER))
 #include "pplx/threadpool.h"
 #include <boost/asio/detail/thread.hpp>
 #include <new>
@@ -108,13 +108,18 @@ struct shared_threadpool
 
     ~shared_threadpool()
     {
+        #if !defined(__clang__)
         // if linked into a DLL, the threadpool shared instance will be
         // destroyed at DLL_PROCESS_DETACH, at which stage joining threads
         // causes deadlock, hence this dance
         bool terminate_threads = boost::asio::detail::thread::terminate_threads();
         boost::asio::detail::thread::set_terminate_threads(true);
+        #endif
         get_shared().~threadpool_impl();
+        #if !defined(__clang__)
         boost::asio::detail::thread::set_terminate_threads(terminate_threads);
+        #endif
+        
     }
 };
 

@@ -38,11 +38,11 @@ SUITE(request_relative_uri_tests)
         test_http_client client(m_uri);
         VERIFY_ARE_EQUAL(0, client.open());
         listener.support([](http_request request) {
-            VERIFY_ARE_EQUAL(U("/path1/path2"), request.request_uri().path());
-            VERIFY_ARE_EQUAL(U("/path1/path2"), request.relative_uri().to_string());
+            VERIFY_ARE_EQUAL(_XPLATSTR("/path1/path2"), request.request_uri().path());
+            VERIFY_ARE_EQUAL(_XPLATSTR("/path1/path2"), request.relative_uri().to_string());
             request.reply(status_codes::OK).wait();
         });
-        VERIFY_ARE_EQUAL(0, client.request(methods::GET, U("/path1/path2")));
+        VERIFY_ARE_EQUAL(0, client.request(methods::GET, _XPLATSTR("/path1/path2")));
         client.next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -56,16 +56,16 @@ SUITE(request_relative_uri_tests)
     TEST_FIXTURE(uri_address, nested_paths)
     {
         // listen on /path1, request /path1/path2
-        http_listener listener(web::http::uri_builder(m_uri).append_path(U("/path1")).to_uri());
+        http_listener listener(web::http::uri_builder(m_uri).append_path(_XPLATSTR("/path1")).to_uri());
         listener.open().wait();
         test_http_client client(m_uri);
         VERIFY_ARE_EQUAL(0, client.open());
         listener.support([](http_request request) {
-            VERIFY_ARE_EQUAL(U("/path1/path2"), request.request_uri().path());
-            VERIFY_ARE_EQUAL(U("/path2"), request.relative_uri().to_string());
+            VERIFY_ARE_EQUAL(_XPLATSTR("/path1/path2"), request.request_uri().path());
+            VERIFY_ARE_EQUAL(_XPLATSTR("/path2"), request.relative_uri().to_string());
             request.reply(status_codes::OK).wait();
         });
-        VERIFY_ARE_EQUAL(0, client.request(methods::GET, U("/path1/path2")));
+        VERIFY_ARE_EQUAL(0, client.request(methods::GET, _XPLATSTR("/path1/path2")));
         client.next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -79,16 +79,16 @@ SUITE(request_relative_uri_tests)
     TEST_FIXTURE(uri_address, nested_paths_encoding)
     {
         // listen on /path1%20/path2%20, request /path1%20/path2%20/path%203
-        http_listener listener(web::http::uri_builder(m_uri).append_path(U("/path1%20/path2%20")).to_uri());
+        http_listener listener(web::http::uri_builder(m_uri).append_path(_XPLATSTR("/path1%20/path2%20")).to_uri());
         listener.open().wait();
         test_http_client client(m_uri);
         VERIFY_ARE_EQUAL(0, client.open());
         listener.support([](http_request request) {
-            VERIFY_ARE_EQUAL(U("/path1%20/path2%20/path3%20"), request.request_uri().path());
-            VERIFY_ARE_EQUAL(U("/path3 "), web::http::uri::decode(request.relative_uri().to_string()));
+            VERIFY_ARE_EQUAL(_XPLATSTR("/path1%20/path2%20/path3%20"), request.request_uri().path());
+            VERIFY_ARE_EQUAL(_XPLATSTR("/path3 "), web::http::uri::decode(request.relative_uri().to_string()));
             request.reply(status_codes::OK).wait();
         });
-        VERIFY_ARE_EQUAL(0, client.request(methods::GET, U("/path1%20/path2%20/path3%20")));
+        VERIFY_ARE_EQUAL(0, client.request(methods::GET, _XPLATSTR("/path1%20/path2%20/path3%20")));
         client.next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -101,14 +101,14 @@ SUITE(request_relative_uri_tests)
 
     TEST(listener_uri_empty_path)
     {
-        uri address(U("http://localhost:45678"));
+        uri address(_XPLATSTR("http://localhost:45678"));
         http_listener listener(address);
         listener.open().wait();
         test_http_client::scoped_client client(address);
         test_http_client* p_client = client.client();
 
         listener.support([](http_request request) { request.reply(status_codes::OK); });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U("/")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR("/")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::OK);
@@ -120,14 +120,14 @@ SUITE(request_relative_uri_tests)
 
     TEST(listener_invalid_encoded_uri)
     {
-        uri address(U("http://localhost:45678"));
+        uri address(_XPLATSTR("http://localhost:45678"));
         http_listener listener(address);
         listener.open().wait();
         test_http_client::scoped_client client(address);
         test_http_client* p_client = client.client();
 
         listener.support([](http_request request) { request.reply(status_codes::OK); });
-        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, U("/%invalid/uri")));
+        VERIFY_ARE_EQUAL(0, p_client->request(methods::GET, _XPLATSTR("/%invalid/uri")));
         p_client->next_response()
             .then([](test_response* p_response) {
                 http_asserts::assert_test_response_equals(p_response, status_codes::BadRequest);

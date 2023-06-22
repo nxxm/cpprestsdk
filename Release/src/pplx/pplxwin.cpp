@@ -54,7 +54,7 @@ _PPLXIMP unsigned int __cdecl GetNextAsyncId() { return static_cast<unsigned int
 
 void InitializeCriticalSection(LPCRITICAL_SECTION _cs)
 {
-#ifndef __cplusplus_winrt
+#if !defined(__cplusplus_winrt) && !defined(__clang__)
     // InitializeCriticalSection can cause STATUS_NO_MEMORY see C28125
     __try
     {
