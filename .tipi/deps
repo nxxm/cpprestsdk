@@ -1,14 +1,12 @@
 {
   "s": [
-    "Release/include/", 
+    "Release/include/",
     "Release/src",
-    "Release/src/pch", 
+    "Release/src/pch",
     "Release/src/utilities/"
   ],
-  "x": [
-
-  ],
-  "x:clang-cxx17" : [
+  "x": [],
+  "x:clang-cxx17": [
     "Release/src/http/client/http_client_winhttp.cpp",
     "Release/src/http/client/http_client_winrt.cpp",
     "Release/src/http/listener/http_server_httpsys.cpp",
@@ -22,7 +20,7 @@
     "Release/samples",
     "vcpkg"
   ],
-  "x:macos" : [
+  "x:macos": [
     "Release/src/http/client/http_client_winhttp.cpp",
     "Release/src/http/client/http_client_winrt.cpp",
     "Release/src/http/listener/http_server_httpsys.cpp",
@@ -119,34 +117,65 @@
     "Release/tests",
     "Release/samples",
     "vcpkg"
-  ]
-
-  , "nxxm/brotli" : {
-      "s" : ["c/include", "c/common", "c/enc", "c/dec"]
-    }
-
-
-  , "nxxm/boringssl" : { "@" : ":64b173d5c7acb7e8e270997418685d9a00f0537b",
-      "u": true
-      , "packages" : ["OpenSSL"]
-      , "targets" : ["OpenSSL::SSL", "OpenSSL::Crypto"]
-      , "find_mode" : "MODULE"
-  }
-
-  , "hunter-packages/zlib" : { 
-    "@" : "v1.2.11-p1"
-    , "u" : true
-    , "packages" : ["ZLIB"]
-    , "targets" : ["ZLIB::zlib"]
-  }
-
-  , "boostorg/boost" : { "@" : "boost-1.80.0",
+  ],
+  "requires": {
+    "boostorg/boost": {
+      "@": "boost-1.80.0",
       "opts": "set(BOOST_INCLUDE_LIBRARIES system filesystem uuid)",
-      "packages": [ "boost_system", "boost_filesystem", "boost_uuid" ],
-      "targets": [ "Boost::system", "Boost::filesystem", "Boost::uuid" ],
+      "packages": [
+        "boost_system",
+        "boost_filesystem",
+        "boost_uuid"
+      ],
+      "targets": [
+        "Boost::system",
+        "Boost::filesystem",
+        "Boost::uuid"
+      ],
       "u": true
-  } 
-
-  , "platform:vs-16-2019-win64-cxx17" : ["target::crypt32"]
-  , "platform:vs-15-2017-win64-cxx17" : ["target::crypt32"]
+    },
+    "hunter-packages/zlib": {
+      "@": "v1.2.11-p1",
+      "packages": [
+        "ZLIB"
+      ],
+      "targets": [
+        "ZLIB::zlib"
+      ],
+      "u": true
+    },
+    "google/boringssl": {
+      "@": ":f896fbd7a94daf801446ae997d288e7f03a5d9a2",
+      "find_mode": "MODULE",
+      "packages": [
+        "OpenSSL"
+      ],
+      "targets": [
+        "OpenSSL::SSL",
+        "OpenSSL::Crypto"
+      ],
+      "opts": "set(BUILD_SHARED_LIBS OFF CACHE BOOL \"only static libs\" FORCE)\nset(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -Wno-error=unused-command-line-argument\")\nset(CMAKE_EXE_LINKER_FLAGS \"${CMAKE_EXE_LINKER_FLAGS} -Wno-error=unused-command-line-argument\")",
+      "u": true
+    },
+    "nxxm/brotli": {
+      "s": [
+        "c/include",
+        "c/common",
+        "c/enc",
+        "c/dec"
+      ],
+      "x": [
+        "/research",
+        "/c/fuzz",
+        "/c/tools"
+      ],
+      "u": false
+    }
+  },
+  "platform:vs-16-2019-win64-cxx17": [
+    "target::crypt32"
+  ],
+  "platform:vs-15-2017-win64-cxx17": [
+    "target::crypt32"
+  ]
 }

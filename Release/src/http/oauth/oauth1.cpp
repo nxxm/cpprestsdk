@@ -15,6 +15,15 @@
 
 #include "cpprest/asyncrt_utils.h"
 
+
+#if defined(_WIN32) && !defined(__cplusplus_winrt) // Windows desktop
+// nothing
+#elif defined(_WIN32) && defined(__cplusplus_winrt) // Windows RT
+// nothing
+#else
+#include <openssl/hmac.h>
+#endif
+
 #if _WIN32_WINNT >= _WIN32_WINNT_VISTA
 
 using namespace utility;
@@ -132,7 +141,6 @@ std::vector<unsigned char> oauth1_config::_hmac_sha1(const utility::string_t& ke
 
 #else // Linux, Mac OS X
 
-#include <openssl/hmac.h>
 
 std::vector<unsigned char> oauth1_config::_hmac_sha1(const utility::string_t& key, const utility::string_t& data)
 {
